@@ -3,15 +3,15 @@ import { useState, UIEvent, useEffect } from 'react';
 
 const projectsData = [
   { name: "Predicting Customer Churn", tag: "Machine Learning · Analytics", color: "#FF0055" },
-  { name: "Skin Lesion CNN", tag: "Deep Learning · Healthcare", color: "#00FF99" },
+  { name: "Skin Lesion CNN", tag: "Deep Learning · Healthcare", color: "#FFD700" },
   { name: "Health Companion", tag: "Mobile App · Wellness", color: "#0066FF" },
   { name: "Events & Ticketing App", tag: "Full Stack · E-Commerce", color: "#FF5500" },
   { name: "INTERBU", tag: "Startup · Platform", color: "#00EEFF" },
   { name: "DRIP GENIUS", tag: "AI · Fashion Tech", color: "#FF00FF" },
   { name: "Code Buddy", tag: "Developer Tool · AI", color: "#55FF00" },
-  { name: "Universal Resume Parser", tag: "NLP · Automation", color: "#FFD700" },
-  { name: "Click2Bill", tag: "FinTech · SaaS", color: "#FF4500" },
-  { name: "FLUX", tag: "Productivity · SaaS", color: "#FFCC00" },
+  { name: "Universal Resume Parser", tag: "NLP · Automation", color: "#00FF99" },
+  { name: "Click2Bill", tag: "FinTech · SaaS", color: "#7B68EE" },
+  { name: "FLUX", tag: "Productivity · SaaS", color: "#20B2AA" },
   { name: "MediVault", tag: "Health Records · Web App", color: "#9900FF" }
 ];
 
@@ -237,80 +237,88 @@ export default function Page() {
                 </div>
 
                 {/* Ink Splash Effect (Absolute and non-intrusive) */}
-                <div 
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    width: '0',
-                    height: '0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    pointerEvents: 'none',
-                    zIndex: 0,
-                    opacity: hoveredProject === idx ? 0.9 : 0,
-                    transition: 'opacity 0.5s ease',
-                    filter: 'url(#ink-splash-filter)'
-                  }}
-                >
-                  <svg 
-                    viewBox="0 0 200 200" 
-                    style={{ 
-                      width: '450px', 
-                      height: '350px', 
-                      flexShrink: 0,
-                      overflow: 'visible' 
-                    }}
-                  >
-                    <g fill={p.color}>
-                      {/* Central Mass */}
-                      <circle 
-                        cx="100" cy="100" 
-                        r={hoveredProject === idx ? 45 : 5} 
-                        style={{ transition: 'all 0.9s cubic-bezier(0.2, 1, 0.3, 1)' }} 
-                      />
-                      
-                      {/* Organic Satellite Blobs */}
-                      {Array.from({ length: 12 }).map((_, i) => {
-                        const seed = (idx + 1) * (i + 7);
-                        const angle = (i / 12) * Math.PI * 2 + (seed % 100) / 50;
-                        const dist = 40 + (seed % 50);
-                        const r = 15 + (seed % 20);
-                        const dx = Math.cos(angle) * dist;
-                        const dy = Math.sin(angle) * dist;
-                        return (
+                {(() => {
+                  const isSmall = ["INTERBU", "DRIP GENIUS", "Code Buddy", "Click2Bill", "FLUX", "MediVault"].includes(p.name);
+                  const sf = isSmall ? 0.8 : (p.name === "Universal Resume Parser" ? 0.9 : 1.0);
+                  const splashIdx = p.name === "Skin Lesion CNN" ? 7 : (p.name === "Universal Resume Parser" ? 1 : idx);
+                  
+                  return (
+                    <div 
+                      style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: isSmall ? '35%' : '50%',
+                        width: '0',
+                        height: '0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        pointerEvents: 'none',
+                        zIndex: 0,
+                        opacity: hoveredProject === idx ? 0.9 : 0,
+                        transition: 'opacity 0.5s ease',
+                        filter: 'url(#ink-splash-filter)'
+                      }}
+                    >
+                      <svg 
+                        viewBox="0 0 200 200" 
+                        style={{ 
+                          width: `${450 * sf}px`, 
+                          height: `${350 * sf}px`, 
+                          flexShrink: 0,
+                          overflow: 'visible' 
+                        }}
+                      >
+                        <g fill={p.color}>
+                          {/* Central Mass */}
                           <circle 
-                            key={i}
-                            cx={hoveredProject === idx ? 100 + dx : 100}
-                            cy={hoveredProject === idx ? 100 + dy : 100}
-                            r={hoveredProject === idx ? r : 2}
-                            style={{ transition: `all ${0.7 + (seed % 5) / 10}s cubic-bezier(0.2, 1, 0.3, 1)` }}
+                            cx="100" cy="100" 
+                            r={hoveredProject === idx ? 45 * sf : 5} 
+                            style={{ transition: 'all 0.9s cubic-bezier(0.2, 1, 0.3, 1)' }} 
                           />
-                        );
-                      })}
+                          
+                          {/* Organic Satellite Blobs */}
+                          {Array.from({ length: 12 }).map((_, i) => {
+                            const seed = (splashIdx + 1) * (i + 7);
+                            const angle = (i / 12) * Math.PI * 2 + (seed % 100) / 50;
+                            const dist = (40 + (seed % 50)) * sf;
+                            const r = (15 + (seed % 20)) * sf;
+                            const dx = Math.cos(angle) * dist;
+                            const dy = Math.sin(angle) * dist;
+                            return (
+                              <circle 
+                                key={i}
+                                cx={hoveredProject === idx ? 100 + dx : 100}
+                                cy={hoveredProject === idx ? 100 + dy : 100}
+                                r={hoveredProject === idx ? r : 2}
+                                style={{ transition: `all ${0.7 + (seed % 5) / 10}s cubic-bezier(0.2, 1, 0.3, 1)` }}
+                              />
+                            );
+                          })}
 
-                      {/* Fine Splatter Dots */}
-                      {Array.from({ length: 20 }).map((_, i) => {
-                        const seed = (idx + 1) * (i + 13);
-                        const angle = Math.random() * Math.PI * 2; 
-                        const dist = 70 + (seed % 80);
-                        const r = 2 + (seed % 4);
-                        const dx = Math.cos(angle) * dist;
-                        const dy = Math.sin(angle) * dist;
-                        return (
-                          <circle 
-                            key={`s-${i}`}
-                            cx={hoveredProject === idx ? 100 + dx : 100}
-                            cy={hoveredProject === idx ? 100 + dy : 100}
-                            r={hoveredProject === idx ? r : 0}
-                            style={{ transition: `all ${1.0 + (seed % 10) / 10}s cubic-bezier(0.1, 1, 0.1, 1)` }}
-                          />
-                        );
-                      })}
-                    </g>
-                  </svg>
-                </div>
+                          {/* Fine Splatter Dots */}
+                          {Array.from({ length: 20 }).map((_, i) => {
+                            const seed = (splashIdx + 1) * (i + 13);
+                            const angle = Math.random() * Math.PI * 2; 
+                            const dist = (70 + (seed % 80)) * sf;
+                            const r = (2 + (seed % 4)) * sf;
+                            const dx = Math.cos(angle) * dist;
+                            const dy = Math.sin(angle) * dist;
+                            return (
+                              <circle 
+                                key={`s-${i}`}
+                                cx={hoveredProject === idx ? 100 + dx : 100}
+                                cy={hoveredProject === idx ? 100 + dy : 100}
+                                r={hoveredProject === idx ? r : 0}
+                                style={{ transition: `all ${1.0 + (seed % 10) / 10}s cubic-bezier(0.1, 1, 0.1, 1)` }}
+                              />
+                            );
+                          })}
+                        </g>
+                      </svg>
+                    </div>
+                  );
+                })()}
               </div>
             ))}
           </div>
