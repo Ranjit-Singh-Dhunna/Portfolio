@@ -29,22 +29,18 @@ export default function Page() {
     "BONJOUR",
     "欢迎",
     "BIENVENIDO",
-    "स्वागत",
     "ДОБРО ПОЖАЛОВАТЬ",
-    "ようこそ",
-    "স্বাগতম"
+    "ようこそ"
   ];
 
   const projectTitleTexts = [
     "HAVE A LOOK AT SOME PROJECTS",
-    "ਕੁਝ ਪ੍ਰੋਜੈਕਟਾਂ 'ਤੇ ਨਜ਼ਰ ਮਾਰੋ",
+    "ਕੁਝ ਪ੍ਰੋਜੈਕਟਾਂ 'ਤੇ ਨਜ਼র ਮਾਰੋ",
     "VOICI QUELQUES PROJETS",
     "看看一些项目",
     "ECHA UN VISTAZO A ALGUNOS PROYECTOS",
-    "कुछ प्रोजेक्ट्स पर नज़र डालें",
     "ПОСМОТРИТЕ НА НЕКОТОРЫЕ ПРОЕКТЫ",
-    "いくつかのプロジェクトを見てください",
-    "কিছু প্রকল্প দেখে নিন"
+    "いくつかのプロジェクトを見てください"
   ];
 
   useEffect(() => {
@@ -203,8 +199,7 @@ export default function Page() {
                   fontWeight: 'inherit', 
                   textTransform: 'inherit', 
                   letterSpacing: 'inherit',
-                  whiteSpace: 'nowrap', // Prevent wrapping from changing height
-                  transform: (langIndex === 1 || langIndex === 5 || langIndex === 8) ? 'translateY(-2px)' : 'translateY(0)',
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {projectTitleTexts[langIndex]}
@@ -220,44 +215,14 @@ export default function Page() {
                 onMouseEnter={() => setHoveredProject(idx)}
                 onMouseLeave={() => setHoveredProject(null)}
                 style={{ 
-                  position: 'relative',
-                  marginBottom: (
-                    p.name.toLowerCase().replace(/\s/g, '') === "healthcompanion" || 
-                    p.name.toLowerCase().replace(/\s/g, '') === "codebuddy" || 
-                    p.name.toLowerCase().replace(/\s/g, '') === "medivault"
+                  marginTop: (
+                    p.name === "Skin Lesion CNN" || 
+                    p.name === "Events & Ticketing App" || 
+                    p.name === "DRIP GENIUS" || 
+                    p.name === "Universal Resume Parser"
                   ) ? '0px' : undefined 
                 }}
               >
-                {/* Color Splash Effect */}
-                {(() => {
-                  const isSquare = p.name === "Predicting Customer Churn" || p.name === "Events & Ticketing App" || p.name === "Universal Resume Parser";
-                  const width = isSquare ? 90 : 130;
-                  const height = isSquare ? 90 : 50;
-                  const borderRadius = isSquare 
-                    ? '30% 70% 70% 30% / 30% 30% 70% 70%' 
-                    : '50% 50% 50% 50% / 30% 30% 70% 70%';
-                  
-                  return (
-                    <div 
-                      style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: `translate(-50%, -50%) scale(${hoveredProject === idx ? 1.4 : 0.6})`,
-                        width: `${width}px`,
-                        height: `${height}px`,
-                        backgroundColor: p.color,
-                        borderRadius: borderRadius,
-                        filter: 'blur(35px)',
-                        opacity: hoveredProject === idx ? 0.7 : 0,
-                        transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
-                        pointerEvents: 'none',
-                        zIndex: 0
-                      }}
-                    />
-                  );
-                })()}
-                
                 <div 
                   className="project-title" 
                   style={{ 
@@ -269,6 +234,82 @@ export default function Page() {
                 </div>
                 <div className="project-tag" style={{ position: 'relative', zIndex: 1 }}>
                   {p.tag}
+                </div>
+
+                {/* Ink Splash Effect (Absolute and non-intrusive) */}
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    width: '0',
+                    height: '0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    pointerEvents: 'none',
+                    zIndex: 0,
+                    opacity: hoveredProject === idx ? 0.9 : 0,
+                    transition: 'opacity 0.5s ease',
+                    filter: 'url(#ink-splash-filter)'
+                  }}
+                >
+                  <svg 
+                    viewBox="0 0 200 200" 
+                    style={{ 
+                      width: '450px', 
+                      height: '350px', 
+                      flexShrink: 0,
+                      overflow: 'visible' 
+                    }}
+                  >
+                    <g fill={p.color}>
+                      {/* Central Mass */}
+                      <circle 
+                        cx="100" cy="100" 
+                        r={hoveredProject === idx ? 45 : 5} 
+                        style={{ transition: 'all 0.9s cubic-bezier(0.2, 1, 0.3, 1)' }} 
+                      />
+                      
+                      {/* Organic Satellite Blobs */}
+                      {Array.from({ length: 12 }).map((_, i) => {
+                        const seed = (idx + 1) * (i + 7);
+                        const angle = (i / 12) * Math.PI * 2 + (seed % 100) / 50;
+                        const dist = 40 + (seed % 50);
+                        const r = 15 + (seed % 20);
+                        const dx = Math.cos(angle) * dist;
+                        const dy = Math.sin(angle) * dist;
+                        return (
+                          <circle 
+                            key={i}
+                            cx={hoveredProject === idx ? 100 + dx : 100}
+                            cy={hoveredProject === idx ? 100 + dy : 100}
+                            r={hoveredProject === idx ? r : 2}
+                            style={{ transition: `all ${0.7 + (seed % 5) / 10}s cubic-bezier(0.2, 1, 0.3, 1)` }}
+                          />
+                        );
+                      })}
+
+                      {/* Fine Splatter Dots */}
+                      {Array.from({ length: 20 }).map((_, i) => {
+                        const seed = (idx + 1) * (i + 13);
+                        const angle = Math.random() * Math.PI * 2; 
+                        const dist = 70 + (seed % 80);
+                        const r = 2 + (seed % 4);
+                        const dx = Math.cos(angle) * dist;
+                        const dy = Math.sin(angle) * dist;
+                        return (
+                          <circle 
+                            key={`s-${i}`}
+                            cx={hoveredProject === idx ? 100 + dx : 100}
+                            cy={hoveredProject === idx ? 100 + dy : 100}
+                            r={hoveredProject === idx ? r : 0}
+                            style={{ transition: `all ${1.0 + (seed % 10) / 10}s cubic-bezier(0.1, 1, 0.1, 1)` }}
+                          />
+                        );
+                      })}
+                    </g>
+                  </svg>
                 </div>
               </div>
             ))}
@@ -282,6 +323,26 @@ export default function Page() {
         <h1 id="modal-title">{activeProject}</h1>
         <div id="modal-status">Coming soon</div>
       </div>
+      {/* SVG Filters for Ink Splash */}
+      <svg style={{ position: 'absolute', width: 0, height: 0, pointerEvents: 'none' }}>
+        <defs>
+          <filter id="ink-splash-filter">
+            {/* Gooey effect: Blur + ColorMatrix */}
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" result="goo" />
+            
+            {/* Organic edge distortion */}
+            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" result="noise" />
+            <feDisplacementMap in="goo" in2="noise" scale="35" result="distort" />
+            
+            {/* Fine grain texture */}
+            <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="grain_noise" />
+            <feComposite in="distort" in2="grain_noise" operator="arithmetic" k1="0.1" k2="0.9" result="textured" />
+            
+            <feComposite in="textured" in2="goo" operator="atop" />
+          </filter>
+        </defs>
+      </svg>
     </>
   );
 }
