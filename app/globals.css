@@ -1,0 +1,387 @@
+/* CSS Reset & Variables */
+:root {
+    --bg: #E9E3DE;
+    --fg: #000000;
+    --font: var(--font-inter), sans-serif;
+    --padding: 2rem;
+    --button-border: 1px solid var(--fg);
+    --grid-gap: 2.5rem;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body, *, a, button, input, textarea, select, .style-btn {
+    cursor: none !important;
+}
+
+html, body {
+    height: 100%;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--padding) var(--padding) 0 var(--padding);
+    display: flex;
+    justify-content: space-between;
+    z-index: 50;
+    mix-blend-mode: difference;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    pointer-events: none;
+}
+nav > * {
+    pointer-events: auto;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+}
+.nav-logo { font-weight: 800; }
+
+/* Scroll Container */
+main {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+}
+
+section {
+    min-height: 100vh;
+    width: 100vw;
+    scroll-snap-align: start;
+    padding: calc(var(--padding) * 3) var(--padding) var(--padding) var(--padding);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- Section 1: Intro --- */
+#intro {
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: calc(var(--padding) * 3.5);
+}
+
+.intro-container {
+    width: 100%;
+    max-width: 1400px;
+}
+
+.headline {
+    font-family: var(--font-cormorant), serif;
+    font-size: clamp(2rem, 4vw, 4rem);
+    line-height: 1.0;
+    text-align: center;
+    margin-bottom: 7rem;
+    font-weight: 600;
+}
+
+.vibe-text {
+    display: inline-block;
+    transform: translateX(-60px);
+}
+
+.name {
+    font-family: var(--font-fleur), cursive;
+    vertical-align: bottom;
+    font-size: 1.5em;
+    font-style: normal;
+    font-weight: 400;
+    line-height: .85;
+    display: inline-block;
+    transform: translateY(.1em);
+}
+
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--grid-gap);
+    width: 100%;
+}
+
+.theme-btn {
+    background: transparent;
+    color: var(--fg);
+    border: var(--button-border);
+    padding: 1.5rem 4rem;
+    font-family: var(--font-inter), sans-serif;
+    font-size: 1.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    width: 100%;
+    font-weight: 200;
+}
+
+/* --- Hover Animations as per specs --- */
+.style-btn {
+  position: relative;
+  transition: background-color 300ms ease-out, color 300ms ease-out;
+}
+
+.style-btn .btn-label {
+  display: inline-block;
+  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  z-index: 2;
+}
+
+.style-btn:hover .btn-label {
+  transform: translateX(-30px);
+}
+
+/* Unique Hover Typography */
+.style-btn[data-theme="comic"]:hover .btn-label { font-family: var(--font-comic), cursive; letter-spacing: 0.1em; transform: translateX(-30px) scale(1.2) rotate(-5deg); }
+.style-btn[data-theme="pixel"]:hover .btn-label { font-family: var(--font-pixel), monospace; font-size: 1.4rem; }
+.style-btn[data-theme="desktop"]:hover .btn-label { font-family: var(--font-desktop), monospace; font-size: 2.8rem; text-transform: lowercase; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.style-btn[data-theme="book"]:hover .btn-label { font-family: var(--font-book), serif; font-size: 1.2rem; letter-spacing: 0.3em; text-transform: uppercase; font-style: normal; font-weight: 400; }
+.style-btn[data-theme="stalker"]:hover .btn-label { font-family: var(--font-stalker), cursive; letter-spacing: 0.3em; color: #39FF14; text-shadow: 0 0 10px #39FF14; }
+.style-btn[data-theme="3d"]:hover .btn-label { font-family: var(--font-3d), sans-serif; letter-spacing: 0.15em; color: white; text-shadow: 1px 1px 0 #000, 2px 2px 0 #000, 3px 3px 0 #000, 4px 4px 0 #000, 5px 5px 0 #000, 6px 6px 0 #000; transform: translateX(-30px) translateY(-6px); }
+.style-btn[data-theme="hyper"]:hover .btn-label { font-family: var(--font-hyper), sans-serif; font-weight: 800; font-style: italic; transform: translateX(-30px) skewX(-15deg); }
+.style-btn[data-theme="traditional"]:hover .btn-label { font-family: var(--font-cormorant), serif; font-style: italic; font-size: 2rem; text-transform: capitalize; }
+.style-btn[data-theme="minimal"]:hover .btn-label { font-weight: 300; letter-spacing: 0.4em; }
+
+.style-btn .btn-svg {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%) scale(0.3) translateX(40px);
+  opacity: 0;
+  transition: opacity 300ms ease-out, transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.style-btn:hover .btn-svg {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.8) translateX(20px);
+}
+
+
+/* --- Custom Botanical Cursor CSS --- */
+#hand-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  top: 0; left: 0;
+  filter: drop-shadow(1px 3px 6px rgba(0,0,0,0.12));
+  transform-origin: 21px 6px;
+  transition: opacity 0.2s ease;
+  will-change: transform, left, top;
+  opacity: 0;
+}
+
+.vine {
+  transition: stroke 400ms ease;
+}
+.leaf {
+  transition: fill 400ms ease;
+}
+.flower .petal {
+  transition: fill 400ms ease, transform 250ms ease-out;
+}
+
+.flower-index {
+  transition: transform 250ms ease-out;
+}
+
+#hand-cursor.hovering .flower-index {
+  transform: translate(31px, 10px) scale(1.35);
+}
+#hand-cursor.hovering .flower-index .petal {
+  transform: rotate(15deg) scale(1.1); /* Slight petal spread */
+}
+
+/* Vine draw-in on load */
+@keyframes vine-grow {
+  to { stroke-dashoffset: 0; }
+}
+.vine-main  { animation: vine-grow 0.9s 0.3s ease-in-out forwards; }
+.vine-branch { animation: vine-grow 0.6s 0.8s ease-in-out forwards; }
+
+/* Idle bloom pulse */
+@keyframes bloom-pulse-index {
+  0%, 100% { transform: translate(31px, 10px) scale(1); }
+  50% { transform: translate(31px, 10px) scale(1.08); }
+}
+@keyframes bloom-pulse-palm {
+  0%, 100% { transform: translate(24px, 46px) scale(1); }
+  50% { transform: translate(24px, 46px) scale(1.08); }
+}
+@keyframes bloom-pulse-wrist {
+  0%, 100% { transform: translate(26px, 58px) scale(1); }
+  50% { transform: translate(26px, 58px) scale(1.08); }
+}
+
+#hand-cursor.idle .flower-index  { animation: bloom-pulse-index 2.5s 0.0s ease-in-out infinite; }
+#hand-cursor.idle .flower-palm   { animation: bloom-pulse-palm 2.5s 0.4s ease-in-out infinite; }
+#hand-cursor.idle .flower-wrist  { animation: bloom-pulse-wrist 2.5s 0.8s ease-in-out infinite; }
+
+.style-btn[data-theme="minimal"]:hover .btn-svg,
+.style-btn[data-theme="traditional"]:hover .btn-svg {
+  transform: translateY(-50%) scale(1.8) translateX(5px);
+}
+
+/* Hover background colors */
+.style-btn[data-theme="comic"]:hover { background-color: #FACC15; }
+.style-btn[data-theme="pixel"]:hover { background-color: #22D3EE; }
+.style-btn[data-theme="minimal"]:hover { background-color: #E2E8F0; }
+.style-btn[data-theme="desktop"]:hover { background-color: #F97316; color: white; }
+.style-btn[data-theme="hyper"]:hover { background-color: #D946EF; color: white; }
+.style-btn[data-theme="traditional"]:hover { background-color: #831843; color: white; }
+.style-btn[data-theme="book"]:hover { background-color: #064E3B; color: white; }
+.style-btn[data-theme="stalker"]:hover { background-color: #7F1D1D; }
+.style-btn[data-theme="3d"]:hover { background-color: #F43F5E; color: white; }
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  45% { opacity: 0.8; }
+  50% { opacity: 0.2; }
+  55% { opacity: 0.9; }
+}
+
+.style-btn[data-theme="stalker"]:hover .btn-svg {
+  animation: flicker 1.2s infinite;
+}
+
+/* --- Section 2: Projects --- */
+#projects {
+    justify-content: flex-start;
+    padding: calc(var(--padding) * 2) var(--padding) 0 var(--padding);
+}
+
+.section-title {
+    position: sticky;
+    top: 0;
+    padding: calc(var(--padding) * 2) var(--padding) 1.5rem 0;
+    margin-top: calc(var(--padding) * -2);
+    background-color: var(--bg);
+    z-index: 10;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+}
+
+.projects-grid {
+    column-count: 3;
+    column-gap: 4rem;
+    width: 100%;
+    padding-top: 3%;
+}
+
+.project-item {
+    break-inside: avoid;
+    margin-bottom: 4rem;
+    cursor: pointer;
+    display: block;
+    position: relative;
+}
+
+.project-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    display: inline;
+    background-image: linear-gradient(var(--fg), var(--fg));
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 3px;
+    transition: background-size 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.project-item:hover .project-title {
+    background-size: 100% 3px;
+}
+
+.project-tag {
+    display: inline-block;
+    border: 1px solid var(--fg);
+    padding: 0.3rem 0.8rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 1rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    transition: all 0.4s ease;
+}
+
+/* --- Modal --- */
+#modal {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg);
+    color: var(--fg);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    font-family: var(--font);
+}
+
+#modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#modal-close {
+    position: absolute;
+    top: var(--padding);
+    right: var(--padding);
+    background: transparent;
+    border: none;
+    color: var(--fg);
+    font-size: 3rem;
+    line-height: 1;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+#modal-title {
+    font-size: clamp(3rem, 8vw, 7rem);
+    text-align: center;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+#modal-status {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.6;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .projects-grid { column-count: 2; }
+    .headline { transform: none; }
+}
+
+@media (max-width: 768px) {
+    .projects-grid { column-count: 1; }
+    .theme-grid { grid-template-columns: 1fr; }
+    .headline { font-size: 8vw; }
+    section { padding-top: calc(var(--padding) * 4); }
+}
