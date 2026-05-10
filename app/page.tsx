@@ -1,18 +1,74 @@
 "use client";
 import { useState, UIEvent, useEffect } from 'react';
+import Link from 'next/link';
 
 const projectsData = [
-  { name: "Predicting Customer Churn", tag: "Machine Learning · Analytics", color: "#FF0055" },
-  { name: "Skin Lesion CNN", tag: "Deep Learning · Healthcare", color: "#FFD700" },
-  { name: "Health Companion", tag: "Mobile App · Wellness", color: "#0066FF" },
-  { name: "Events & Ticketing App", tag: "Full Stack · E-Commerce", color: "#FF5500" },
-  { name: "INTERBU", tag: "Startup · Platform", color: "#00EEFF" },
-  { name: "DRIP GENIUS", tag: "AI · Fashion Tech", color: "#FF00FF" },
-  { name: "Code Buddy", tag: "Developer Tool · AI", color: "#55FF00" },
-  { name: "Universal Resume Parser", tag: "NLP · Automation", color: "#00FF99" },
-  { name: "Click2Bill", tag: "FinTech · SaaS", color: "#7B68EE" },
-  { name: "FLUX", tag: "Productivity · SaaS", color: "#20B2AA" },
-  { name: "MediVault", tag: "Health Records · Web App", color: "#9900FF" }
+  { 
+    name: "Predicting Customer Churn", 
+    tag: "Machine Learning · Analytics", 
+    color: "#FF0055", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/Predicting-Churn-DTC-RFC" 
+  },
+  { 
+    name: "Skin Lesion CNN", 
+    tag: "Deep Learning · Healthcare", 
+    color: "#FFD700", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/skin-lesion-cnn" 
+  },
+  { 
+    name: "Health Companion", 
+    tag: "Mobile App · Wellness", 
+    color: "#0066FF", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/HEALTH-COMPANION-APP-" 
+  },
+  { 
+    name: "Events & Ticketing App", 
+    tag: "Full Stack · E-Commerce", 
+    color: "#FF5500", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/Events-TicketingApp" 
+  },
+  { 
+    name: "FLUX", 
+    tag: "Productivity · SaaS", 
+    color: "#00EEFF", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/Flux" 
+  },
+  { 
+    name: "DRIP GENIUS", 
+    tag: "AI · Fashion Tech", 
+    color: "#FF00FF", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/Outfit-Recommendation-System" 
+  },
+  { 
+    name: "Code Buddy", 
+    tag: "Developer Tool · AI", 
+    color: "#55FF00", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/Code-Instructor" 
+  },
+  { 
+    name: "Universal Resume Parser", 
+    tag: "NLP · Automation", 
+    color: "#00FF99", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/Resume-Parser-JSON" 
+  },
+  { 
+    name: "Click2Bill", 
+    tag: "FinTech · SaaS", 
+    color: "#7B68EE", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/gsheets-invoice-automation" 
+  },
+  { 
+    name: "INTERBU", 
+    tag: "Startup · Platform", 
+    color: "#20B2AA", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/ai-interview-coach" 
+  },
+  { 
+    name: "MediVault", 
+    tag: "Health Records · Web App", 
+    color: "#9900FF", 
+    link: "https://github.com/Ranjit-Singh-Dhunna/MediVault" 
+  }
 ];
 
 export default function Page() {
@@ -35,7 +91,7 @@ export default function Page() {
 
   const projectTitleTexts = [
     "HAVE A LOOK AT SOME PROJECTS",
-    "ਕੁਝ ਪ੍ਰੋਜੈਕਟਾਂ 'ਤੇ ਨਜ਼র ਮਾਰੋ",
+    "ਕੁਝ ਪ੍ਰੋਜੈਕਟਾਂ 'ਤੇ ਨਜ਼ਰ ਮਾਰੋ",
     "VOICI QUELQUES PROJETS",
     "看看一些项目",
     "ECHA UN VISTAZO A ALGUNOS PROYECTOS",
@@ -49,14 +105,16 @@ export default function Page() {
       setTimeout(() => {
         setLangIndex((prev) => (prev + 1) % welcomeTexts.length);
         setFade(true);
-      }, 600); // Wait for fade out
+      }, 600);
     }, 4000);
     return () => clearInterval(interval);
   }, []);
 
   const handleProjectClick = (name: string) => {
-    setActiveProject(name);
-    setModalOpen(true);
+    const project = projectsData.find(p => p.name === name);
+    if (project?.link) {
+      window.open(project.link, '_blank', 'noopener,noreferrer');
+    }
   };
 
   const handleScroll = (e: UIEvent<HTMLElement>) => {
@@ -129,41 +187,41 @@ export default function Page() {
             </div>
             <div className="theme-grid">
               
-              <button className="theme-btn style-btn" data-theme="comic" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/comic" className="theme-btn style-btn" data-theme="comic" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Comic</span>
-              </button>
+              </Link>
               
-              <button className="theme-btn style-btn" data-theme="pixel" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/pixel" className="theme-btn style-btn" data-theme="pixel" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Pixel</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="minimal" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/minimal" className="theme-btn style-btn" data-theme="minimal" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Minimalistic</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="desktop" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/desktop" className="theme-btn style-btn" data-theme="desktop" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Desktop</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="hyper" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/hyper" className="theme-btn style-btn" data-theme="hyper" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Hyper Scroll</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="traditional" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/traditional" className="theme-btn style-btn" data-theme="traditional" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Traditional</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/book" className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Book</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="stalker" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/stalker" className="theme-btn style-btn" data-theme="stalker" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Stalker</span>
-              </button>
+              </Link>
 
-              <button className="theme-btn style-btn" data-theme="3d" style={{ backgroundColor: 'transparent', color: 'inherit' }}>
+              <Link href="/3d" className="theme-btn style-btn" data-theme="3d" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">3D</span>
-              </button>
+              </Link>
 
             </div>
           </div>
@@ -240,14 +298,20 @@ export default function Page() {
                 {(() => {
                   const isSmall = ["INTERBU", "DRIP GENIUS", "Code Buddy", "Click2Bill", "FLUX", "MediVault"].includes(p.name);
                   const sf = isSmall ? 0.8 : (p.name === "Universal Resume Parser" ? 0.9 : 1.0);
-                  const splashIdx = p.name === "Skin Lesion CNN" ? 7 : (p.name === "Universal Resume Parser" ? 1 : idx);
+                  
+                  // Interchange splash designs
+                  let splashIdx = idx;
+                  if (p.name === "Skin Lesion CNN") splashIdx = 7;
+                  else if (p.name === "Universal Resume Parser") splashIdx = 1;
+                  else if (p.name === "FLUX") splashIdx = 9;
+                  else if (p.name === "INTERBU") splashIdx = 4;
                   
                   return (
                     <div 
                       style={{
                         position: 'absolute',
                         top: '50%',
-                        left: isSmall ? '35%' : '50%',
+                        left: p.name === "INTERBU" ? '20%' : (p.name === "DRIP GENIUS" ? '50%' : (isSmall ? '35%' : '50%')),
                         width: '0',
                         height: '0',
                         display: 'flex',

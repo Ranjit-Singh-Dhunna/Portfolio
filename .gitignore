@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local logs and scratch
+dev.log
+/scratch/
+package-lock 2.json
