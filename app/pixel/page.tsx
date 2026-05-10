@@ -1,6 +1,8 @@
+import { PromptingIsAllYouNeed } from "@/components/ui/animated-hero-section";
+
 export default function PixelPage() {
   const sections = [
-    { id: 1, bg: "/px1.png" },
+    { id: 0, bg: "/px1.png" },
     { id: 2, bg: "/px2.png" },
     { id: 3, bg: "/px3.png" },
     { id: 4, bg: "/px4.png" },
@@ -11,8 +13,8 @@ export default function PixelPage() {
 
   return (
     <div style={{ fontFamily: 'monospace', backgroundColor: '#000', color: '#0f0' }}>
-      <nav style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 100 }}>
-        <a href="/" style={{ color: '#0f0', textDecoration: 'none', background: '#000', padding: '0.5rem 1rem', border: '2px solid #0f0' }}>Back to Home</a>
+      <nav style={{ position: 'fixed', top: '0', right: '0', zIndex: 100 }}>
+        <a href="/" style={{ color: '#0f0', textDecoration: 'none', background: '#000', border: '2px solid #0f0' }}>Back to Home</a>
       </nav>
 
       {sections.map((section) => (
@@ -32,16 +34,19 @@ export default function PixelPage() {
             } : {})
           }}
         >
-          {/* Section 1: Sunrise and Brown Mountain */}
-          {section.id === 1 && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: 'url(/px1.png)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'bottom',
-              zIndex: -1
-            }} />
+          {/* Section 0: Hero Pong with Section 1's Background */}
+          {section.id === 0 && (
+            <>
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: 'url(/px1.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'bottom',
+                zIndex: -1
+              }} />
+              <PromptingIsAllYouNeed />
+            </>
           )}
 
           {/* Section 2: Brown Mountain Continued (px1-2) and Green Cliff (px2) */}
@@ -176,6 +181,14 @@ export default function PixelPage() {
               }} />
             </>
           )}
+          {/* Dull Overlay Layer over all images in the section */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dull layer
+            zIndex: 5,
+            pointerEvents: 'none'
+          }} />
         </section>
       ))}
     </div>

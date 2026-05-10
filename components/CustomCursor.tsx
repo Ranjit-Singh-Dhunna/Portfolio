@@ -7,6 +7,7 @@ export default function CustomCursor() {
   const [isHovering, setIsHovering] = useState(false);
   const [isGrabbing, setIsGrabbing] = useState(false);
   const [isIdle, setIsIdle] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [themeColor, setThemeColor] = useState({
     petal: '#e8c4b8',
     vine: '#2d4a1e',
@@ -14,6 +15,7 @@ export default function CustomCursor() {
   });
 
   useEffect(() => {
+    setMounted(true);
     let mx = 0, prevMx = 0, currentTilt = 0;
     let idleTimer: NodeJS.Timeout;
     let animationFrameId: number;
@@ -113,7 +115,7 @@ export default function CustomCursor() {
     };
   }, []);
 
-  if (typeof window !== 'undefined' && 'ontouchstart' in window) {
+  if (!mounted || ('ontouchstart' in window)) {
     return null;
   }
 
