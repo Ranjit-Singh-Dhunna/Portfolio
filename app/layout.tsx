@@ -9,7 +9,8 @@ import {
   Creepster,
   Righteous,
   Space_Grotesk,
-  Fleur_De_Leah
+  Fleur_De_Leah,
+  Pixelify_Sans
 } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
@@ -24,6 +25,7 @@ const creepster = Creepster({ subsets: ["latin"], weight: "400", variable: '--fo
 const righteous = Righteous({ subsets: ["latin"], weight: "400", variable: '--font-3d' });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: '--font-hyper' });
 const fleur = Fleur_De_Leah({ weight: "400", subsets: ["latin"], variable: '--font-fleur' });
+const pixelify = Pixelify_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: '--font-pixelify' });
 
 export const metadata: Metadata = {
   title: "Ranjit | Portfolio",
@@ -40,7 +42,7 @@ export default function RootLayout({
       <head>
         <style dangerouslySetInnerHTML={{ __html: `*, *::before, *::after, html, body { cursor: none !important; }` }} />
       </head>
-      <body style={{ cursor: 'none' }} className={`${inter.variable} ${cormorant.variable} ${bangers.variable} ${pixel.variable} ${vt323.variable} ${playfair.variable} ${creepster.variable} ${righteous.variable} ${spaceGrotesk.variable} ${fleur.variable}`}>
+      <body style={{ cursor: 'none' }} className={`${inter.variable} ${cormorant.variable} ${bangers.variable} ${pixel.variable} ${vt323.variable} ${playfair.variable} ${creepster.variable} ${righteous.variable} ${spaceGrotesk.variable} ${fleur.variable} ${pixelify.variable}`}>
         <CustomCursor />
         <div style={{ cursor: 'none' }}>
           {children}

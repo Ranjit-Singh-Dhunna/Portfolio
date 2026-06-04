@@ -1,4 +1,6 @@
 import { PromptingIsAllYouNeed } from "@/components/ui/animated-hero-section";
+import TextRoll, { TextRollParagraph } from "@/components/ui/text-roll";
+
 
 export default function PixelPage() {
   const sections = [
@@ -70,6 +72,63 @@ export default function PixelPage() {
                 backgroundPosition: 'bottom',
                 zIndex: -1
               }} />
+
+              {/* ── TEXT CONTENT OVERLAY ── */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '2rem',
+                pointerEvents: 'none',
+              }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gridTemplateRows: 'auto auto',
+                  gap: '4rem 3rem',
+                  width: '100%',
+                  maxWidth: '1100px',
+                }}>
+
+                  {/* ── MY JOURNEY (spans both columns) ── */}
+                  <div style={{ gridColumn: '1 / -1' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                      <TextRoll
+                        center
+                        style={{
+                          fontFamily: 'var(--font-pixelify), monospace',
+                          fontSize: 'clamp(2rem, 5vw, 3rem)',
+                          fontWeight: 'bold',
+                          color: '#00ff41',
+                          letterSpacing: '0.2em',
+                          textTransform: 'uppercase',
+                          WebkitTextStroke: '2px black',
+                          textShadow: '2px 4px 0 #003300',
+                        }}
+                      >
+                        MY JOURNEY
+                      </TextRoll>
+                    </div>
+                    <TextRollParagraph
+                      style={{
+                        fontFamily: 'var(--font-pixelify), monospace',
+                        fontSize: 'clamp(1.6rem, 3vw, 2.1rem)',
+                        fontWeight: 'bold',
+                        color: '#e0fff0',
+                        lineHeight: '2',
+                        WebkitTextStroke: '1px black',
+                        textShadow: '2px 2px 0 rgba(0,0,0,1)',
+                      }}
+                    >
+                      My journey began in 4th grade when I discovered HTML & CSS, realizing a blank screen held endless possibilities. By 6th grade, I was solving algorithmic puzzles for fun, which naturally led me to master Java, JavaScript, Python, React, and Express. What started as childhood tinkering has evolved into a relentless drive to build impactful, full-stack products. Today, that same curiosity fuels my active participation in tech clubs, hackathons, and competitive programming, constantly pushing me to build things that matter.
+                    </TextRollParagraph>
+                  </div>
+
+                </div>
+              </div>
             </>
           )}
 

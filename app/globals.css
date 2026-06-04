@@ -1,3 +1,11 @@
+/* Custom Fonts */
+@font-face {
+  font-family: 'ChonkyPixels';
+  src: url('/fonts/ChonkyPixels.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* CSS Reset & Variables */
 :root {
     --bg: #E9E3DE;

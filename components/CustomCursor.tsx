@@ -81,7 +81,7 @@ export default function CustomCursor() {
     const tick = () => {
       if (pendingSnapRef.current) {
         const peakX = window.innerWidth * 0.12;
-        const peakY = window.innerHeight * 0.82;
+        const peakY = window.innerHeight * 0.74;
         mousePos.current = { x: peakX, y: peakY };
         cursorPos.current = { x: peakX, y: peakY };
         directionRef.current = 1;
@@ -106,7 +106,7 @@ export default function CustomCursor() {
       if (cursorRef.current) {
         if (pathnameRef.current.startsWith('/pixel')) {
           // The container is 0x0, so we just translate it to the center point
-          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${directionRef.current === 1 ? 0.6 : -0.6}, 0.6) rotate(0deg)`;
+          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${directionRef.current === 1 ? -0.6 : 0.6}, 0.6) rotate(0deg)`;
         } else {
           cursorRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
         }
@@ -225,9 +225,9 @@ export default function CustomCursor() {
           position: 'absolute',
           left: 0,
           top: 0,
-          transform: `translate(-21px, -6px) ${isHovering ? 'scale(1.2)' : 'scale(1)'}` 
+          transform: `translate(-14px, -4px) ${isHovering ? 'scale(1.2)' : 'scale(1)'}` 
         }}>
-          <svg viewBox="0 0 52 64" width="52" height="64" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 52 64" width="36" height="44" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(52, 0) scale(-1, 1)">
               <g className="hand-shape" stroke="#1a1a1a" strokeWidth="1.5" fill="#FAF5EE" strokeLinejoin="round" strokeLinecap="round">
                 <path d="M 20 64 C 18 54, 12 46, 10 40 L 10 32 C 10 28, 16 28, 16 30 C 16 26, 22 26, 22 28 C 22 24, 28 24, 28 26 L 28 8 C 28 2, 34 2, 34 8 L 34 35 C 40 33, 44 29, 48 31 C 50 33, 48 37, 44 39 C 40 41, 32 54, 32 64 Z" />

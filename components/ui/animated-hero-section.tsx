@@ -2,135 +2,14 @@
 
 import { useEffect, useRef } from "react"
 
-const COLOR = "#FFFFFF"
+const COLOR = "#d4c417"
 const HIT_COLOR = "#333333"
 const BACKGROUND_COLOR = "#000000"
-const BALL_COLOR = "#FFFFFF"
-const PADDLE_COLOR = "#FFFFFF"
+const BALL_COLOR = "#d4c417"
+const PADDLE_COLOR = "#d4c417"
 const LETTER_SPACING = 1
 const WORD_SPACING = 3
 
-const PIXEL_MAP = {
-  P: [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1],
-    [1, 0, 0, 0],
-    [1, 0, 0, 0],
-  ],
-  R: [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1],
-    [1, 0, 1, 0],
-    [1, 0, 0, 1],
-  ],
-  O: [
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1],
-  ],
-  M: [
-    [1, 0, 0, 0, 1],
-    [1, 1, 0, 1, 1],
-    [1, 0, 1, 0, 1],
-    [1, 0, 0, 0, 1],
-    [1, 0, 0, 0, 1],
-  ],
-  T: [
-    [1, 1, 1, 1, 1],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-  ],
-  I: [
-    [1, 1, 1],
-    [0, 1, 0],
-    [0, 1, 0],
-    [0, 1, 0],
-    [1, 1, 1],
-  ],
-  N: [
-    [1, 0, 0, 0, 1],
-    [1, 1, 0, 0, 1],
-    [1, 0, 1, 0, 1],
-    [1, 0, 0, 1, 1],
-    [1, 0, 0, 0, 1],
-  ],
-  G: [
-    [1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0],
-    [1, 0, 1, 1, 1],
-    [1, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1],
-  ],
-  S: [
-    [1, 1, 1, 1],
-    [1, 0, 0, 0],
-    [1, 1, 1, 1],
-    [0, 0, 0, 1],
-    [1, 1, 1, 1],
-  ],
-  A: [
-    [0, 1, 1, 0],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-  ],
-  L: [
-    [1, 0, 0, 0],
-    [1, 0, 0, 0],
-    [1, 0, 0, 0],
-    [1, 0, 0, 0],
-    [1, 1, 1, 1],
-  ],
-  Y: [
-    [1, 0, 0, 0, 1],
-    [0, 1, 0, 1, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0],
-  ],
-  U: [
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1],
-  ],
-  D: [
-    [1, 1, 1, 0],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 0],
-  ],
-  E: [
-    [1, 1, 1, 1],
-    [1, 0, 0, 0],
-    [1, 1, 1, 1],
-    [1, 0, 0, 0],
-    [1, 1, 1, 1],
-  ],
-  C: [
-    [1, 1, 1, 1],
-    [1, 0, 0, 0],
-    [1, 0, 0, 0],
-    [1, 0, 0, 0],
-    [1, 1, 1, 1],
-  ],
-  J: [
-    [0, 0, 0, 1],
-    [0, 0, 0, 1],
-    [0, 0, 0, 1],
-    [1, 0, 0, 1],
-    [1, 1, 1, 1],
-  ],
-}
 
 interface Pixel {
   x: number
@@ -162,6 +41,9 @@ export function PromptingIsAllYouNeed() {
   const ballRef = useRef<Ball>({ x: 0, y: 0, dx: 0, dy: 0, radius: 0 })
   const paddlesRef = useRef<Paddle[]>([])
   const scaleRef = useRef(1)
+  const activePaddleRef = useRef<number | null>(null)
+  const activePaddleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const trailRef = useRef<{ x: number; y: number }[]>([])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -176,100 +58,85 @@ export function PromptingIsAllYouNeed() {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
       scaleRef.current = Math.min(canvas.width / 1000, canvas.height / 1000)
-      initializeGame()
+      document.fonts.load('16px "ChonkyPixels"').then(() => {
+        initializeGame()
+      })
     }
 
     const initializeGame = () => {
       const scale = scaleRef.current
-      const LARGE_PIXEL_SIZE = 8 * scale
-      const SMALL_PIXEL_SIZE = 4 * scale
-      const BALL_SPEED = 6 * scale
+      const BALL_SPEED = 4.2 * scale
 
       pixelsRef.current = []
       const words = ["INTRODUCING", "RANJIT"]
+      
+      const offscreen = document.createElement('canvas')
+      const oCtx = offscreen.getContext('2d', { willReadFrequently: true })
+      if (!oCtx) return
 
-      const calculateWordWidth = (word: string, pixelSize: number) => {
-        return (
-          word.split("").reduce((width, letter) => {
-            const letterWidth = PIXEL_MAP[letter as keyof typeof PIXEL_MAP]?.[0]?.length ?? 0
-            return width + letterWidth * pixelSize + LETTER_SPACING * pixelSize
-          }, 0) -
-          LETTER_SPACING * pixelSize
-        )
+      const largeFontSize = 24;
+      const smallFontSize = 14;
+      
+      oCtx.font = `${largeFontSize}px "ChonkyPixels"`
+      const w1 = oCtx.measureText(words[0]).width
+      oCtx.font = `${smallFontSize}px "ChonkyPixels"`
+      const w2 = oCtx.measureText(words[1]).width
+      
+      offscreen.width = Math.max(w1, w2) + 10
+      offscreen.height = largeFontSize + smallFontSize + 15 
+      
+      oCtx.clearRect(0, 0, offscreen.width, offscreen.height)
+      oCtx.textBaseline = "top"
+      oCtx.textAlign = "right"
+      
+      oCtx.font = `${largeFontSize}px "ChonkyPixels"`
+      oCtx.fillText(words[0], offscreen.width - 5, 0)
+      
+      oCtx.font = `${smallFontSize}px "ChonkyPixels"`
+      oCtx.fillText(words[1], offscreen.width - 5, largeFontSize + 4)
+
+      const imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
+      const data = imgData.data
+
+      let minX = offscreen.width, maxX = 0, minY = offscreen.height, maxY = 0
+      for (let y = 0; y < offscreen.height; y++) {
+        for (let x = 0; x < offscreen.width; x++) {
+          const alpha = data[(y * offscreen.width + x) * 4 + 3]
+          if (alpha > 128) {
+            if (x < minX) minX = x
+            if (x > maxX) maxX = x
+            if (y < minY) minY = y
+            if (y > maxY) maxY = y
+          }
+        }
       }
 
-      const totalWidthLarge = calculateWordWidth(words[0], LARGE_PIXEL_SIZE)
-      const totalWidthSmall = words[1].split(" ").reduce((width, word, index) => {
-        return width + calculateWordWidth(word, SMALL_PIXEL_SIZE) + (index > 0 ? WORD_SPACING * SMALL_PIXEL_SIZE : 0)
-      }, 0)
-      const totalWidth = Math.max(totalWidthLarge, totalWidthSmall)
-      const scaleFactor = (canvas.width * 0.8) / totalWidth
+      if (maxX < minX) return
 
-      const adjustedLargePixelSize = LARGE_PIXEL_SIZE * scaleFactor
-      const adjustedSmallPixelSize = SMALL_PIXEL_SIZE * scaleFactor
+      const textWidth = maxX - minX + 1
+      const textHeight = maxY - minY + 1
 
-      const largeTextHeight = 5 * adjustedLargePixelSize
-      const smallTextHeight = 5 * adjustedSmallPixelSize
-      const spaceBetweenLines = 5 * adjustedLargePixelSize
-      const totalTextHeight = largeTextHeight + spaceBetweenLines + smallTextHeight
+      const scaleFactor = (canvas.width * 0.8) / textWidth
+      const pixelSize = scaleFactor 
 
-      let startY = (canvas.height - totalTextHeight) / 2
+      const startX = canvas.width - (textWidth * pixelSize) - (canvas.width * 0.05)
+      const startY = (canvas.height - (textHeight * pixelSize)) / 2
 
-      words.forEach((word, wordIndex) => {
-        const pixelSize = wordIndex === 0 ? adjustedLargePixelSize : adjustedSmallPixelSize
-        const totalWidth =
-          wordIndex === 0
-            ? calculateWordWidth(word, adjustedLargePixelSize)
-            : words[1].split(" ").reduce((width, w, index) => {
-                return (
-                  width +
-                  calculateWordWidth(w, adjustedSmallPixelSize) +
-                  (index > 0 ? WORD_SPACING * adjustedSmallPixelSize : 0)
-                )
-              }, 0)
-
-        let startX = canvas.width - totalWidth - (canvas.width * 0.05); // Right aligned with 5% margin
-
-        if (wordIndex === 1) {
-          word.split(" ").forEach((subWord) => {
-            subWord.split("").forEach((letter) => {
-              const pixelMap = PIXEL_MAP[letter as keyof typeof PIXEL_MAP]
-              if (!pixelMap) return
-
-              for (let i = 0; i < pixelMap.length; i++) {
-                for (let j = 0; j < pixelMap[i].length; j++) {
-                  if (pixelMap[i][j]) {
-                    const x = startX + j * pixelSize
-                    const y = startY + i * pixelSize
-                    pixelsRef.current.push({ x, y, size: pixelSize, hit: false })
-                  }
-                }
-              }
-              startX += (pixelMap[0].length + LETTER_SPACING) * pixelSize
+      for (let y = minY; y <= maxY; y++) {
+        for (let x = minX; x <= maxX; x++) {
+          const alpha = data[(y * offscreen.width + x) * 4 + 3]
+          if (alpha > 128) {
+            pixelsRef.current.push({
+              x: startX + (x - minX) * pixelSize,
+              y: startY + (y - minY) * pixelSize,
+              size: pixelSize,
+              hit: false
             })
-            startX += WORD_SPACING * adjustedSmallPixelSize
-          })
-        } else {
-          word.split("").forEach((letter) => {
-            const pixelMap = PIXEL_MAP[letter as keyof typeof PIXEL_MAP]
-            if (!pixelMap) return
-
-            for (let i = 0; i < pixelMap.length; i++) {
-              for (let j = 0; j < pixelMap[i].length; j++) {
-                if (pixelMap[i][j]) {
-                  const x = startX + j * pixelSize
-                  const y = startY + i * pixelSize
-                  pixelsRef.current.push({ x, y, size: pixelSize, hit: false })
-                }
-              }
-            }
-            startX += (pixelMap[0].length + LETTER_SPACING) * pixelSize
-          })
+          }
         }
-        startY += wordIndex === 0 ? largeTextHeight + spaceBetweenLines : 0
-      })
+      }
 
-      // Initialize ball position near the top right corner
+      const adjustedLargePixelSize = pixelSize * 2.5
       const ballStartX = canvas.width * 0.9
       const ballStartY = canvas.height * 0.1
 
@@ -278,12 +145,11 @@ export function PromptingIsAllYouNeed() {
         y: ballStartY,
         dx: -BALL_SPEED,
         dy: BALL_SPEED,
-        radius: adjustedLargePixelSize / 2,
+        radius: adjustedLargePixelSize / 2.5,
       }
 
-      paddleWidth = adjustedLargePixelSize * 0.25;
-      const paddleLength = 10 * adjustedLargePixelSize
-
+      paddleWidth = adjustedLargePixelSize * 0.15;
+      const paddleLength = 8 * adjustedLargePixelSize
       const offset = paddleWidth * 5;
 
       paddlesRef.current = [
@@ -336,7 +202,7 @@ export function PromptingIsAllYouNeed() {
         ball.dx = -ball.dx
       }
 
-      paddles.forEach((paddle) => {
+      paddles.forEach((paddle, index) => {
         if (paddle.isVertical) {
           if (
             ball.x - ball.radius < paddle.x + paddle.width &&
@@ -345,6 +211,9 @@ export function PromptingIsAllYouNeed() {
             ball.y < paddle.y + paddle.height
           ) {
             ball.dx = -ball.dx
+            activePaddleRef.current = index
+            if (activePaddleTimerRef.current) clearTimeout(activePaddleTimerRef.current)
+            activePaddleTimerRef.current = setTimeout(() => { activePaddleRef.current = null }, 400)
           }
         } else {
           if (
@@ -354,6 +223,9 @@ export function PromptingIsAllYouNeed() {
             ball.x < paddle.x + paddle.width
           ) {
             ball.dy = -ball.dy
+            activePaddleRef.current = index
+            if (activePaddleTimerRef.current) clearTimeout(activePaddleTimerRef.current)
+            activePaddleTimerRef.current = setTimeout(() => { activePaddleRef.current = null }, 400)
           }
         }
       })
@@ -403,13 +275,44 @@ export function PromptingIsAllYouNeed() {
         ctx.fillRect(pixel.x, pixel.y, pixel.size, pixel.size)
       })
 
-      ctx.fillStyle = BALL_COLOR
+      // Draw meteor
+      const ball = ballRef.current
+      const TRAIL_LENGTH = 28
+
+      // Record trail position
+      trailRef.current.push({ x: ball.x, y: ball.y })
+      if (trailRef.current.length > TRAIL_LENGTH) trailRef.current.shift()
+
+      // Draw fading tail
+      for (let i = 0; i < trailRef.current.length; i++) {
+        const t = i / trailRef.current.length           // 0 (oldest) → 1 (newest)
+        const alpha = t * t * 0.7                       // quadratic fade
+        const r = ball.radius * (0.2 + t * 0.7)        // grows toward head
+        ctx.beginPath()
+        ctx.arc(trailRef.current[i].x, trailRef.current[i].y, r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(212, 196, 23, ${alpha})`
+        ctx.fill()
+      }
+
+      // Glowing head
+      const glow = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, ball.radius * 2.2)
+      glow.addColorStop(0, 'rgba(255, 255, 200, 1)')
+      glow.addColorStop(0.3, 'rgba(212, 196, 23, 0.9)')
+      glow.addColorStop(1, 'rgba(212, 196, 23, 0)')
       ctx.beginPath()
-      ctx.arc(ballRef.current.x, ballRef.current.y, ballRef.current.radius, 0, Math.PI * 2)
+      ctx.arc(ball.x, ball.y, ball.radius * 2.2, 0, Math.PI * 2)
+      ctx.fillStyle = glow
       ctx.fill()
 
-      ctx.fillStyle = PADDLE_COLOR
-      paddlesRef.current.forEach((paddle) => {
+      // Solid core
+      ctx.beginPath()
+      ctx.arc(ball.x, ball.y, ball.radius * 0.6, 0, Math.PI * 2)
+      ctx.fillStyle = '#ffffff'
+      ctx.fill()
+
+      paddlesRef.current.forEach((paddle, index) => {
+        if (activePaddleRef.current !== index) return
+        ctx.fillStyle = PADDLE_COLOR
         ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height)
       })
     }
@@ -426,6 +329,7 @@ export function PromptingIsAllYouNeed() {
 
     return () => {
       window.removeEventListener("resize", resizeCanvas)
+      if (activePaddleTimerRef.current) clearTimeout(activePaddleTimerRef.current)
     }
   }, [])
 
