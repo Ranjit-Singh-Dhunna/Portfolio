@@ -186,7 +186,7 @@ export function PromptingIsAllYouNeed() {
 
       // Find components on the first line (upper part of canvas)
       const firstLineComponents: { compIndex: number; minX: number }[] = []
-      const firstLineThreshold = minY + textHeight * 0.4
+      const firstLineThreshold = largeFontSize + 2
       
       components.forEach((comp, idx) => {
         const compMinY = Math.min(...comp.map(c => c.y))
@@ -244,15 +244,56 @@ export function PromptingIsAllYouNeed() {
         gComponentIndex = firstLineComponents[n2SortedIdx + 1].compIndex
       }
 
-      // Find all components belonging to the two "p" letters on the second line
+      // Find all components belonging to the two "p" letters on the second line dynamically
+      const secondLineComponents: { compIndex: number; minX: number }[] = []
+      components.forEach((comp, idx) => {
+        const compMinY = Math.min(...comp.map(c => c.y))
+        const compMinX = Math.min(...comp.map(c => c.x))
+        if (compMinY >= firstLineThreshold) {
+          secondLineComponents.push({ compIndex: idx, minX: compMinX })
+        }
+      })
+      secondLineComponents.sort((a, b) => a.minX - b.minX)
+
+      const startX1 = secondLineComponents[0]?.minX ?? 0
+
+      let secLineMaxX = startX1
+      components.forEach((c) => {
+        const compMinY = Math.min(...c.map(pt => pt.y))
+        if (compMinY >= firstLineThreshold) {
+          const maxX = Math.max(...c.map(pt => pt.x))
+          if (maxX > secLineMaxX) secLineMaxX = maxX
+        }
+      })
+      const secLineMidX = startX1 + (secLineMaxX - startX1) * 0.5
+
+      let p2StemIndex = -1
+      let startX2 = 0
+      for (const sl of secondLineComponents) {
+        if (sl.minX > secLineMidX) {
+          const comp = components[sl.compIndex]
+          const compMinX = Math.min(...comp.map(c => c.x))
+          const compMaxX = Math.max(...comp.map(c => c.x))
+          const compMinY = Math.min(...comp.map(c => c.y))
+          const compMaxY = Math.max(...comp.map(c => c.y))
+          const w = compMaxX - compMinX + 1
+          const h = compMaxY - compMinY + 1
+          if (w >= 2 && h >= 15) {
+            p2StemIndex = sl.compIndex
+            startX2 = sl.minX
+            break
+          }
+        }
+      }
+
       const pComponents = new Set<number>()
       components.forEach((comp, idx) => {
         const compMinY = Math.min(...comp.map(c => c.y))
         if (compMinY >= firstLineThreshold) {
           const compMinX = Math.min(...comp.map(c => c.x))
           const compMaxX = Math.max(...comp.map(c => c.x))
-          const isFirstP = compMinX >= 48 && compMaxX <= 57
-          const isSecondP = compMinX >= 138 && compMaxX <= 147
+          const isFirstP = compMinX >= startX1 && compMaxX <= startX1 + 11
+          const isSecondP = p2StemIndex !== -1 && compMinX >= startX2 && compMaxX <= startX2 + 11
           if (isFirstP || isSecondP) {
             pComponents.add(idx)
           }
@@ -354,9 +395,9 @@ export function PromptingIsAllYouNeed() {
           finalComp = newComp
         }
 
-        // Apply manual adjustments for both "p" letters to lift them by 5 boxes
+        // Apply manual adjustments for both "p" letters to lift them by 6 boxes
         if (pComponents.has(compIndex)) {
-          finalComp = comp.map(pt => ({ x: pt.x, y: pt.y - 5 }))
+          finalComp = comp.map(pt => ({ x: pt.x, y: pt.y - 6 }))
         }
 
         const compMaxY = Math.max(...finalComp.map(c => c.y))
