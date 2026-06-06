@@ -2,11 +2,11 @@
 
 import { useEffect, useRef } from "react"
 
-const COLOR = "#d4c417"
-const HIT_COLOR = "#333333"
+const COLOR = "#f59fdb"
+const HIT_COLOR = "#8dbff7"
 const BACKGROUND_COLOR = "#000000"
-const BALL_COLOR = "#d4c417"
-const PADDLE_COLOR = "#d4c417"
+const BALL_COLOR = "#f59fdb"
+const PADDLE_COLOR = "#f59fdb"
 const LETTER_SPACING = 1
 const WORD_SPACING = 3
 
@@ -35,6 +35,17 @@ interface Paddle {
   isVertical: boolean
 }
 
+interface Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  color: string
+  size: number
+  alpha: number
+  decay: number
+}
+
 export function PromptingIsAllYouNeed() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pixelsRef = useRef<Pixel[]>([])
@@ -44,6 +55,7 @@ export function PromptingIsAllYouNeed() {
   const activePaddleRef = useRef<number | null>(null)
   const activePaddleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const trailRef = useRef<{ x: number; y: number }[]>([])
+  const particlesRef = useRef<Particle[]>([])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -68,14 +80,14 @@ export function PromptingIsAllYouNeed() {
       const BALL_SPEED = 4.2 * scale
 
       pixelsRef.current = []
-      const words = ["INTRODUCING", "RANJIT"]
+      const words = ["Rendering future", "pixel by pixel"]
       
       const offscreen = document.createElement('canvas')
       const oCtx = offscreen.getContext('2d', { willReadFrequently: true })
       if (!oCtx) return
 
       const largeFontSize = 24;
-      const smallFontSize = 14;
+      const smallFontSize = 24;
       
       oCtx.font = `${largeFontSize}px "ChonkyPixels"`
       const w1 = oCtx.measureText(words[0]).width
@@ -116,25 +128,260 @@ export function PromptingIsAllYouNeed() {
       const textWidth = maxX - minX + 1
       const textHeight = maxY - minY + 1
 
-      const scaleFactor = (canvas.width * 0.8) / textWidth
+      const scaleFactor = (canvas.width * 0.85) / textWidth
       const pixelSize = scaleFactor 
 
       const startX = canvas.width - (textWidth * pixelSize) - (canvas.width * 0.05)
-      const startY = (canvas.height - (textHeight * pixelSize)) / 2
+      const startY = canvas.height * 0.10
 
+      const rawPixels: { x: number; y: number }[] = []
       for (let y = minY; y <= maxY; y++) {
         for (let x = minX; x <= maxX; x++) {
           const alpha = data[(y * offscreen.width + x) * 4 + 3]
           if (alpha > 128) {
-            pixelsRef.current.push({
-              x: startX + (x - minX) * pixelSize,
-              y: startY + (y - minY) * pixelSize,
-              size: pixelSize,
-              hit: false
-            })
+            rawPixels.push({ x, y })
           }
         }
       }
+
+      // Group pixels into separate letter components using a BFS
+      const components: { x: number; y: number }[][] = []
+      const pixelSet = new Set(rawPixels.map(p => `${p.x},${p.y}`))
+      const visited = new Set<string>()
+
+      for (const p of rawPixels) {
+        const key = `${p.x},${p.y}`
+        if (visited.has(key)) continue
+
+        const comp: { x: number; y: number }[] = []
+        const queue: { x: number; y: number }[] = [p]
+        visited.add(key)
+
+        while (queue.length > 0) {
+          const curr = queue.shift()!
+          comp.push(curr)
+
+          // 8-way adjacent neighbors for pixel connectivity
+          const neighbors = [
+            { x: curr.x - 1, y: curr.y },
+            { x: curr.x + 1, y: curr.y },
+            { x: curr.x, y: curr.y - 1 },
+            { x: curr.x, y: curr.y + 1 },
+            { x: curr.x - 1, y: curr.y - 1 },
+            { x: curr.x + 1, y: curr.y - 1 },
+            { x: curr.x - 1, y: curr.y + 1 },
+            { x: curr.x + 1, y: curr.y + 1 }
+          ]
+
+          for (const n of neighbors) {
+            const nKey = `${n.x},${n.y}`
+            if (pixelSet.has(nKey) && !visited.has(nKey)) {
+              visited.add(nKey)
+              queue.push(n)
+            }
+          }
+        }
+        components.push(comp)
+      }
+
+      // Find components on the first line (upper part of canvas)
+      const firstLineComponents: { compIndex: number; minX: number }[] = []
+      const firstLineThreshold = minY + textHeight * 0.4
+      
+      components.forEach((comp, idx) => {
+        const compMinY = Math.min(...comp.map(c => c.y))
+        const compMinX = Math.min(...comp.map(c => c.x))
+        if (compMinY < firstLineThreshold) {
+          firstLineComponents.push({ compIndex: idx, minX: compMinX })
+        }
+      })
+      
+      // Sort components of the first line from left to right to map alphabetical letters
+      firstLineComponents.sort((a, b) => a.minX - b.minX)
+      
+      const rComponentIndex = firstLineComponents[0]?.compIndex ?? -1
+      const n1ComponentIndex = firstLineComponents[2]?.compIndex ?? -1
+      
+      // Calculate reference characteristics of the first "n"
+      let nWidth = 0, nHeight = 0, nSize = 0
+      if (n1ComponentIndex !== -1) {
+        const n1Comp = components[n1ComponentIndex]
+        const compMinX = Math.min(...n1Comp.map(c => c.x))
+        const compMaxX = Math.max(...n1Comp.map(c => c.x))
+        const compMinY = Math.min(...n1Comp.map(c => c.y))
+        const compMaxY = Math.max(...n1Comp.map(c => c.y))
+        nWidth = compMaxX - compMinX + 1
+        nHeight = compMaxY - compMinY + 1
+        nSize = n1Comp.length
+      }
+
+      // Find the second "n" by finding the component most similar to the first "n"
+      let n2ComponentIndex = -1
+      let minScore = Infinity
+      firstLineComponents.forEach((fl) => {
+        if (fl.compIndex === rComponentIndex || fl.compIndex === n1ComponentIndex) return
+        const comp = components[fl.compIndex]
+        const compMinX = Math.min(...comp.map(c => c.x))
+        const compMaxX = Math.max(...comp.map(c => c.x))
+        const compMinY = Math.min(...comp.map(c => c.y))
+        const compMaxY = Math.max(...comp.map(c => c.y))
+        const w = compMaxX - compMinX + 1
+        const h = compMaxY - compMinY + 1
+        const size = comp.length
+
+        // Similarity score (lower is more similar)
+        const score = Math.abs(w - nWidth) + Math.abs(h - nHeight) + Math.abs(size - nSize)
+        if (score < minScore) {
+          minScore = score
+          n2ComponentIndex = fl.compIndex
+        }
+      })
+      
+      // Find the component representing the letter "g" (the component immediately following the second "n" in sorted order)
+      let gComponentIndex = -1
+      const n2SortedIdx = firstLineComponents.findIndex(fl => fl.compIndex === n2ComponentIndex)
+      if (n2SortedIdx !== -1 && n2SortedIdx + 1 < firstLineComponents.length) {
+        gComponentIndex = firstLineComponents[n2SortedIdx + 1].compIndex
+      }
+
+      const exemptFromShortening = new Set(
+        [rComponentIndex, n1ComponentIndex, n2ComponentIndex, gComponentIndex].filter(x => x !== -1)
+      )
+
+
+
+      const filteredPixels: { x: number; y: number }[] = []
+
+      components.forEach((comp, compIndex) => {
+        if (comp.length === 0) return
+
+        let finalComp = comp
+
+        // Apply manual R adjustments
+        if (compIndex === rComponentIndex) {
+          const compMinX = Math.min(...comp.map(c => c.x))
+          const compMaxX = Math.max(...comp.map(c => c.x))
+          const compMinY = Math.min(...comp.map(c => c.y))
+          const compMaxY = Math.max(...comp.map(c => c.y))
+          
+          // 1. remove box at last row (compMaxY) and 2nd column (compMinX + 1)
+          // 1.2 remove box at 1st column (compMinX) and 1st row (compMinY)
+          const targetRemoveKey = `${compMinX + 1},${compMaxY}`
+          const targetRemoveKey2 = `${compMinX},${compMinY}`
+          let newComp = comp.filter(c => {
+            const key = `${c.x},${c.y}`
+            return key !== targetRemoveKey && key !== targetRemoveKey2
+          })
+          
+          // 2. add boxes at last row (compMaxY) and column last (compMaxX) / second last (compMaxX - 1)
+          // 3. add box at column 3 (compMinX + 2) and 8th last row (compMaxY - 7)
+          const addKeys = [
+            `${compMaxX},${compMaxY}`,
+            `${compMaxX - 1},${compMaxY}`,
+            `${compMinX + 2},${compMaxY - 7}`
+          ]
+          
+          const currentSet = new Set(newComp.map(c => `${c.x},${c.y}`))
+          addKeys.forEach(key => {
+            if (!currentSet.has(key)) {
+              const [ax, ay] = key.split(',').map(Number)
+              newComp.push({ x: ax, y: ay })
+              currentSet.add(key)
+            }
+          })
+          finalComp = newComp
+        }
+
+        // Apply manual adjustments for both "n" letters
+        if (compIndex === n1ComponentIndex || compIndex === n2ComponentIndex) {
+          const compMaxX = Math.max(...comp.map(c => c.x))
+          const compMaxY = Math.max(...comp.map(c => c.y))
+          
+          // add boxes at last row (compMaxY) and column last (compMaxX) / second last (compMaxX - 1)
+          const addKeys = [
+            `${compMaxX},${compMaxY}`,
+            `${compMaxX - 1},${compMaxY}`
+          ]
+          
+          const currentSet = new Set(comp.map(c => `${c.x},${c.y}`))
+          const newComp = [...comp]
+          addKeys.forEach(key => {
+            if (!currentSet.has(key)) {
+              const [ax, ay] = key.split(',').map(Number)
+              newComp.push({ x: ax, y: ay })
+              currentSet.add(key)
+            }
+          })
+          finalComp = newComp
+        }
+
+        // Apply manual adjustments for "g"
+        if (compIndex === gComponentIndex) {
+          const compMinX = Math.min(...comp.map(c => c.x))
+          const compMaxY = Math.max(...comp.map(c => c.y))
+          
+          // add 2 boxes: one at column 2 (compMinX + 1) and second last row (compMaxY - 1),
+          // second at column 2 (compMinX + 1) and third last row (compMaxY - 2)
+          const addKeys = [
+            `${compMinX + 1},${compMaxY - 1}`,
+            `${compMinX + 1},${compMaxY - 2}`
+          ]
+          
+          const currentSet = new Set(comp.map(c => `${c.x},${c.y}`))
+          const newComp = [...comp]
+          addKeys.forEach(key => {
+            if (!currentSet.has(key)) {
+              const [ax, ay] = key.split(',').map(Number)
+              newComp.push({ x: ax, y: ay })
+              currentSet.add(key)
+            }
+          })
+          finalComp = newComp
+        }
+
+        const compMaxY = Math.max(...finalComp.map(c => c.y))
+        const bottomPixels = finalComp.filter(c => c.y === compMaxY)
+        const bottomXs = Array.from(new Set(bottomPixels.map(c => c.x))).sort((a, b) => a - b)
+
+        // Group contiguous bottom X coordinates (separate stems)
+        const groups: number[][] = []
+        let currentGroup: number[] = []
+        for (let i = 0; i < bottomXs.length; i++) {
+          if (currentGroup.length === 0 || bottomXs[i] === bottomXs[i - 1] + 1) {
+            currentGroup.push(bottomXs[i])
+          } else {
+            groups.push(currentGroup)
+            currentGroup = [bottomXs[i]]
+          }
+        }
+        if (currentGroup.length > 0) groups.push(currentGroup)
+
+        // If there are 2 or more separate parallel stems terminating at the bottom row,
+        // remove the bottom-most pixel of the rightmost stem (skip for manual / exempt letters).
+        const toRemove = new Set<string>()
+        if (!exemptFromShortening.has(compIndex) && groups.length > 1) {
+          const targetGroupXs = groups[groups.length - 1]
+          targetGroupXs.forEach(tx => {
+            toRemove.add(`${tx},${compMaxY}`)
+          })
+        }
+
+        finalComp.forEach(c => {
+          if (!toRemove.has(`${c.x},${c.y}`)) {
+            filteredPixels.push(c)
+          }
+        })
+      })
+
+      // Initialize the physical blocks with the filtered pixel coordinates
+      filteredPixels.forEach((p) => {
+        pixelsRef.current.push({
+          x: startX + (p.x - minX) * pixelSize,
+          y: startY + (p.y - minY) * pixelSize,
+          size: pixelSize,
+          hit: false
+        })
+      })
 
       const adjustedLargePixelSize = pixelSize * 2.5
       const ballStartX = canvas.width * 0.9
@@ -252,14 +499,50 @@ export function PromptingIsAllYouNeed() {
           ball.y - ball.radius < pixel.y + pixel.size
         ) {
           pixel.hit = true
+
+          // Spawn explosion particles
           const centerX = pixel.x + pixel.size / 2
           const centerY = pixel.y + pixel.size / 2
+          const particleCount = 30 + Math.floor(Math.random() * 15) // 30 to 45 particles
+          const colors = [COLOR, HIT_COLOR, "#ffffff"]
+          
+          for (let i = 0; i < particleCount; i++) {
+            const angle = Math.random() * Math.PI * 2
+            const speed = (1.5 + Math.random() * 5.0) * scaleRef.current // faster speed
+            particlesRef.current.push({
+              x: centerX,
+              y: centerY,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              size: pixel.size * (0.35 + Math.random() * 0.45), // larger size
+              alpha: 1.0,
+              decay: 0.012 + Math.random() * 0.018 // slower decay
+            })
+          }
+
+          // Mark adjacent pixels as hit too (1.6 * size covers diagonals in a 3x3 grid)
+          const threshold = 1.6 * pixel.size
+          pixelsRef.current.forEach((p) => {
+            if (!p.hit && Math.abs(p.x - pixel.x) <= threshold && Math.abs(p.y - pixel.y) <= threshold) {
+              p.hit = true
+            }
+          })
+
           if (Math.abs(ball.x - centerX) > Math.abs(ball.y - centerY)) {
             ball.dx = -ball.dx
           } else {
             ball.dy = -ball.dy
           }
         }
+      })
+
+      // Update particles physics and remove decayed particles
+      particlesRef.current = particlesRef.current.filter((p) => {
+        p.x += p.vx
+        p.y += p.vy
+        p.alpha -= p.decay
+        return p.alpha > 0
       })
     }
 
@@ -275,46 +558,15 @@ export function PromptingIsAllYouNeed() {
         ctx.fillRect(pixel.x, pixel.y, pixel.size, pixel.size)
       })
 
-      // Draw meteor
-      const ball = ballRef.current
-      const TRAIL_LENGTH = 28
+      // Ball and paddles (bars) are visually hidden while physics stays active.
 
-      // Record trail position
-      trailRef.current.push({ x: ball.x, y: ball.y })
-      if (trailRef.current.length > TRAIL_LENGTH) trailRef.current.shift()
-
-      // Draw fading tail
-      for (let i = 0; i < trailRef.current.length; i++) {
-        const t = i / trailRef.current.length           // 0 (oldest) → 1 (newest)
-        const alpha = t * t * 0.7                       // quadratic fade
-        const r = ball.radius * (0.2 + t * 0.7)        // grows toward head
-        ctx.beginPath()
-        ctx.arc(trailRef.current[i].x, trailRef.current[i].y, r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(212, 196, 23, ${alpha})`
-        ctx.fill()
-      }
-
-      // Glowing head
-      const glow = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, ball.radius * 2.2)
-      glow.addColorStop(0, 'rgba(255, 255, 200, 1)')
-      glow.addColorStop(0.3, 'rgba(212, 196, 23, 0.9)')
-      glow.addColorStop(1, 'rgba(212, 196, 23, 0)')
-      ctx.beginPath()
-      ctx.arc(ball.x, ball.y, ball.radius * 2.2, 0, Math.PI * 2)
-      ctx.fillStyle = glow
-      ctx.fill()
-
-      // Solid core
-      ctx.beginPath()
-      ctx.arc(ball.x, ball.y, ball.radius * 0.6, 0, Math.PI * 2)
-      ctx.fillStyle = '#ffffff'
-      ctx.fill()
-
-      paddlesRef.current.forEach((paddle, index) => {
-        if (activePaddleRef.current !== index) return
-        ctx.fillStyle = PADDLE_COLOR
-        ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height)
+      // Draw active explosion particles
+      particlesRef.current.forEach((p) => {
+        ctx.fillStyle = p.color
+        ctx.globalAlpha = p.alpha
+        ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size)
       })
+      ctx.globalAlpha = 1.0 // Reset opacity
     }
 
     const gameLoop = () => {

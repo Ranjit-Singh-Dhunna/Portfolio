@@ -121,7 +121,7 @@ export function TextRollParagraph({
   const words = children.split(" ")
 
   return (
-    <motion.p
+    <motion.div
       initial="initial"
       whileHover="hovered"
       className={className}
@@ -152,6 +152,6 @@ export function TextRollParagraph({
           </React.Fragment>
         )
       })}
-    </motion.p>
+    </motion.div>
   )
 }

@@ -106,7 +106,7 @@ export default function CustomCursor() {
       if (cursorRef.current) {
         if (pathnameRef.current.startsWith('/pixel')) {
           // The container is 0x0, so we just translate it to the center point
-          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${directionRef.current === 1 ? -0.6 : 0.6}, 0.6) rotate(0deg)`;
+          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${directionRef.current === 1 ? 1.2 : -1.2}, 1.2) rotate(0deg)`;
         } else {
           cursorRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
         }
@@ -209,13 +209,15 @@ export default function CustomCursor() {
       {isPixelPage ? (
         <div style={{
           position: 'absolute',
-          width: '300px',
-          height: '300px',
+          width: '80px',
+          height: '130px',
           left: 0,
           top: 0,
           transform: 'translate(-50%, -50%)',
-          backgroundImage: `url(${isWalking ? `/avatar_v2_walk_${walkFrame}.png?v=30` : '/avatar_v2_idle.png?v=30'})`,
-          backgroundSize: '100% 100%',
+          backgroundImage: isWalking 
+            ? ((Math.floor(walkFrame / 2) % 2) === 0 ? 'url(/m1.svg)' : 'url(/m2.svg)')
+            : ((Math.floor(walkFrame / 2) % 2) === 0 ? 'url(/s1.svg)' : 'url(/s2.svg)'),
+          backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           imageRendering: 'pixelated',
