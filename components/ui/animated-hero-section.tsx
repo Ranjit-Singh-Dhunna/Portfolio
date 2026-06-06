@@ -96,34 +96,105 @@ export function PromptingIsAllYouNeed() {
       
       offscreen.width = Math.max(w1, w2) + 10
       offscreen.height = largeFontSize + smallFontSize + 15 
-      
+
+      interface RawPixel {
+        x: number;
+        y: number;
+        line: number;
+        charIdx: number;
+      }
+      const rawPixels: RawPixel[] = []
+
+      // Helper to get character index for a given x-coordinate on a line
+      const getCharacterIndex = (x: number, spans: { start: number; end: number }[]) => {
+        let bestIdx = -1;
+        let minDistance = Infinity;
+        for (let i = 0; i < spans.length; i++) {
+          const span = spans[i];
+          if (x >= span.start && x < span.end) {
+            return i;
+          }
+          const dist = Math.min(Math.abs(x - span.start), Math.abs(x - (span.end - 1)));
+          if (dist < minDistance) {
+            minDistance = dist;
+            bestIdx = i;
+          }
+        }
+        return bestIdx;
+      };
+
+      // Process words[0]
       oCtx.clearRect(0, 0, offscreen.width, offscreen.height)
       oCtx.textBaseline = "top"
       oCtx.textAlign = "right"
-      
       oCtx.font = `${largeFontSize}px "ChonkyPixels"`
       oCtx.fillText(words[0], offscreen.width - 5, 0)
-      
-      oCtx.font = `${smallFontSize}px "ChonkyPixels"`
-      oCtx.fillText(words[1], offscreen.width - 5, largeFontSize + 4)
 
-      const imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
-      const data = imgData.data
+      let imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
+      let data = imgData.data
 
-      let minX = offscreen.width, maxX = 0, minY = offscreen.height, maxY = 0
+      // Calculate spans for line 0
+      const spans0: { start: number; end: number }[] = []
+      const totalW0 = oCtx.measureText(words[0]).width
+      const leftEdge0 = offscreen.width - 5 - totalW0
+      for (let i = 0; i < words[0].length; i++) {
+        const start = leftEdge0 + oCtx.measureText(words[0].substring(0, i)).width
+        const end = leftEdge0 + oCtx.measureText(words[0].substring(0, i + 1)).width
+        spans0.push({ start, end })
+      }
+
       for (let y = 0; y < offscreen.height; y++) {
         for (let x = 0; x < offscreen.width; x++) {
           const alpha = data[(y * offscreen.width + x) * 4 + 3]
           if (alpha > 128) {
-            if (x < minX) minX = x
-            if (x > maxX) maxX = x
-            if (y < minY) minY = y
-            if (y > maxY) maxY = y
+            rawPixels.push({
+              x,
+              y,
+              line: 0,
+              charIdx: getCharacterIndex(x, spans0)
+            })
           }
         }
       }
 
-      if (maxX < minX) return
+      // Process words[1]
+      oCtx.clearRect(0, 0, offscreen.width, offscreen.height)
+      oCtx.font = `${smallFontSize}px "ChonkyPixels"`
+      oCtx.fillText(words[1], offscreen.width - 5, largeFontSize + 4)
+
+      imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
+      data = imgData.data
+
+      // Calculate spans for line 1
+      const spans1: { start: number; end: number }[] = []
+      const totalW1 = oCtx.measureText(words[1]).width
+      const leftEdge1 = offscreen.width - 5 - totalW1
+      for (let i = 0; i < words[1].length; i++) {
+        const start = leftEdge1 + oCtx.measureText(words[1].substring(0, i)).width
+        const end = leftEdge1 + oCtx.measureText(words[1].substring(0, i + 1)).width
+        spans1.push({ start, end })
+      }
+
+      for (let y = 0; y < offscreen.height; y++) {
+        for (let x = 0; x < offscreen.width; x++) {
+          const alpha = data[(y * offscreen.width + x) * 4 + 3]
+          if (alpha > 128) {
+            rawPixels.push({
+              x,
+              y,
+              line: 1,
+              charIdx: getCharacterIndex(x, spans1)
+            })
+          }
+        }
+      }
+
+      if (rawPixels.length === 0) return
+
+      const minX = Math.min(...rawPixels.map(p => p.x))
+      const maxX = Math.max(...rawPixels.map(p => p.x))
+      const minY = Math.min(...rawPixels.map(p => p.y))
+      const maxY = Math.max(...rawPixels.map(p => p.y))
 
       const textWidth = maxX - minX + 1
       const textHeight = maxY - minY + 1
@@ -134,22 +205,109 @@ export function PromptingIsAllYouNeed() {
       const startX = canvas.width - (textWidth * pixelSize) - (canvas.width * 0.05)
       const startY = canvas.height * 0.10
 
-      const rawPixels: { x: number; y: number }[] = []
-      for (let y = minY; y <= maxY; y++) {
-        for (let x = minX; x <= maxX; x++) {
-          const alpha = data[(y * offscreen.width + x) * 4 + 3]
-          if (alpha > 128) {
-            rawPixels.push({ x, y })
-          }
+      // Group pixels by character key: `line,charIdx`
+      const charPixelsMap = new Map<string, RawPixel[]>()
+      rawPixels.forEach(p => {
+        const key = `${p.line},${p.charIdx}`
+        if (!charPixelsMap.has(key)) {
+          charPixelsMap.set(key, [])
         }
-      }
+        charPixelsMap.get(key)!.push(p)
+      })
 
-      // Group pixels into separate letter components using a BFS
-      const components: { x: number; y: number }[][] = []
-      const pixelSet = new Set(rawPixels.map(p => `${p.x},${p.y}`))
+      const adjustedPixels: { x: number; y: number; isExempt: boolean }[] = []
+
+      charPixelsMap.forEach((pixels, key) => {
+        const [line, charIdx] = key.split(',').map(Number)
+        
+        let finalPixels = pixels.map(p => ({ x: p.x, y: p.y }))
+        let isExempt = false
+
+        if (line === 0 && charIdx === 0) {
+          isExempt = true
+          const compMinX = Math.min(...finalPixels.map(c => c.x))
+          const compMaxX = Math.max(...finalPixels.map(c => c.x))
+          const compMinY = Math.min(...finalPixels.map(c => c.y))
+          const compMaxY = Math.max(...finalPixels.map(c => c.y))
+
+          const targetRemoveKey = `${compMinX + 1},${compMaxY}`
+          const targetRemoveKey2 = `${compMinX},${compMinY}`
+          let newComp = finalPixels.filter(c => {
+            const k = `${c.x},${c.y}`
+            return k !== targetRemoveKey && k !== targetRemoveKey2
+          })
+
+          const addKeys = [
+            `${compMaxX},${compMaxY}`,
+            `${compMaxX - 1},${compMaxY}`,
+            `${compMinX + 2},${compMaxY - 7}`
+          ]
+
+          const currentSet = new Set(newComp.map(c => `${c.x},${c.y}`))
+          addKeys.forEach(k => {
+            if (!currentSet.has(k)) {
+              const [ax, ay] = k.split(',').map(Number)
+              newComp.push({ x: ax, y: ay })
+              currentSet.add(k)
+            }
+          })
+          finalPixels = newComp
+        } else if (line === 0 && (charIdx === 2 || charIdx === 7)) {
+          isExempt = true
+          const compMaxX = Math.max(...finalPixels.map(c => c.x))
+          const compMaxY = Math.max(...finalPixels.map(c => c.y))
+
+          const addKeys = [
+            `${compMaxX},${compMaxY}`,
+            `${compMaxX - 1},${compMaxY}`
+          ]
+
+          const currentSet = new Set(finalPixels.map(c => `${c.x},${c.y}`))
+          addKeys.forEach(k => {
+            if (!currentSet.has(k)) {
+              const [ax, ay] = k.split(',').map(Number)
+              finalPixels.push({ x: ax, y: ay })
+              currentSet.add(k)
+            }
+          })
+        } else if (line === 0 && charIdx === 8) {
+          isExempt = true
+          const compMinX = Math.min(...finalPixels.map(c => c.x))
+          const compMaxY = Math.max(...finalPixels.map(c => c.y))
+
+          const addKeys = [
+            `${compMinX + 1},${compMaxY - 1}`,
+            `${compMinX + 1},${compMaxY - 2}`
+          ]
+
+          const currentSet = new Set(finalPixels.map(c => `${c.x},${c.y}`))
+          addKeys.forEach(k => {
+            if (!currentSet.has(k)) {
+              const [ax, ay] = k.split(',').map(Number)
+              finalPixels.push({ x: ax, y: ay })
+              currentSet.add(k)
+            }
+          })
+        } else if (line === 1 && (charIdx === 0 || charIdx === 9)) {
+          isExempt = true
+          finalPixels = finalPixels.map(pt => ({ x: pt.x, y: pt.y - 6 }))
+        }
+
+        finalPixels.forEach(p => {
+          adjustedPixels.push({ x: p.x, y: p.y, isExempt })
+        })
+      })
+
+      // Group adjustedPixels into separate letter components using a BFS
+      const finalComponents: { x: number; y: number }[][] = []
+      const exemptIndices = new Set<number>()
+      
+      const pixelSet = new Set(adjustedPixels.map(p => `${p.x},${p.y}`))
       const visited = new Set<string>()
 
-      for (const p of rawPixels) {
+      const exemptCoordSet = new Set(adjustedPixels.filter(p => p.isExempt).map(p => `${p.x},${p.y}`))
+
+      for (const p of adjustedPixels) {
         const key = `${p.x},${p.y}`
         if (visited.has(key)) continue
 
@@ -157,11 +315,15 @@ export function PromptingIsAllYouNeed() {
         const queue: { x: number; y: number }[] = [p]
         visited.add(key)
 
+        let isCompExempt = false
+
         while (queue.length > 0) {
           const curr = queue.shift()!
           comp.push(curr)
+          if (exemptCoordSet.has(`${curr.x},${curr.y}`)) {
+            isCompExempt = true
+          }
 
-          // 8-way adjacent neighbors for pixel connectivity
           const neighbors = [
             { x: curr.x - 1, y: curr.y },
             { x: curr.x + 1, y: curr.y },
@@ -181,227 +343,21 @@ export function PromptingIsAllYouNeed() {
             }
           }
         }
-        components.push(comp)
-      }
-
-      // Find components on the first line (upper part of canvas)
-      const firstLineComponents: { compIndex: number; minX: number }[] = []
-      const firstLineThreshold = largeFontSize + 2
-      
-      components.forEach((comp, idx) => {
-        const compMinY = Math.min(...comp.map(c => c.y))
-        const compMinX = Math.min(...comp.map(c => c.x))
-        if (compMinY < firstLineThreshold) {
-          firstLineComponents.push({ compIndex: idx, minX: compMinX })
-        }
-      })
-      
-      // Sort components of the first line from left to right to map alphabetical letters
-      firstLineComponents.sort((a, b) => a.minX - b.minX)
-      
-      const rComponentIndex = firstLineComponents[0]?.compIndex ?? -1
-      const n1ComponentIndex = firstLineComponents[2]?.compIndex ?? -1
-      
-      // Calculate reference characteristics of the first "n"
-      let nWidth = 0, nHeight = 0, nSize = 0
-      if (n1ComponentIndex !== -1) {
-        const n1Comp = components[n1ComponentIndex]
-        const compMinX = Math.min(...n1Comp.map(c => c.x))
-        const compMaxX = Math.max(...n1Comp.map(c => c.x))
-        const compMinY = Math.min(...n1Comp.map(c => c.y))
-        const compMaxY = Math.max(...n1Comp.map(c => c.y))
-        nWidth = compMaxX - compMinX + 1
-        nHeight = compMaxY - compMinY + 1
-        nSize = n1Comp.length
-      }
-
-      // Find the second "n" by finding the component most similar to the first "n"
-      let n2ComponentIndex = -1
-      let minScore = Infinity
-      firstLineComponents.forEach((fl) => {
-        if (fl.compIndex === rComponentIndex || fl.compIndex === n1ComponentIndex) return
-        const comp = components[fl.compIndex]
-        const compMinX = Math.min(...comp.map(c => c.x))
-        const compMaxX = Math.max(...comp.map(c => c.x))
-        const compMinY = Math.min(...comp.map(c => c.y))
-        const compMaxY = Math.max(...comp.map(c => c.y))
-        const w = compMaxX - compMinX + 1
-        const h = compMaxY - compMinY + 1
-        const size = comp.length
-
-        // Similarity score (lower is more similar)
-        const score = Math.abs(w - nWidth) + Math.abs(h - nHeight) + Math.abs(size - nSize)
-        if (score < minScore) {
-          minScore = score
-          n2ComponentIndex = fl.compIndex
-        }
-      })
-      
-      // Find the component representing the letter "g" (the component immediately following the second "n" in sorted order)
-      let gComponentIndex = -1
-      const n2SortedIdx = firstLineComponents.findIndex(fl => fl.compIndex === n2ComponentIndex)
-      if (n2SortedIdx !== -1 && n2SortedIdx + 1 < firstLineComponents.length) {
-        gComponentIndex = firstLineComponents[n2SortedIdx + 1].compIndex
-      }
-
-      // Find all components belonging to the two "p" letters on the second line dynamically
-      const secondLineComponents: { compIndex: number; minX: number }[] = []
-      components.forEach((comp, idx) => {
-        const compMinY = Math.min(...comp.map(c => c.y))
-        const compMinX = Math.min(...comp.map(c => c.x))
-        if (compMinY >= firstLineThreshold) {
-          secondLineComponents.push({ compIndex: idx, minX: compMinX })
-        }
-      })
-      secondLineComponents.sort((a, b) => a.minX - b.minX)
-
-      const startX1 = secondLineComponents[0]?.minX ?? 0
-
-      let secLineMaxX = startX1
-      components.forEach((c) => {
-        const compMinY = Math.min(...c.map(pt => pt.y))
-        if (compMinY >= firstLineThreshold) {
-          const maxX = Math.max(...c.map(pt => pt.x))
-          if (maxX > secLineMaxX) secLineMaxX = maxX
-        }
-      })
-      const secLineMidX = startX1 + (secLineMaxX - startX1) * 0.5
-
-      let p2StemIndex = -1
-      let startX2 = 0
-      for (const sl of secondLineComponents) {
-        if (sl.minX > secLineMidX) {
-          const comp = components[sl.compIndex]
-          const compMinX = Math.min(...comp.map(c => c.x))
-          const compMaxX = Math.max(...comp.map(c => c.x))
-          const compMinY = Math.min(...comp.map(c => c.y))
-          const compMaxY = Math.max(...comp.map(c => c.y))
-          const w = compMaxX - compMinX + 1
-          const h = compMaxY - compMinY + 1
-          if (w >= 2 && h >= 15) {
-            p2StemIndex = sl.compIndex
-            startX2 = sl.minX
-            break
-          }
+        
+        const compIdx = finalComponents.length
+        finalComponents.push(comp)
+        if (isCompExempt) {
+          exemptIndices.add(compIdx)
         }
       }
-
-      const pComponents = new Set<number>()
-      components.forEach((comp, idx) => {
-        const compMinY = Math.min(...comp.map(c => c.y))
-        if (compMinY >= firstLineThreshold) {
-          const compMinX = Math.min(...comp.map(c => c.x))
-          const compMaxX = Math.max(...comp.map(c => c.x))
-          const isFirstP = compMinX >= startX1 && compMaxX <= startX1 + 11
-          const isSecondP = p2StemIndex !== -1 && compMinX >= startX2 && compMaxX <= startX2 + 11
-          if (isFirstP || isSecondP) {
-            pComponents.add(idx)
-          }
-        }
-      })
-
-      const exemptFromShortening = new Set(
-        [rComponentIndex, n1ComponentIndex, n2ComponentIndex, gComponentIndex, ...pComponents].filter(x => x !== -1)
-      )
-
-
 
       const filteredPixels: { x: number; y: number }[] = []
 
-      components.forEach((comp, compIndex) => {
+      finalComponents.forEach((comp, compIndex) => {
         if (comp.length === 0) return
 
-        let finalComp = comp
-
-        // Apply manual R adjustments
-        if (compIndex === rComponentIndex) {
-          const compMinX = Math.min(...comp.map(c => c.x))
-          const compMaxX = Math.max(...comp.map(c => c.x))
-          const compMinY = Math.min(...comp.map(c => c.y))
-          const compMaxY = Math.max(...comp.map(c => c.y))
-          
-          // 1. remove box at last row (compMaxY) and 2nd column (compMinX + 1)
-          // 1.2 remove box at 1st column (compMinX) and 1st row (compMinY)
-          const targetRemoveKey = `${compMinX + 1},${compMaxY}`
-          const targetRemoveKey2 = `${compMinX},${compMinY}`
-          let newComp = comp.filter(c => {
-            const key = `${c.x},${c.y}`
-            return key !== targetRemoveKey && key !== targetRemoveKey2
-          })
-          
-          // 2. add boxes at last row (compMaxY) and column last (compMaxX) / second last (compMaxX - 1)
-          // 3. add box at column 3 (compMinX + 2) and 8th last row (compMaxY - 7)
-          const addKeys = [
-            `${compMaxX},${compMaxY}`,
-            `${compMaxX - 1},${compMaxY}`,
-            `${compMinX + 2},${compMaxY - 7}`
-          ]
-          
-          const currentSet = new Set(newComp.map(c => `${c.x},${c.y}`))
-          addKeys.forEach(key => {
-            if (!currentSet.has(key)) {
-              const [ax, ay] = key.split(',').map(Number)
-              newComp.push({ x: ax, y: ay })
-              currentSet.add(key)
-            }
-          })
-          finalComp = newComp
-        }
-
-        // Apply manual adjustments for both "n" letters
-        if (compIndex === n1ComponentIndex || compIndex === n2ComponentIndex) {
-          const compMaxX = Math.max(...comp.map(c => c.x))
-          const compMaxY = Math.max(...comp.map(c => c.y))
-          
-          // add boxes at last row (compMaxY) and column last (compMaxX) / second last (compMaxX - 1)
-          const addKeys = [
-            `${compMaxX},${compMaxY}`,
-            `${compMaxX - 1},${compMaxY}`
-          ]
-          
-          const currentSet = new Set(comp.map(c => `${c.x},${c.y}`))
-          const newComp = [...comp]
-          addKeys.forEach(key => {
-            if (!currentSet.has(key)) {
-              const [ax, ay] = key.split(',').map(Number)
-              newComp.push({ x: ax, y: ay })
-              currentSet.add(key)
-            }
-          })
-          finalComp = newComp
-        }
-
-        // Apply manual adjustments for "g"
-        if (compIndex === gComponentIndex) {
-          const compMinX = Math.min(...comp.map(c => c.x))
-          const compMaxY = Math.max(...comp.map(c => c.y))
-          
-          // add 2 boxes: one at column 2 (compMinX + 1) and second last row (compMaxY - 1),
-          // second at column 2 (compMinX + 1) and third last row (compMaxY - 2)
-          const addKeys = [
-            `${compMinX + 1},${compMaxY - 1}`,
-            `${compMinX + 1},${compMaxY - 2}`
-          ]
-          
-          const currentSet = new Set(comp.map(c => `${c.x},${c.y}`))
-          const newComp = [...comp]
-          addKeys.forEach(key => {
-            if (!currentSet.has(key)) {
-              const [ax, ay] = key.split(',').map(Number)
-              newComp.push({ x: ax, y: ay })
-              currentSet.add(key)
-            }
-          })
-          finalComp = newComp
-        }
-
-        // Apply manual adjustments for both "p" letters to lift them by 6 boxes
-        if (pComponents.has(compIndex)) {
-          finalComp = comp.map(pt => ({ x: pt.x, y: pt.y - 6 }))
-        }
-
-        const compMaxY = Math.max(...finalComp.map(c => c.y))
-        const bottomPixels = finalComp.filter(c => c.y === compMaxY)
+        const compMaxY = Math.max(...comp.map(c => c.y))
+        const bottomPixels = comp.filter(c => c.y === compMaxY)
         const bottomXs = Array.from(new Set(bottomPixels.map(c => c.x))).sort((a, b) => a - b)
 
         // Group contiguous bottom X coordinates (separate stems)
@@ -418,16 +374,16 @@ export function PromptingIsAllYouNeed() {
         if (currentGroup.length > 0) groups.push(currentGroup)
 
         // If there are 2 or more separate parallel stems terminating at the bottom row,
-        // remove the bottom-most pixel of the rightmost stem (skip for manual / exempt letters).
+        // remove the bottom-most pixel of the rightmost stem (skip for exempt components).
         const toRemove = new Set<string>()
-        if (!exemptFromShortening.has(compIndex) && groups.length > 1) {
+        if (!exemptIndices.has(compIndex) && groups.length > 1) {
           const targetGroupXs = groups[groups.length - 1]
           targetGroupXs.forEach(tx => {
             toRemove.add(`${tx},${compMaxY}`)
           })
         }
 
-        finalComp.forEach(c => {
+        comp.forEach(c => {
           if (!toRemove.has(`${c.x},${c.y}`)) {
             filteredPixels.push(c)
           }
