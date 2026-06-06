@@ -244,8 +244,23 @@ export function PromptingIsAllYouNeed() {
         gComponentIndex = firstLineComponents[n2SortedIdx + 1].compIndex
       }
 
+      // Find all components belonging to the two "p" letters on the second line
+      const pComponents = new Set<number>()
+      components.forEach((comp, idx) => {
+        const compMinY = Math.min(...comp.map(c => c.y))
+        if (compMinY >= firstLineThreshold) {
+          const compMinX = Math.min(...comp.map(c => c.x))
+          const compMaxX = Math.max(...comp.map(c => c.x))
+          const isFirstP = compMinX >= 48 && compMaxX <= 57
+          const isSecondP = compMinX >= 138 && compMaxX <= 147
+          if (isFirstP || isSecondP) {
+            pComponents.add(idx)
+          }
+        }
+      })
+
       const exemptFromShortening = new Set(
-        [rComponentIndex, n1ComponentIndex, n2ComponentIndex, gComponentIndex].filter(x => x !== -1)
+        [rComponentIndex, n1ComponentIndex, n2ComponentIndex, gComponentIndex, ...pComponents].filter(x => x !== -1)
       )
 
 
@@ -337,6 +352,11 @@ export function PromptingIsAllYouNeed() {
             }
           })
           finalComp = newComp
+        }
+
+        // Apply manual adjustments for both "p" letters to lift them by 5 boxes
+        if (pComponents.has(compIndex)) {
+          finalComp = comp.map(pt => ({ x: pt.x, y: pt.y - 5 }))
         }
 
         const compMaxY = Math.max(...finalComp.map(c => c.y))
