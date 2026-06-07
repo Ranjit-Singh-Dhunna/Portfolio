@@ -264,6 +264,32 @@ export function PromptingIsAllYouNeed() {
           })
         } else if (line === 0 && charIdx === 10) {
           isExempt = true
+        } else if (line === 1 && charIdx === 4) {
+          isExempt = true
+          const compMinX = Math.min(...finalPixels.map(c => c.x))
+          const compMinY = Math.min(...finalPixels.map(c => c.y))
+          const compMaxY = Math.max(...finalPixels.map(c => c.y))
+
+          const targetRemoveKey = `${compMinX},${compMinY}`
+          const targetRemoveKey2 = `${compMinX},${compMaxY}`
+          let newComp = finalPixels.filter(c => {
+            const k = `${c.x},${c.y}`
+            return k !== targetRemoveKey && k !== targetRemoveKey2
+          })
+
+          const addKeys = [
+            `${compMinX + 2},${compMinY + 9}`
+          ]
+
+          const currentSet = new Set(newComp.map(c => `${c.x},${c.y}`))
+          addKeys.forEach(k => {
+            if (!currentSet.has(k)) {
+              const [ax, ay] = k.split(',').map(Number)
+              newComp.push({ x: ax, y: ay })
+              currentSet.add(k)
+            }
+          })
+          finalPixels = newComp
         } else if (line === 1 && (charIdx === 0 || charIdx === 6 || charIdx === 10)) {
           isExempt = true
         } else if (line === 2 && charIdx === 2) {
