@@ -80,8 +80,8 @@ export default function CustomCursor() {
 
     const tick = () => {
       if (pendingSnapRef.current) {
-        const peakX = window.innerWidth * 0.12;
-        const peakY = window.innerHeight * 0.74;
+        const peakX = window.innerWidth * 0.31;
+        const peakY = window.innerHeight * 0.60;
         mousePos.current = { x: peakX, y: peakY };
         cursorPos.current = { x: peakX, y: peakY };
         directionRef.current = 1;

@@ -80,7 +80,7 @@ export function PromptingIsAllYouNeed() {
       const BALL_SPEED = 4.2 * scale
 
       pixelsRef.current = []
-      const words = ["Rendering future", "pixel by pixel"]
+      const words = ["Rendering World", "One Pixel At", "Time"]
       
       const offscreen = document.createElement('canvas')
       const oCtx = offscreen.getContext('2d', { willReadFrequently: true })
@@ -93,9 +93,10 @@ export function PromptingIsAllYouNeed() {
       const w1 = oCtx.measureText(words[0]).width
       oCtx.font = `${smallFontSize}px "ChonkyPixels"`
       const w2 = oCtx.measureText(words[1]).width
+      const w3 = oCtx.measureText(words[2]).width
       
-      offscreen.width = Math.max(w1, w2) + 10
-      offscreen.height = largeFontSize + smallFontSize + 15 
+      offscreen.width = Math.max(w1, w2, w3) + 10
+      offscreen.height = largeFontSize + (smallFontSize * 2) + 25 
 
       interface RawPixel {
         x: number;
@@ -123,71 +124,44 @@ export function PromptingIsAllYouNeed() {
         return bestIdx;
       };
 
-      // Process words[0]
-      oCtx.clearRect(0, 0, offscreen.width, offscreen.height)
-      oCtx.textBaseline = "top"
-      oCtx.textAlign = "right"
-      oCtx.font = `${largeFontSize}px "ChonkyPixels"`
-      oCtx.fillText(words[0], offscreen.width - 5, 0)
+      words.forEach((word, lineIdx) => {
+        oCtx.clearRect(0, 0, offscreen.width, offscreen.height)
+        oCtx.textBaseline = "top"
+        oCtx.textAlign = "left"
+        oCtx.font = `${lineIdx === 0 ? largeFontSize : smallFontSize}px "ChonkyPixels"`
+        
+        const yPos = lineIdx === 0 
+          ? 0 
+          : lineIdx === 1 
+            ? largeFontSize + 4 
+            : largeFontSize + 4 + smallFontSize + 4
+        oCtx.fillText(word, 5, yPos)
 
-      let imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
-      let data = imgData.data
+        const imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
+        const data = imgData.data
 
-      // Calculate spans for line 0
-      const spans0: { start: number; end: number }[] = []
-      const totalW0 = oCtx.measureText(words[0]).width
-      const leftEdge0 = offscreen.width - 5 - totalW0
-      for (let i = 0; i < words[0].length; i++) {
-        const start = leftEdge0 + oCtx.measureText(words[0].substring(0, i)).width
-        const end = leftEdge0 + oCtx.measureText(words[0].substring(0, i + 1)).width
-        spans0.push({ start, end })
-      }
+        const spans: { start: number; end: number }[] = []
+        const leftEdge = 5
+        for (let i = 0; i < word.length; i++) {
+          const start = leftEdge + oCtx.measureText(word.substring(0, i)).width
+          const end = leftEdge + oCtx.measureText(word.substring(0, i + 1)).width
+          spans.push({ start, end })
+        }
 
-      for (let y = 0; y < offscreen.height; y++) {
-        for (let x = 0; x < offscreen.width; x++) {
-          const alpha = data[(y * offscreen.width + x) * 4 + 3]
-          if (alpha > 128) {
-            rawPixels.push({
-              x,
-              y,
-              line: 0,
-              charIdx: getCharacterIndex(x, spans0)
-            })
+        for (let y = 0; y < offscreen.height; y++) {
+          for (let x = 0; x < offscreen.width; x++) {
+            const alpha = data[(y * offscreen.width + x) * 4 + 3]
+            if (alpha > 128) {
+              rawPixels.push({
+                x,
+                y,
+                line: lineIdx,
+                charIdx: getCharacterIndex(x, spans)
+              })
+            }
           }
         }
-      }
-
-      // Process words[1]
-      oCtx.clearRect(0, 0, offscreen.width, offscreen.height)
-      oCtx.font = `${smallFontSize}px "ChonkyPixels"`
-      oCtx.fillText(words[1], offscreen.width - 5, largeFontSize + 4)
-
-      imgData = oCtx.getImageData(0, 0, offscreen.width, offscreen.height)
-      data = imgData.data
-
-      // Calculate spans for line 1
-      const spans1: { start: number; end: number }[] = []
-      const totalW1 = oCtx.measureText(words[1]).width
-      const leftEdge1 = offscreen.width - 5 - totalW1
-      for (let i = 0; i < words[1].length; i++) {
-        const start = leftEdge1 + oCtx.measureText(words[1].substring(0, i)).width
-        const end = leftEdge1 + oCtx.measureText(words[1].substring(0, i + 1)).width
-        spans1.push({ start, end })
-      }
-
-      for (let y = 0; y < offscreen.height; y++) {
-        for (let x = 0; x < offscreen.width; x++) {
-          const alpha = data[(y * offscreen.width + x) * 4 + 3]
-          if (alpha > 128) {
-            rawPixels.push({
-              x,
-              y,
-              line: 1,
-              charIdx: getCharacterIndex(x, spans1)
-            })
-          }
-        }
-      }
+      })
 
       if (rawPixels.length === 0) return
 
@@ -199,11 +173,11 @@ export function PromptingIsAllYouNeed() {
       const textWidth = maxX - minX + 1
       const textHeight = maxY - minY + 1
 
-      const scaleFactor = (canvas.width * 0.85) / textWidth
+      const scaleFactor = (canvas.width * 0.75) / textWidth
       const pixelSize = scaleFactor 
 
-      const startX = canvas.width - (textWidth * pixelSize) - (canvas.width * 0.05)
-      const startY = canvas.height * 0.10
+      const startX = canvas.width * 0.032
+      const startY = canvas.height * 0.08
 
       // Group pixels by character key: `line,charIdx`
       const charPixelsMap = new Map<string, RawPixel[]>()
@@ -288,9 +262,12 @@ export function PromptingIsAllYouNeed() {
               currentSet.add(k)
             }
           })
-        } else if (line === 1 && (charIdx === 0 || charIdx === 9)) {
+        } else if (line === 0 && charIdx === 10) {
           isExempt = true
-          finalPixels = finalPixels.map(pt => ({ x: pt.x, y: pt.y - 6 }))
+        } else if (line === 1 && (charIdx === 0 || charIdx === 6 || charIdx === 10)) {
+          isExempt = true
+        } else if (line === 2 && charIdx === 2) {
+          isExempt = true
         }
 
         finalPixels.forEach(p => {
@@ -401,7 +378,7 @@ export function PromptingIsAllYouNeed() {
       })
 
       const adjustedLargePixelSize = pixelSize * 2.5
-      const ballStartX = canvas.width * 0.9
+      const ballStartX = canvas.width * 0.5
       const ballStartY = canvas.height * 0.1
 
       ballRef.current = {
@@ -426,7 +403,7 @@ export function PromptingIsAllYouNeed() {
           isVertical: true,
         },
         {
-          x: canvas.width - paddleWidth - (paddleWidth * 5.0),
+          x: canvas.width - paddleWidth - (canvas.width * 0.15),
           y: canvas.height / 2 - paddleLength / 2,
           width: paddleWidth,
           height: paddleLength,
@@ -450,6 +427,7 @@ export function PromptingIsAllYouNeed() {
           isVertical: false,
         },
       ]
+
     }
 
     const updateGame = () => {

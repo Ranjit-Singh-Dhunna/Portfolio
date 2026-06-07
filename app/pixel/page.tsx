@@ -15,9 +15,25 @@ export default function PixelPage() {
 
   return (
     <div style={{ fontFamily: 'monospace', backgroundColor: '#000', color: '#0f0' }}>
-      <nav style={{ position: 'fixed', top: '0', right: '0', zIndex: 100 }}>
-        <a href="/" style={{ color: '#0f0', textDecoration: 'none', background: '#000', border: '2px solid #0f0' }}>Back to Home</a>
-      </nav>
+      <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 100 }}>
+        <a 
+          href="/" 
+          style={{ 
+            color: 'rgba(255, 255, 255, 0.4)', 
+            textDecoration: 'none', 
+            background: 'transparent', 
+            border: '20px solid transparent', 
+            fontFamily: 'var(--font-pixelify), monospace',
+            fontSize: '1rem',
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            display: 'inline-block',
+            fontWeight: 600,
+          }}
+        >
+          Change Artstyle
+        </a>
+      </div>
 
       {sections.map((section) => (
         <section 
