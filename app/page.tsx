@@ -1,6 +1,7 @@
 "use client";
 import { useState, UIEvent, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const projectsData = [
   { 
@@ -72,6 +73,16 @@ const projectsData = [
 ];
 
 export default function Page() {
+  const router = useRouter();
+
+  const handlePixelClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('pixel-transition-start'));
+    setTimeout(() => {
+      router.push('/pixel');
+    }, 1100);
+  };
+
   const [modalOpen, setModalOpen] = useState(false);
   const [activeProject, setActiveProject] = useState("");
   const [showProjectsLink, setShowProjectsLink] = useState(true);
@@ -191,8 +202,8 @@ export default function Page() {
                 <span className="btn-label">Comic</span>
               </Link>
               
-              <Link href="/pixel" className="theme-btn style-btn" data-theme="pixel" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="btn-label">Pixel</span>
+              <Link href="/traditional" className="theme-btn style-btn" data-theme="traditional" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="btn-label">Traditional</span>
               </Link>
 
               <Link href="/minimal" className="theme-btn style-btn" data-theme="minimal" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -207,8 +218,8 @@ export default function Page() {
                 <span className="btn-label">Hyper Scroll</span>
               </Link>
 
-              <Link href="/traditional" className="theme-btn style-btn" data-theme="traditional" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="btn-label">Traditional</span>
+              <Link href="/pixel" onClick={handlePixelClick} className="theme-btn style-btn" data-theme="pixel" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="btn-label">Pixel</span>
               </Link>
 
               <Link href="/book" className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

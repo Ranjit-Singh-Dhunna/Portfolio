@@ -183,7 +183,7 @@ section {
 
 
 /* --- Custom Botanical Cursor CSS --- */
-#hand-cursor {
+#custom-cursor-container {
   position: fixed;
   pointer-events: none;
   z-index: 99999;
@@ -209,10 +209,10 @@ section {
   transition: transform 250ms ease-out;
 }
 
-#hand-cursor.hovering .flower-index {
+#custom-cursor-container.hovering .flower-index {
   transform: translate(31px, 10px) scale(1.35);
 }
-#hand-cursor.hovering .flower-index .petal {
+#custom-cursor-container.hovering .flower-index .petal {
   transform: rotate(15deg) scale(1.1); /* Slight petal spread */
 }
 
@@ -237,9 +237,9 @@ section {
   50% { transform: translate(26px, 58px) scale(1.08); }
 }
 
-#hand-cursor.idle .flower-index  { animation: bloom-pulse-index 2.5s 0.0s ease-in-out infinite; }
-#hand-cursor.idle .flower-palm   { animation: bloom-pulse-palm 2.5s 0.4s ease-in-out infinite; }
-#hand-cursor.idle .flower-wrist  { animation: bloom-pulse-wrist 2.5s 0.8s ease-in-out infinite; }
+#custom-cursor-container.idle .flower-index  { animation: bloom-pulse-index 2.5s 0.0s ease-in-out infinite; }
+#custom-cursor-container.idle .flower-palm   { animation: bloom-pulse-palm 2.5s 0.4s ease-in-out infinite; }
+#custom-cursor-container.idle .flower-wrist  { animation: bloom-pulse-wrist 2.5s 0.8s ease-in-out infinite; }
 
 .style-btn[data-theme="minimal"]:hover .btn-svg,
 .style-btn[data-theme="traditional"]:hover .btn-svg {

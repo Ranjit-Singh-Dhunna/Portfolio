@@ -26,15 +26,60 @@ export default function CustomCursor() {
   const didSnapRef = useRef(false);
   const pendingSnapRef = useRef(false);
 
+  const [hoveredTheme, setHoveredTheme] = useState<string | null>(null);
+  const hoveredThemeRef = useRef<string | null>(null);
+  const pixelHoverPct = useRef({ x: 0.5, y: 0.5 });
+  const circleRef = useRef<HTMLDivElement>(null);
+  const circleSize = useRef(150);
+  const transitionStartTime = useRef<number | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const isTransitioningRef = useRef(false);
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const isFadingOutRef = useRef(false);
+  const fadeStartTime = useRef<number | null>(null);
+  const circleOpacity = useRef(1);
+  const [fullScreenOverlay, setFullScreenOverlay] = useState(false);
+  const fullScreenOverlayRef = useRef(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
+
+  const updateHoveredTheme = (theme: string | null) => {
+    setHoveredTheme(theme);
+    hoveredThemeRef.current = theme;
+  };
+
   useEffect(() => {
     const oldPath = lastPathRef.current;
     lastPathRef.current = pathname;
     pathnameRef.current = pathname;
     
+    // When arriving at /pixel after a transition, start fade-out phase
+    if (pathname.startsWith('/pixel') && isTransitioningRef.current) {
+      // Wait for the pixel page to fully paint, then start fading out the circle
+      setTimeout(() => {
+        setIsTransitioning(false);
+        isTransitioningRef.current = false;
+        setIsFadingOut(true);
+        isFadingOutRef.current = true;
+        fadeStartTime.current = performance.now();
+      }, 300);
+    } else {
+      setIsTransitioning(false);
+      isTransitioningRef.current = false;
+    }
+    
     if (pathname.startsWith('/pixel') && !oldPath.startsWith('/pixel')) {
       pendingSnapRef.current = true;
     }
   }, [pathname]);
+
+  useEffect(() => {
+    const handleTransition = () => {
+      setIsTransitioning(true);
+      isTransitioningRef.current = true;
+    };
+    window.addEventListener('pixel-transition-start', handleTransition);
+    return () => window.removeEventListener('pixel-transition-start', handleTransition);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -59,6 +104,20 @@ export default function CustomCursor() {
       
       mousePos.current = { x: e.clientX, y: e.clientY };
 
+      const pixelBtn = document.querySelector('.style-btn[data-theme="pixel"]');
+      if (pixelBtn) {
+        const rect = pixelBtn.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          const relativeX = e.clientX - rect.left;
+          const relativeY = e.clientY - rect.top;
+          pixelHoverPct.current = {
+            x: relativeX / rect.width,
+            y: relativeY / rect.height
+          };
+        }
+      }
+
       if (cursorRef.current && !pathnameRef.current.startsWith('/pixel')) {
         if (cursorRef.current.style.opacity !== '1') {
           cursorRef.current.style.opacity = '1';
@@ -79,6 +138,7 @@ export default function CustomCursor() {
     window.addEventListener('resize', handleResize);
 
     const tick = () => {
+      // Snap the cursor immediately when the route changes to /pixel
       if (pendingSnapRef.current) {
         const peakX = window.innerWidth * 0.31;
         const peakY = window.innerHeight * 0.60;
@@ -111,6 +171,112 @@ export default function CustomCursor() {
           cursorRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
         }
       }
+
+      // Handle fade-out phase: smoothly fade the overlay after page has painted
+      if (overlayRef.current && isFadingOutRef.current) {
+        if (fadeStartTime.current !== null) {
+          const fadeElapsed = performance.now() - fadeStartTime.current;
+          const fadeDuration = 400;
+          const fadeT = Math.min(1, fadeElapsed / fadeDuration);
+          circleOpacity.current = 1 - fadeT;
+          overlayRef.current.style.opacity = `${circleOpacity.current}`;
+          if (fadeT >= 1) {
+            // Fade-out complete, fully unmount
+            isFadingOutRef.current = false;
+            setIsFadingOut(false);
+            fadeStartTime.current = null;
+            circleOpacity.current = 1;
+            circleSize.current = 150;
+            transitionStartTime.current = null;
+            fullScreenOverlayRef.current = false;
+            setFullScreenOverlay(false);
+          }
+        }
+      }
+
+      const showCircle = !pathnameRef.current.startsWith('/pixel') || isTransitioningRef.current || isFadingOutRef.current;
+      if (circleRef.current && showCircle && !isFadingOutRef.current) {
+        if (hoveredThemeRef.current === 'pixel' || isTransitioningRef.current) {
+          if (isTransitioningRef.current) {
+            if (transitionStartTime.current === null) {
+              transitionStartTime.current = performance.now();
+            }
+            const elapsed = performance.now() - transitionStartTime.current;
+            const duration = 1100; // duration in ms
+            const t = Math.min(1, elapsed / duration);
+            
+            // Ease-in curve (starts slow, ends fast)
+            const easeInCurve = (x: number) => {
+              return x * x * x * x; // Quartic ease-in for a pronounced slow start and fast end
+            };
+            
+            // Calculate max size needed to cover viewport from any cursor position
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const maxDist = Math.sqrt(vw * vw + vh * vh) * 2 + 200;
+            
+            circleSize.current = 150 + (maxDist - 150) * easeInCurve(t);
+            circleRef.current.style.width = `${circleSize.current}px`;
+            circleRef.current.style.height = `${circleSize.current}px`;
+            
+            // Fade out border when circle is past 70% of animation
+            const borderOpacity = t > 0.7 ? Math.max(0, 1 - (t - 0.7) / 0.3) : 1;
+            circleRef.current.style.borderColor = `rgba(255, 179, 198, ${borderOpacity})`;
+            
+            // Switch to full-screen overlay for pixel-perfect 1:1 match
+            if (t >= 1 && !fullScreenOverlayRef.current) {
+              fullScreenOverlayRef.current = true;
+              setFullScreenOverlay(true);
+            }
+          } else {
+            transitionStartTime.current = null;
+            circleSize.current = 150;
+            circleRef.current.style.width = '150px';
+            circleRef.current.style.height = '150px';
+          }
+          
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          const ir = 2758 / 1504; // aspect ratio of px1.png
+          const vr = vw / vh;
+          
+          let scaled_width = 0;
+          let scaled_height = 0;
+          let x_offset = 0;
+          let y_offset = 0;
+          
+          if (vr > ir) {
+            scaled_width = vw;
+            scaled_height = vw / ir;
+            x_offset = 0;
+            y_offset = vh - scaled_height;
+          } else {
+            scaled_width = vh * ir;
+            scaled_height = vh;
+            x_offset = (vw - scaled_width) / 2;
+            y_offset = 0;
+          }
+          
+          const radiusX = circleSize.current / 2;
+          const radiusY = circleSize.current / 2;
+          const posRef = mousePos.current;
+          const x_topleft = posRef.x + 4 - radiusX;
+          const y_topleft = posRef.y + 18 - radiusY;
+          
+          const bg_x = x_offset - x_topleft;
+          const bg_y = y_offset - y_topleft;
+          
+          circleRef.current.style.backgroundPosition = `${bg_x}px ${bg_y}px`;
+          circleRef.current.style.backgroundSize = `${scaled_width}px ${scaled_height}px`;
+        } else {
+          transitionStartTime.current = null;
+          circleSize.current = 150;
+          circleRef.current.style.width = '150px';
+          circleRef.current.style.height = '150px';
+          circleRef.current.style.backgroundPosition = 'center';
+          circleRef.current.style.backgroundSize = 'cover';
+        }
+      }
       animationFrameId = requestAnimationFrame(tick);
     };
 
@@ -126,12 +292,14 @@ export default function CustomCursor() {
 
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.closest('button, a, .style-btn, .project-item')) {
+      const btn = target.closest('button, a, .style-btn, .project-item');
+      if (btn) {
         setIsHovering(true);
         
-        const themeBtn = target.closest('.style-btn') as HTMLElement;
+        const themeBtn = btn.closest('.style-btn') as HTMLElement;
         if (themeBtn) {
           const theme = themeBtn.getAttribute('data-theme');
+          updateHoveredTheme(theme);
           const colors = {
             comic: { petal: '#FF6B6B', vine: '#1a1a1a', leaf: '#FFD166' },
             pixel: { petal: '#FFB3C6', vine: '#00aa44', leaf: '#00ff41' },
@@ -150,6 +318,7 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement;
       if (target.closest('button, a, .style-btn, .project-item')) {
         setIsHovering(false);
+        updateHoveredTheme(null);
         setThemeColor({ petal: '#e8c4b8', vine: '#2d4a1e', leaf: '#4a7a35' });
       }
     };
@@ -189,23 +358,81 @@ export default function CustomCursor() {
 
   const cursorClass = `custom-cursor ${isHovering ? 'hovering' : ''} ${isGrabbing ? 'grabbing' : ''} ${isIdle ? 'idle' : ''}`;
   const isPixelPage = pathname.startsWith('/pixel');
-
   return (
-    <div 
-      id="custom-cursor-container" 
-      ref={cursorRef} 
-      className={cursorClass}
-      style={{ 
-        position: 'fixed', 
-        pointerEvents: 'none', 
-        zIndex: 9999,
-        left: 0,
-        top: 0,
-        width: 0,
-        height: 0,
-        display: mounted ? 'block' : 'none'
-      }}
-    >
+    <>
+      {fullScreenOverlay && (
+        <div 
+          ref={overlayRef}
+          style={{
+            position: 'fixed',
+            top: '-2px',
+            left: '-2px',
+            right: '-2px',
+            bottom: '-2px',
+            zIndex: 10001,
+            pointerEvents: 'none',
+            backgroundColor: '#000',
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: '2px',
+              left: '2px',
+              right: '2px',
+              bottom: '2px',
+              backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/px1.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'bottom',
+              backgroundRepeat: 'no-repeat',
+              imageRendering: 'pixelated',
+            }}
+          />
+        </div>
+      )}
+      <div 
+        id="custom-cursor-container" 
+        ref={cursorRef} 
+        className={cursorClass}
+        style={{ 
+          position: 'fixed', 
+          pointerEvents: 'none', 
+          zIndex: 9999,
+          left: 0,
+          top: 0,
+          width: 0,
+          height: 0,
+          display: mounted ? 'block' : 'none'
+        }}
+      >
+      {(!isPixelPage || isTransitioning || isFadingOut) && !fullScreenOverlay && (
+        <div 
+          ref={circleRef}
+          style={{
+            position: 'absolute',
+            left: '4px',
+            top: '18px',
+            width: (isTransitioning || isFadingOut) ? undefined : '150px',
+            height: (isTransitioning || isFadingOut) ? undefined : '150px',
+            borderRadius: '50%',
+            border: `1.5px solid ${themeColor.petal}`,
+            backgroundColor: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'transparent' : 'rgba(255, 255, 255, 0.03)',
+            backgroundImage: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/px1.png)' : 'none',
+            backgroundSize: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? undefined : 'cover',
+            backgroundRepeat: 'no-repeat',
+            backdropFilter: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'none' : 'blur(2px)',
+            pointerEvents: 'none',
+            transform: `translate(-50%, -50%) scale(${(isTransitioning || isFadingOut) ? 1.0 : (isHovering ? 1.0 : 0)})`,
+            opacity: (isHovering || isTransitioning || isFadingOut) ? 1 : 0,
+            transition: (isTransitioning || isFadingOut)
+              ? 'none'
+              : 'width 0.3s ease, height 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, border-color 0.4s ease, background-color 0.4s ease',
+            zIndex: (isTransitioning || isFadingOut) ? 10001 : -1,
+            imageRendering: 'pixelated'
+          }}
+        />
+      )}
+
       {isPixelPage ? (
         <div style={{
           position: 'absolute',
@@ -227,7 +454,9 @@ export default function CustomCursor() {
           position: 'absolute',
           left: 0,
           top: 0,
-          transform: `translate(-14px, -4px) ${isHovering ? 'scale(1.2)' : 'scale(1)'}` 
+          transform: `translate(-14px, -4px) ${isHovering ? 'scale(1.2)' : 'scale(1)'}`,
+          opacity: (isTransitioning || isFadingOut) ? 0 : (isHovering ? 0 : 1),
+          transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease'
         }}>
           <svg viewBox="0 0 52 64" width="36" height="44" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(52, 0) scale(-1, 1)">
@@ -267,5 +496,6 @@ export default function CustomCursor() {
         </div>
       )}
     </div>
+    </>
   );
 }
