@@ -2,6 +2,8 @@ import { PromptingIsAllYouNeed } from "@/components/ui/animated-hero-section";
 import TextRoll, { TextRollParagraph } from "@/components/ui/text-roll";
 
 
+import ChangeArtstyleButton from "@/components/ui/change-artstyle-button";
+
 export default function PixelPage() {
   const sections = [
     { id: 0, bg: "/px1.png" },
@@ -16,23 +18,7 @@ export default function PixelPage() {
   return (
     <div style={{ fontFamily: 'monospace', backgroundColor: '#000', color: '#0f0' }}>
       <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 100 }}>
-        <a 
-          href="/" 
-          style={{ 
-            color: 'rgba(255, 255, 255, 0.4)', 
-            textDecoration: 'none', 
-            background: 'transparent', 
-            border: '20px solid transparent', 
-            fontFamily: 'var(--font-pixelify), monospace',
-            fontSize: '1rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.1em',
-            display: 'inline-block',
-            fontWeight: 600,
-          }}
-        >
-          Change Artstyle
-        </a>
+        <ChangeArtstyleButton />
       </div>
 
       {sections.map((section) => (

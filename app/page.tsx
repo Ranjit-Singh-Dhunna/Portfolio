@@ -80,7 +80,7 @@ export default function Page() {
     window.dispatchEvent(new CustomEvent('pixel-transition-start'));
     setTimeout(() => {
       router.push('/pixel');
-    }, 1100);
+    }, 1200);
   };
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -135,7 +135,7 @@ export default function Page() {
   };
 
   return (
-    <>
+    <div className="page-dissolve-in">
       <nav>
         <div style={{ 
           perspective: '500px', 
@@ -214,12 +214,12 @@ export default function Page() {
                 <span className="btn-label">Desktop</span>
               </Link>
 
-              <Link href="/hyper" className="theme-btn style-btn" data-theme="hyper" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="btn-label">Hyper Scroll</span>
-              </Link>
-
               <Link href="/pixel" onClick={handlePixelClick} className="theme-btn style-btn" data-theme="pixel" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Pixel</span>
+              </Link>
+
+              <Link href="/hyper" className="theme-btn style-btn" data-theme="hyper" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span className="btn-label">Hyper Scroll</span>
               </Link>
 
               <Link href="/book" className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -426,6 +426,6 @@ export default function Page() {
           </filter>
         </defs>
       </svg>
-    </>
+    </div>
   );
 }

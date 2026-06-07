@@ -41,6 +41,7 @@ export default function CustomCursor() {
   const [fullScreenOverlay, setFullScreenOverlay] = useState(false);
   const fullScreenOverlayRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const [isDissolvingOut, setIsDissolvingOut] = useState(false);
 
   const updateHoveredTheme = (theme: string | null) => {
     setHoveredTheme(theme);
@@ -67,6 +68,11 @@ export default function CustomCursor() {
       isTransitioningRef.current = false;
     }
     
+    // Reset hover states on route change to prevent stuck cursor effects
+    setIsHovering(false);
+    updateHoveredTheme(null);
+    setIsDissolvingOut(false);
+    
     if (pathname.startsWith('/pixel') && !oldPath.startsWith('/pixel')) {
       pendingSnapRef.current = true;
     }
@@ -77,8 +83,15 @@ export default function CustomCursor() {
       setIsTransitioning(true);
       isTransitioningRef.current = true;
     };
+    const handleDissolve = () => {
+      setIsDissolvingOut(true);
+    };
     window.addEventListener('pixel-transition-start', handleTransition);
-    return () => window.removeEventListener('pixel-transition-start', handleTransition);
+    window.addEventListener('pixel-dissolve-start', handleDissolve);
+    return () => {
+      window.removeEventListener('pixel-transition-start', handleTransition);
+      window.removeEventListener('pixel-dissolve-start', handleDissolve);
+    };
   }, []);
 
   useEffect(() => {
@@ -202,12 +215,13 @@ export default function CustomCursor() {
               transitionStartTime.current = performance.now();
             }
             const elapsed = performance.now() - transitionStartTime.current;
-            const duration = 1100; // duration in ms
+            const duration = 1200; // duration in ms
             const t = Math.min(1, elapsed / duration);
             
-            // Ease-in curve (starts slow, ends fast)
+            // Standard animation library Exponential Ease-In
+            // This provides a very organic but extremely pronounced slow-to-fast curve
             const easeInCurve = (x: number) => {
-              return x * x * x * x; // Quartic ease-in for a pronounced slow start and fast end
+              return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
             };
             
             // Calculate max size needed to cover viewport from any cursor position
@@ -448,6 +462,8 @@ export default function CustomCursor() {
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
           imageRendering: 'pixelated',
+          opacity: isDissolvingOut ? 0 : 1,
+          transition: 'opacity 0.3s ease',
         }} />
       ) : (
         <div className="hand-wrapper" style={{ 
