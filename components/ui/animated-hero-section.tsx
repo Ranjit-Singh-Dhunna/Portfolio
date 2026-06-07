@@ -292,6 +292,15 @@ export function PromptingIsAllYouNeed() {
           finalPixels = newComp
         } else if (line === 1 && (charIdx === 0 || charIdx === 6 || charIdx === 10)) {
           isExempt = true
+        } else if (line === 2 && charIdx === 0) {
+          isExempt = true
+          const compMinX = Math.min(...finalPixels.map(c => c.x))
+          const compMinY = Math.min(...finalPixels.map(c => c.y))
+          const targetRemoveKey = `${compMinX},${compMinY}`
+          finalPixels = finalPixels.filter(c => {
+            const k = `${c.x},${c.y}`
+            return k !== targetRemoveKey
+          })
         } else if (line === 2 && charIdx === 2) {
           isExempt = true
         }
