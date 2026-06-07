@@ -3,6 +3,7 @@ import TextRoll, { TextRollParagraph } from "@/components/ui/text-roll";
 
 
 import ChangeArtstyleButton from "@/components/ui/change-artstyle-button";
+import ExperienceBoard from "@/components/ui/experience-board";
 
 export default function PixelPage() {
   const sections = [
@@ -156,6 +157,19 @@ export default function PixelPage() {
                 backgroundPosition: 'bottom',
                 zIndex: -1
               }} />
+
+              {/* ── EXPERIENCE BOARD OVERLAY ── */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'flex-start', // Lift the board up
+                justifyContent: 'center',
+                // We don't use pointerEvents: 'none' here because the board is interactive
+              }}>
+                <ExperienceBoard />
+              </div>
             </>
           )}
 
