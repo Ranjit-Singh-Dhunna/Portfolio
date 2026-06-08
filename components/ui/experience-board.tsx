@@ -332,17 +332,17 @@ export default function ExperienceBoard() {
               );
             })() : (
               <h2 style={{
-                fontSize: '6.5rem',
+                fontSize: '8rem',
                 margin: '0',
                 letterSpacing: '0.08em',
                 fontWeight: 'normal',
-                lineHeight: '1.25',
+                lineHeight: '1.15',
                 position: 'relative',
                 zIndex: 2,
                 textShadow: `
                   3px 3px 0 #1c140a, -3px -3px 0 #1c140a, 3px -3px 0 #1c140a, -3px 3px 0 #1c140a,
                   0 6px 0 #1c140a,
-                  0 0 16px rgba(255, 202, 40, 0.45)
+                  0 0 20px rgba(255, 202, 40, 0.45)
                 `,
                 color: '#ffca28', // Brighter glowing amber gold
               }}>
