@@ -162,7 +162,7 @@ export default function PixelPage() {
               <div style={{
                 position: 'absolute',
                 inset: 0,
-                zIndex: 10,
+                zIndex: 4,
                 display: 'flex',
                 alignItems: 'flex-start', // Lift the board up
                 justifyContent: 'center',

@@ -51,8 +51,8 @@ export default function ExperienceBoard() {
       maxWidth: '1380px',
       userSelect: 'none',
       marginTop: '-5vh',
-      filter: 'drop-shadow(20px 30px 20px rgba(15, 25, 10, 0.7)) saturate(0.65)',
-      color: '#cfa448',
+      filter: 'drop-shadow(15px 25px 15px rgba(10, 15, 5, 0.5)) saturate(0.75)',
+      color: '#ebdcb9',
     }}>
       
       {/* ── 3 WOODEN STANDS (POSTS) BEHIND EVERYTHING ── */}
@@ -72,37 +72,37 @@ export default function ExperienceBoard() {
           width: '56px', 
           height: '98%', 
           backgroundImage: woodBgV, 
-          backgroundColor: '#9c8a7b',
+          backgroundColor: '#7c5335',
           backgroundBlendMode: 'multiply',
           backgroundSize: '128px 128px', 
           imageRendering: 'pixelated', 
-          borderLeft: '6px solid #1a1610', 
-          borderRight: '6px solid #1a1610',
-          boxShadow: 'inset 6px 0 0 rgba(215, 175, 135, 0.08), inset -6px 0 0 rgba(0,0,0,0.5), 0 0 0 4px #1a1610'
+          borderLeft: '4px solid #321e10', 
+          borderRight: '4px solid #321e10',
+          boxShadow: 'inset 4px 0 0 rgba(255, 255, 255, 0.08), inset -4px 0 0 rgba(0,0,0,0.4), 0 0 0 2px #321e10'
         }} />
         <div style={{ 
           width: '56px', 
           height: '100%', 
           backgroundImage: woodBgV, 
-          backgroundColor: '#9c8a7b',
+          backgroundColor: '#7c5335',
           backgroundBlendMode: 'multiply',
           backgroundSize: '128px 128px', 
           imageRendering: 'pixelated', 
-          borderLeft: '6px solid #1a1610', 
-          borderRight: '6px solid #1a1610',
-          boxShadow: 'inset 6px 0 0 rgba(215, 175, 135, 0.08), inset -6px 0 0 rgba(0,0,0,0.5), 0 0 0 4px #1a1610'
+          borderLeft: '4px solid #321e10', 
+          borderRight: '4px solid #321e10',
+          boxShadow: 'inset 4px 0 0 rgba(255, 255, 255, 0.08), inset -4px 0 0 rgba(0,0,0,0.4), 0 0 0 2px #321e10'
         }} />
         <div style={{ 
           width: '56px', 
           height: '98%', 
           backgroundImage: woodBgV, 
-          backgroundColor: '#9c8a7b',
+          backgroundColor: '#7c5335',
           backgroundBlendMode: 'multiply',
           backgroundSize: '128px 128px', 
           imageRendering: 'pixelated', 
-          borderLeft: '6px solid #1a1610', 
-          borderRight: '6px solid #1a1610',
-          boxShadow: 'inset 6px 0 0 rgba(215, 175, 135, 0.08), inset -6px 0 0 rgba(0,0,0,0.5), 0 0 0 4px #1a1610'
+          borderLeft: '4px solid #321e10', 
+          borderRight: '4px solid #321e10',
+          boxShadow: 'inset 4px 0 0 rgba(255, 255, 255, 0.08), inset -4px 0 0 rgba(0,0,0,0.4), 0 0 0 2px #321e10'
         }} />
       </div>
 
@@ -136,15 +136,15 @@ export default function ExperienceBoard() {
             <defs>
               <pattern id="wood-h-pattern" width="256" height="256" patternUnits="userSpaceOnUse">
                 <image href="/pixel_wood_horizontal.png" width="256" height="256" />
-                <rect width="256" height="256" fill="#9c8a7b" style={{ mixBlendMode: 'multiply' }} />
+                <rect width="256" height="256" fill="#7c5335" style={{ mixBlendMode: 'multiply' }} />
               </pattern>
             </defs>
             {/* Shadow/Border Outline - Smooth Curved Low Dome */}
             <path
               d="M 30 75 C 100 75 140 52 185 45 C 200 42 205 42 210 42 C 215 42 220 42 235 45 C 270 52 330 74 400 75 Z"
-              fill="#1a1610"
-              stroke="#1a1610"
-              strokeWidth="6"
+              fill="#321e10"
+              stroke="#321e10"
+              strokeWidth="4"
               strokeLinejoin="round"
             />
             {/* Main Crest Wood - Smooth Curved Low Dome */}
@@ -155,12 +155,12 @@ export default function ExperienceBoard() {
             {/* Highlight (top/left wood-colored bevel, no white shine) */}
             <path
               d="M 33 75 C 101 75 141 53 186 47 C 201 44 204 44 210 44 C 216 44 219 44 234 47 C 279 53 319 75 387 75"
-              stroke="rgba(215, 175, 135, 0.12)"
-              strokeWidth="3"
+              stroke="rgba(255, 220, 180, 0.15)"
+              strokeWidth="2"
               fill="none"
             />
             {/* Center Gold Ornament (Wings/scrolls and stick figure from Image 2) */}
-            <g stroke="#1a1610" strokeWidth="3.5" strokeLinecap="round" fill="none">
+            <g stroke="#321e10" strokeWidth="2.5" strokeLinecap="round" fill="none">
               {/* Left outer scroll outline */}
               <path d="M 175 60 C 168 62 166 54 172 50 C 178 46 182 54 178 56" />
               {/* Left inner scroll outline */}
@@ -176,19 +176,19 @@ export default function ExperienceBoard() {
               {/* Right outer scroll outline */}
               <path d="M 245 60 C 252 62 254 54 248 50 C 242 46 238 54 242 56" />
             </g>
-            <g fill="#9c8465" stroke="none">
+            <g fill="#c8a261" stroke="none">
               {/* Head */}
               <circle cx="210" cy="50" r="4.5" />
               {/* Left outer scroll gold */}
-              <path d="M 175 60 C 168 62 166 54 172 50 C 178 46 182 54 178 56" stroke="#9c8465" strokeWidth="1.8" fill="none" />
+              <path d="M 175 60 C 168 62 166 54 172 50 C 178 46 182 54 178 56" stroke="#c8a261" strokeWidth="1.8" fill="none" />
               {/* Left inner scroll gold */}
-              <path d="M 192 60 C 185 62 183 54 189 50 C 195 46 199 54 195 56" stroke="#9c8465" strokeWidth="1.8" fill="none" />
+              <path d="M 192 60 C 185 62 183 54 189 50 C 195 46 199 54 195 56" stroke="#c8a261" strokeWidth="1.8" fill="none" />
               {/* Right inner scroll gold */}
-              <path d="M 228 60 C 235 62 237 54 231 50 C 225 46 221 54 225 56" stroke="#9c8465" strokeWidth="1.8" fill="none" />
+              <path d="M 228 60 C 235 62 237 54 231 50 C 225 46 221 54 225 56" stroke="#c8a261" strokeWidth="1.8" fill="none" />
               {/* Right outer scroll gold */}
-              <path d="M 245 60 C 252 62 254 54 248 50 C 242 46 238 54 242 56" stroke="#9c8465" strokeWidth="1.8" fill="none" />
+              <path d="M 245 60 C 252 62 254 54 248 50 C 242 46 238 54 242 56" stroke="#c8a261" strokeWidth="1.8" fill="none" />
               {/* Central figure limbs gold */}
-              <path d="M 210 54 L 198 46 M 210 54 L 222 46 M 210 54 L 210 64 M 210 64 L 204 70 M 210 64 L 216 70" stroke="#9c8465" strokeWidth="1.8" strokeLinecap="round" />
+              <path d="M 210 54 L 198 46 M 210 54 L 222 46 M 210 54 L 210 64 M 210 64 L 204 70 M 210 64 L 216 70" stroke="#c8a261" strokeWidth="1.8" strokeLinecap="round" />
             </g>
           </svg>
         </div>
@@ -196,29 +196,29 @@ export default function ExperienceBoard() {
         {/* Outer Wooden Frame (Pixelated Border Wrapper) */}
         <div style={{
           width: '100%',
-          backgroundColor: '#1a1610',
-          padding: '8px', // Outer black outline thickness
+          backgroundColor: '#321e10',
+          padding: '4px', // Outer warm outline thickness
           clipPath: `polygon(
             0px 20px, 4px 20px, 4px 16px, 8px 16px, 8px 12px, 12px 12px, 12px 8px, 16px 8px, 16px 4px, 20px 4px, 20px 0px,
             calc(100% - 20px) 0px, calc(100% - 20px) 4px, calc(100% - 16px) 4px, calc(100% - 16px) 8px, calc(100% - 12px) 8px, calc(100% - 12px) 12px, calc(100% - 8px) 12px, calc(100% - 8px) 16px, calc(100% - 4px) 16px, calc(100% - 4px) 20px, 100% 20px,
             100% calc(100% - 20px), calc(100% - 4px) calc(100% - 20px), calc(100% - 4px) calc(100% - 16px), calc(100% - 8px) calc(100% - 16px), calc(100% - 8px) calc(100% - 12px), calc(100% - 12px) calc(100% - 12px), calc(100% - 12px) calc(100% - 8px), calc(100% - 16px) calc(100% - 8px), calc(100% - 16px) calc(100% - 4px), calc(100% - 20px) calc(100% - 4px), calc(100% - 20px) 100%,
             20px 100%, 20px calc(100% - 4px), 16px calc(100% - 4px), 16px calc(100% - 8px), 12px calc(100% - 8px), 12px calc(100% - 12px), 8px calc(100% - 12px), 8px calc(100% - 16px), 4px calc(100% - 16px), 4px calc(100% - 20px), 0px calc(100% - 20px)
           )`,
-          filter: 'drop-shadow(0px 12px 0px rgba(0, 0, 0, 0.45))',
+          filter: 'drop-shadow(0px 8px 0px rgba(26, 15, 8, 0.45))',
           position: 'relative',
         }}>
           {/* Inner Textured Wood Body */}
           <div style={{
             width: '100%',
             backgroundImage: woodBgH,
-            backgroundColor: '#9c8a7b',
+            backgroundColor: '#7c5335',
             backgroundBlendMode: 'multiply',
             backgroundSize: '256px 256px',
             imageRendering: 'pixelated',
             padding: '20px',
             boxShadow: `
-              inset 8px 8px 0 rgba(215, 175, 135, 0.1), 
-              inset -8px -8px 0 rgba(0,0,0,0.55)
+              inset 6px 6px 0 rgba(255, 220, 180, 0.12), 
+              inset -6px -6px 0 rgba(0,0,0,0.5)
             `,
             clipPath: `polygon(
               0px 16px, 4px 16px, 4px 12px, 8px 12px, 8px 8px, 12px 8px, 12px 4px, 16px 4px, 16px 0px,
@@ -229,11 +229,11 @@ export default function ExperienceBoard() {
           }}>
           {/* Inner Green Board */}
           <div style={{
-            backgroundColor: '#1d2115',
+            backgroundColor: '#282c1e',
             boxShadow: `
-              inset 14px 14px 0px 0px #12100a,
-              inset -14px -14px 0px 0px #12100a,
-              inset 0 0 0 16px #2d2719
+              inset 10px 10px 0px 0px #201810,
+              inset -10px -10px 0px 0px #201810,
+              inset 0 0 0 12px #32251a
             `,
             padding: '4rem 6rem',
             textAlign: 'center',
@@ -249,37 +249,37 @@ export default function ExperienceBoard() {
             {/* Fancy Ornate Inner Chalkboard Border */}
             <div style={{ position: 'absolute', top: '25px', left: '25px', right: '25px', bottom: '25px', pointerEvents: 'none' }}>
               {/* Straight border lines */}
-              <div style={{ position: 'absolute', top: '10px', left: '40px', right: '40px', height: '2px', backgroundColor: '#cfa448', opacity: 0.6 }} />
-              <div style={{ position: 'absolute', bottom: '10px', left: '40px', right: '40px', height: '2px', backgroundColor: '#cfa448', opacity: 0.6 }} />
-              <div style={{ position: 'absolute', left: '10px', top: '40px', bottom: '40px', width: '2px', backgroundColor: '#cfa448', opacity: 0.6 }} />
-              <div style={{ position: 'absolute', right: '10px', top: '40px', bottom: '40px', width: '2px', backgroundColor: '#cfa448', opacity: 0.6 }} />
-
+              <div style={{ position: 'absolute', top: '10px', left: '40px', right: '40px', height: '2px', backgroundColor: '#dfb65d', opacity: 0.5 }} />
+              <div style={{ position: 'absolute', bottom: '10px', left: '40px', right: '40px', height: '2px', backgroundColor: '#dfb65d', opacity: 0.5 }} />
+              <div style={{ position: 'absolute', left: '10px', top: '40px', bottom: '40px', width: '2px', backgroundColor: '#dfb65d', opacity: 0.5 }} />
+              <div style={{ position: 'absolute', right: '10px', top: '40px', bottom: '40px', width: '2px', backgroundColor: '#dfb65d', opacity: 0.5 }} />
+ 
               {/* Top-Left Corner */}
-              <svg width="40" height="40" style={{ position: 'absolute', top: 0, left: 0, opacity: 0.6 }} viewBox="0 0 40 40">
-                <path d="M 40 10 L 20 10 L 10 20 L 10 40" fill="none" stroke="#cfa448" strokeWidth="2" strokeLinecap="square" />
-                <path d="M 15 15 L 23 15 L 23 23 L 15 23 Z" fill="none" stroke="#cfa448" strokeWidth="2" />
-                <rect x="4" y="4" width="4" height="4" fill="#cfa448" />
+              <svg width="40" height="40" style={{ position: 'absolute', top: 0, left: 0, opacity: 0.5 }} viewBox="0 0 40 40">
+                <path d="M 40 10 L 20 10 L 10 20 L 10 40" fill="none" stroke="#dfb65d" strokeWidth="2" strokeLinecap="square" />
+                <path d="M 15 15 L 23 15 L 23 23 L 15 23 Z" fill="none" stroke="#dfb65d" strokeWidth="2" />
+                <rect x="4" y="4" width="4" height="4" fill="#dfb65d" />
               </svg>
-
+ 
               {/* Top-Right Corner */}
-              <svg width="40" height="40" style={{ position: 'absolute', top: 0, right: 0, opacity: 0.6 }} viewBox="0 0 40 40">
-                <path d="M 0 10 L 20 10 L 30 20 L 30 40" fill="none" stroke="#cfa448" strokeWidth="2" strokeLinecap="square" />
-                <path d="M 25 15 L 17 15 L 17 23 L 25 23 Z" fill="none" stroke="#cfa448" strokeWidth="2" />
-                <rect x="32" y="4" width="4" height="4" fill="#cfa448" />
+              <svg width="40" height="40" style={{ position: 'absolute', top: 0, right: 0, opacity: 0.5 }} viewBox="0 0 40 40">
+                <path d="M 0 10 L 20 10 L 30 20 L 30 40" fill="none" stroke="#dfb65d" strokeWidth="2" strokeLinecap="square" />
+                <path d="M 25 15 L 17 15 L 17 23 L 25 23 Z" fill="none" stroke="#dfb65d" strokeWidth="2" />
+                <rect x="32" y="4" width="4" height="4" fill="#dfb65d" />
               </svg>
-
+ 
               {/* Bottom-Left Corner */}
-              <svg width="40" height="40" style={{ position: 'absolute', bottom: 0, left: 0, opacity: 0.6 }} viewBox="0 0 40 40">
-                <path d="M 40 30 L 20 30 L 10 20 L 10 0" fill="none" stroke="#cfa448" strokeWidth="2" strokeLinecap="square" />
-                <path d="M 15 25 L 23 25 L 23 17 L 15 17 Z" fill="none" stroke="#cfa448" strokeWidth="2" />
-                <rect x="4" y="32" width="4" height="4" fill="#cfa448" />
+              <svg width="40" height="40" style={{ position: 'absolute', bottom: 0, left: 0, opacity: 0.5 }} viewBox="0 0 40 40">
+                <path d="M 40 30 L 20 30 L 10 20 L 10 0" fill="none" stroke="#dfb65d" strokeWidth="2" strokeLinecap="square" />
+                <path d="M 15 25 L 23 25 L 23 17 L 15 17 Z" fill="none" stroke="#dfb65d" strokeWidth="2" />
+                <rect x="4" y="32" width="4" height="4" fill="#dfb65d" />
               </svg>
-
+ 
               {/* Bottom-Right Corner */}
-              <svg width="40" height="40" style={{ position: 'absolute', bottom: 0, right: 0, opacity: 0.6 }} viewBox="0 0 40 40">
-                <path d="M 0 30 L 20 30 L 30 20 L 30 0" fill="none" stroke="#cfa448" strokeWidth="2" strokeLinecap="square" />
-                <path d="M 25 25 L 17 25 L 17 17 L 25 17 Z" fill="none" stroke="#cfa448" strokeWidth="2" />
-                <rect x="32" y="32" width="4" height="4" fill="#cfa448" />
+              <svg width="40" height="40" style={{ position: 'absolute', bottom: 0, right: 0, opacity: 0.5 }} viewBox="0 0 40 40">
+                <path d="M 0 30 L 20 30 L 30 20 L 30 0" fill="none" stroke="#dfb65d" strokeWidth="2" strokeLinecap="square" />
+                <path d="M 25 25 L 17 25 L 17 17 L 25 17 Z" fill="none" stroke="#dfb65d" strokeWidth="2" />
+                <rect x="32" y="32" width="4" height="4" fill="#dfb65d" />
               </svg>
             </div>
           
@@ -289,7 +289,7 @@ export default function ExperienceBoard() {
                 <div style={{
                   position: 'relative',
                   zIndex: 2,
-                  color: '#d2ab5c',
+                  color: '#ebdcb9',
                   textAlign: 'left',
                   display: 'flex',
                   flexDirection: 'column',
@@ -299,7 +299,7 @@ export default function ExperienceBoard() {
                   <h3 style={{
                     fontSize: '2.5rem',
                     margin: 0,
-                    textShadow: '2px 2px 0 #1c140a, -2px -2px 0 #1c140a, 2px -2px 0 #1c140a, -2px 2px 0 #1c140a, 0 4px 0 #1c140a',
+                    textShadow: '2px 2px 0 #281a0e, -2px -2px 0 #281a0e, 2px -2px 0 #281a0e, -2px 2px 0 #281a0e, 0 4px 0 #281a0e',
                     lineHeight: 1.1,
                     letterSpacing: '0.05em'
                   }}>
@@ -308,8 +308,8 @@ export default function ExperienceBoard() {
                   <div style={{
                     fontSize: '1.4rem',
                     opacity: 0.9,
-                    textShadow: '2px 2px 0 #1c140a',
-                    color: '#d2ab5c'
+                    textShadow: '2px 2px 0 #281a0e',
+                    color: '#dfb65d'
                   }}>
                     {activeJob?.title} <span style={{ opacity: 0.5, margin: '0 0.5rem' }}>|</span> {activeJob?.date}
                   </div>
@@ -321,8 +321,8 @@ export default function ExperienceBoard() {
                     gap: '0.75rem',
                     fontSize: '1.3rem',
                     fontFamily: 'monospace',
-                    textShadow: '1px 1px 0 #1c140a',
-                    color: '#a0aa96'
+                    textShadow: '1px 1px 0 #281a0e',
+                    color: '#b2baa8'
                   }}>
                     {activeJob?.bullets.map((bullet, idx) => (
                       <li key={idx} style={{ opacity: 0.95, lineHeight: 1.4 }}>{bullet}</li>
@@ -340,11 +340,11 @@ export default function ExperienceBoard() {
                 position: 'relative',
                 zIndex: 2,
                 textShadow: `
-                  3px 3px 0 #1c140a, -3px -3px 0 #1c140a, 3px -3px 0 #1c140a, -3px 3px 0 #1c140a,
-                  0 6px 0 #1c140a,
-                  0 0 20px rgba(255, 202, 40, 0.45)
+                  3px 3px 0 #281a0e, -3px -3px 0 #281a0e, 3px -3px 0 #281a0e, -3px 3px 0 #281a0e,
+                  0 6px 0 #281a0e,
+                  0 0 20px rgba(223, 182, 93, 0.45)
                 `,
-                color: '#ffca28', // Brighter glowing amber gold
+                color: '#ebdcb9', // Soft warm beige/gold
               }}>
                 EXPERIENCE<br/>
                 STATION
@@ -374,14 +374,12 @@ export default function ExperienceBoard() {
                 onClick={() => toggleExpand(job.id)}
                 style={{
                   width: '100%',
-                  backgroundColor: '#303424', // Dusty olive
-                  border: '8px solid #1c1e14', // Dark olive/black instead of brown
+                  backgroundColor: '#4a3a2a', // Warm wood brown plank
+                  border: '4px solid #281a0e', // Thin warm dark brown border
                   boxShadow: `
-                    inset 4px 4px 0px 0px #4a5238, 
-                    inset -4px -4px 0px 0px #1c1e14,
-                    inset 8px 8px 0px 0px #1a1610,
-                    inset -8px -8px 0px 0px #1a1610,
-                    0 6px 0 0px #1a1610
+                    inset 4px 4px 0px 0px #6d543f, 
+                    inset -4px -4px 0px 0px #281a0e,
+                    0 4px 0 0px #20130a
                   `,
                   clipPath: `polygon(
                     0px 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0px,
@@ -395,22 +393,22 @@ export default function ExperienceBoard() {
                   alignItems: 'center',
                   cursor: 'none',
                   outline: 'none',
-                  color: isExpanded ? '#fff' : '#d2ab5c',
+                  color: isExpanded ? '#fff' : '#ebdcb9',
                   fontFamily: 'inherit',
                   textShadow: `
-                    2px 2px 0 #1c140a, -2px -2px 0 #1c140a, 2px -2px 0 #1c140a, -2px 2px 0 #1c140a,
-                    0 3px 0 #1c140a
+                    2px 2px 0 #281a0e, -2px -2px 0 #281a0e, 2px -2px 0 #281a0e, -2px 2px 0 #281a0e,
+                    0 3px 0 #20130a
                   `,
                   transition: 'all 0.2s ease',
                   transform: isExpanded ? 'translateZ(20px) scale(1.02)' : 'translateZ(0)',
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = '#383e29'; // Slightly lighter on hover
+                  e.currentTarget.style.backgroundColor = '#5c4936'; // Slightly lighter on hover
                   e.currentTarget.style.color = '#fff';
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = '#303424';
-                  e.currentTarget.style.color = isExpanded ? '#fff' : '#e6b964';
+                  e.currentTarget.style.backgroundColor = '#4a3a2a';
+                  e.currentTarget.style.color = isExpanded ? '#fff' : '#ebdcb9';
                 }}
               >
                 <div style={{ fontSize: '2rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
