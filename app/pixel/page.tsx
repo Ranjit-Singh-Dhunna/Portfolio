@@ -4,6 +4,7 @@ import TextRoll, { TextRollParagraph } from "@/components/ui/text-roll";
 
 import ChangeArtstyleButton from "@/components/ui/change-artstyle-button";
 import ExperienceBoard from "@/components/ui/experience-board";
+import ProjectsLake from "@/components/ui/projects-lake";
 
 export default function PixelPage() {
   const sections = [
@@ -194,6 +195,18 @@ export default function PixelPage() {
                 backgroundPosition: 'bottom',
                 zIndex: -1
               }} />
+
+              {/* ── PROJECTS LAKE OVERLAY ── */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <ProjectsLake />
+              </div>
             </>
           )}
 
