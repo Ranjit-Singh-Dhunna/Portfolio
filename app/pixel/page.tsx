@@ -31,7 +31,7 @@ export default function PixelPage() {
             width: '100vw',
             position: 'relative',
             overflow: 'visible', 
-            zIndex: section.id,
+            zIndex: section.id === 4 ? 6 : section.id,
             // Only apply standard background for sections > 7 (none in this list)
             ...(section.id > 7 ? {
               backgroundImage: `url(${section.bg})`,

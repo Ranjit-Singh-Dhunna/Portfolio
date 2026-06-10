@@ -22,6 +22,10 @@ interface ProjectCategory {
   projects: Project[];
 }
 
+
+
+
+
 export default function ProjectsLake() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
@@ -162,71 +166,56 @@ export default function ProjectsLake() {
   const selectedCategory = categories.find(c => c.id === activeCategory);
   const selectedProject = selectedCategory?.projects.find(p => p.id === activeProjectId);
 
+
+
   return (
     <div style={{
       position: 'relative',
       width: '100%',
       height: '100%',
       fontFamily: 'var(--font-pixelify), monospace',
-      overflow: 'hidden',
+      overflow: 'visible',
     }}>
       
-      {/* CSS Animations style block */}
       <style>{`
-        @keyframes pulseGlow {
-          0% { opacity: 0.45; filter: drop-shadow(0 0 1px #00f0ff); }
-          50% { opacity: 0.95; filter: drop-shadow(0 0 8px #00f0ff); }
-          100% { opacity: 0.45; filter: drop-shadow(0 0 1px #00f0ff); }
+        @keyframes pixelRuneGlow {
+          0%, 100% { opacity: 0.55; filter: brightness(0.9); }
+          50% { opacity: 1; filter: brightness(1.3); }
         }
-        @keyframes flickerFlame {
-          0% { transform: scale(1) translateY(0); }
-          30% { transform: scale(1.04) translateY(-1px) translateX(1px); }
-          60% { transform: scale(0.96) translateY(1px) translateX(-1px); }
-          80% { transform: scale(1.02) translateY(-1px); }
-          100% { transform: scale(1) translateY(0); }
+        @keyframes pixelRuneGlowAlt {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
         }
-        @keyframes floatSparkle {
-          0% { transform: translateY(0) scale(1); opacity: 0; }
-          40% { opacity: 1; }
-          100% { transform: translateY(-16px) scale(0.5); opacity: 0; }
+        @keyframes pixelSparkle {
+          0%, 100% { opacity: 0.35; }
+          50% { opacity: 1; }
         }
-        @keyframes pointerLineGlow {
-          0% { stroke-dashoffset: 0; }
-          100% { stroke-dashoffset: -20; }
+        @keyframes portalSwirl {
+          0%, 100% { filter: brightness(0.9) saturate(0.9); }
+          50% { filter: brightness(1.15) saturate(1.1); }
         }
-        .glow-hover {
-          transition: all 0.3s ease;
+        .lake-relic {
           cursor: pointer;
         }
-        .glow-hover:hover {
-          filter: drop-shadow(0 0 12px #00f0ff) brightness(1.25);
-          transform: translateY(-4px);
+        .lake-relic img {
+          transition: filter 0.35s ease;
+          filter: var(--base-filter, none);
         }
-        .pointer-text {
-          font-size: 1.1rem;
-          fill: #7d9685;
-          text-shadow: 2px 2px 0 #151710;
-          transition: all 0.3s ease;
-          letter-spacing: 0.1em;
+        .pixel-rune-glow {
+          animation: pixelRuneGlow 2.5s ease-in-out infinite;
         }
-        .pointer-text-hover {
-          fill: #00f0ff !important;
-          text-shadow: 0 0 8px rgba(0, 240, 255, 0.6), 2px 2px 0 #151710 !important;
+        .pixel-rune-glow-alt {
+          animation: pixelRuneGlowAlt 2s ease-in-out infinite;
         }
-        .pointer-line {
-          stroke: #3c5443;
-          stroke-width: 2;
-          fill: none;
-          transition: all 0.3s ease;
+        .pixel-sparkle {
+          animation: pixelSparkle 1.5s ease-in-out infinite;
         }
-        .pointer-line-hover {
-          stroke: #00f0ff !important;
-          stroke-dasharray: 4;
-          animation: pointerLineGlow 0.5s linear infinite;
+        .portal-swirl {
+          animation: portalSwirl 4s ease-in-out infinite;
         }
       `}</style>
 
-      {/* ── INTERACTIVE ARTIFACTS OVERLAY VIEWPORT (1400x800 Aspect Lock wrapper) ── */}
+      {/* ── INTERACTIVE ARTIFACTS OVERLAY VIEWPORT ── */}
       <div style={{
         position: 'absolute',
         left: '50%',
@@ -239,271 +228,107 @@ export default function ProjectsLake() {
         pointerEvents: 'none',
       }}>
 
-        {/* ── ARTIFACT 1: LEFT PORTAL (AI PORTAL) ── */}
+        {/* ═══════════════════════════════════════════════════════════
+            ARTIFACT 1 — SUNKEN PORTAL ARCH  (AI / ML)
+           ═══════════════════════════════════════════════════════════ */}
         <div 
-          className="glow-hover"
+          className="lake-relic"
           onClick={() => handleOpenModal('ai-portal')}
           onMouseEnter={() => setHoveredCategory('ai-portal')}
           onMouseLeave={() => setHoveredCategory(null)}
           style={{
             position: 'absolute',
-            left: '10%',
-            top: '50%',
-            width: '180px',
-            height: '220px',
+            left: '20.5%',
+            top: '30%',
+            width: '245px',
+            height: '226px',
             pointerEvents: 'auto',
-          }}
+            animationDelay: '0s',
+            '--base-filter': 'brightness(0.65) saturate(0.65)',
+            '--hover-filter': 'brightness(0.85) saturate(0.65)',
+            transform: 'rotate(12deg)',
+          } as React.CSSProperties}
         >
-          <svg width="100%" height="100%" viewBox="0 0 120 150">
-            {/* Chiseled Stone Base */}
-            <path d="M 10,140 L 20,125 L 100,125 L 110,140 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 20,125 L 25,120 L 95,120 L 100,125 Z" fill="#424c3e" stroke="#151710" strokeWidth="2" />
-            <rect x="5" y="140" width="110" height="8" fill="#1b201a" stroke="#151710" strokeWidth="2" />
-
-            {/* Side Pillars */}
-            {/* Left Pillar */}
-            <path d="M 22,120 L 22,40 L 36,40 L 36,120 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 24,120 L 24,42 L 28,42 L 28,120 Z" fill="#424c3e" /> {/* Highlight */}
-            {/* Right Pillar */}
-            <path d="M 84,120 L 84,40 L 98,40 L 98,120 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 86,120 L 86,42 L 90,42 L 90,120 Z" fill="#424c3e" /> {/* Highlight */}
-
-            {/* Arch Lintel (Top arch block) */}
-            <path d="M 16,40 L 22,26 L 98,26 L 104,40 L 84,40 L 75,32 L 45,32 L 36,40 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 22,26 L 25,22 L 95,22 L 98,26 Z" fill="#424c3e" />
-            
-            {/* Stone cracks/details */}
-            <path d="M 36,65 L 30,70" stroke="#151710" strokeWidth="2" fill="none" />
-            <path d="M 84,95 L 90,92" stroke="#151710" strokeWidth="2" fill="none" />
-            <path d="M 50,26 L 50,32" stroke="#151710" strokeWidth="2" fill="none" />
-
-            {/* Portal Gate Glow (Base portal background) */}
-            <ellipse cx="60" cy="80" rx="20" ry="36" fill="rgba(0, 240, 255, 0.12)" />
-
-            {/* Floating Portal Flame */}
-            <g style={{
-              transformOrigin: '60px 75px',
-              animation: 'flickerFlame 3s ease-in-out infinite',
-            }}>
-              {/* Outer flame */}
-              <path d="M 60,45 C 75,65 72,98 60,105 C 48,98 45,65 60,45 Z" fill="#00a8ff" opacity="0.6" />
-              {/* Inner bright core */}
-              <path d="M 60,55 C 70,70 68,90 60,95 C 52,90 50,70 60,55 Z" fill="#00f0ff" opacity="0.95" style={{ animation: 'pulseGlow 2s infinite' }} />
-            </g>
-
-            {/* Portal side runes (glowing chiseled marks) */}
-            <rect x="27" y="55" width="4" height="4" fill="#00f0ff" style={{ animation: 'pulseGlow 2.5s infinite' }} />
-            <rect x="27" y="85" width="4" height="4" fill="#00f0ff" style={{ animation: 'pulseGlow 1.8s infinite' }} />
-            <rect x="89" y="65" width="4" height="4" fill="#00f0ff" style={{ animation: 'pulseGlow 2.2s infinite' }} />
-            <rect x="89" y="95" width="4" height="4" fill="#00f0ff" style={{ animation: 'pulseGlow 1.5s infinite' }} />
-          </svg>
+          <img 
+            src="/arti1-removebg-preview.png" 
+            alt="AI Portal" 
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain', 
+              imageRendering: 'pixelated' 
+            }} 
+          />
         </div>
 
 
-        {/* ── ARTIFACT 2: MIDDLE CAIRN (SYSTEMS CAIRN) ── */}
+        {/* ═══════════════════════════════════════════════════════════
+            ARTIFACT 3 — CRYSTAL FORMATION  (FRONTEND)
+           ═══════════════════════════════════════════════════════════ */}
         <div 
-          className="glow-hover"
-          onClick={() => handleOpenModal('systems-cairn')}
-          onMouseEnter={() => setHoveredCategory('systems-cairn')}
-          onMouseLeave={() => setHoveredCategory(null)}
-          style={{
-            position: 'absolute',
-            left: '46%',
-            top: '34%',
-            width: '120px',
-            height: '180px',
-            pointerEvents: 'auto',
-          }}
-        >
-          <svg width="100%" height="100%" viewBox="0 0 100 150">
-            {/* Water ripples around base */}
-            <ellipse cx="50" cy="138" rx="28" ry="6" fill="none" stroke="#2d352c" strokeWidth="2" opacity="0.5" />
-            <ellipse cx="50" cy="138" rx="18" ry="4" fill="none" stroke="#00f0ff" strokeWidth="1" opacity="0.4" style={{ animation: 'pulseGlow 2.5s infinite' }} />
-
-            {/* Bottom Rock */}
-            <path d="M 15,135 C 15,115 25,100 50,100 C 75,100 85,115 85,135 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 22,112 C 30,105 45,103 52,103" fill="none" stroke="#424c3e" strokeWidth="2" />
-            {/* Bottom Rock Rune (Chiseled) */}
-            <path d="M 45,122 H 55 L 48,114 H 56" fill="none" stroke="#00f0ff" strokeWidth="2.5" strokeLinecap="square" style={{ animation: 'pulseGlow 2.2s infinite' }} />
-
-            {/* Middle Rock */}
-            <path d="M 24,102 C 24,85 35,74 52,74 C 69,74 76,85 76,102 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 32,86 C 40,80 50,78 56,78" fill="none" stroke="#424c3e" strokeWidth="2" />
-            {/* Middle Rock Rune */}
-            <path d="M 46,92 L 52,84 L 52,94" fill="none" stroke="#00f0ff" strokeWidth="2.5" strokeLinecap="square" style={{ animation: 'pulseGlow 1.7s infinite' }} />
-
-            {/* Top Rock */}
-            <path d="M 34,74 C 34,60 40,52 51,52 C 62,52 66,60 66,74 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 40,60 C 44,55 52,55 55,55" fill="none" stroke="#424c3e" strokeWidth="2" />
-            {/* Top Rock Rune */}
-            <path d="M 48,68 V 58 H 54 V 63 H 48" fill="none" stroke="#00f0ff" strokeWidth="2.5" strokeLinecap="square" style={{ animation: 'pulseGlow 2.8s infinite' }} />
-
-            {/* Companion small stone in water on the right */}
-            <path d="M 80,140 C 80,132 84,126 90,126 C 96,126 98,132 98,140 Z" fill="#2d352c" stroke="#151710" strokeWidth="2" />
-            <path d="M 88,136 H 92" fill="none" stroke="#00f0ff" strokeWidth="1.5" style={{ animation: 'pulseGlow 2s infinite' }} />
-          </svg>
-        </div>
-
-
-        {/* ── ARTIFACT 3: RIGHT CRYSTALS (CRYSTAL SPIRE) ── */}
-        <div 
-          className="glow-hover"
+          className="lake-relic"
           onClick={() => handleOpenModal('frontend-spire')}
           onMouseEnter={() => setHoveredCategory('frontend-spire')}
           onMouseLeave={() => setHoveredCategory(null)}
           style={{
             position: 'absolute',
-            left: '82%',
-            top: '44%',
-            width: '130px',
-            height: '190px',
+            left: '35.5%',
+            top: '78%',
+            width: '170px',
+            height: '187px',
             pointerEvents: 'auto',
-          }}
+            animationDelay: '2.4s',
+            '--base-filter': 'brightness(0.65) saturate(0.65)',
+            '--hover-filter': 'brightness(0.85) saturate(0.65)',
+          } as React.CSSProperties}
         >
-          <svg width="100%" height="100%" viewBox="0 0 110 150">
-            {/* Submerged Supporting Rock */}
-            <path d="M 10,130 L 22,105 L 88,105 L 100,130 L 85,138 L 25,138 Z" fill="#2d352c" stroke="#151710" strokeWidth="3" />
-            <path d="M 22,105 L 28,100 L 82,100 L 88,105 Z" fill="#424c3e" stroke="#151710" strokeWidth="2" />
-
-            {/* Left Crystal */}
-            <polygon points="20,105 12,85 28,52 38,78 30,105" fill="#00d8ff" opacity="0.8" stroke="#151710" strokeWidth="2.5" />
-            <polygon points="20,105 28,52 30,105" fill="#e0ffff" opacity="0.5" /> {/* Highlight facet */}
-
-            {/* Right Crystal */}
-            <polygon points="70,105 60,82 78,60 88,88 80,105" fill="#00d8ff" opacity="0.8" stroke="#151710" strokeWidth="2.5" />
-            <polygon points="70,105 78,60 80,105" fill="#e0ffff" opacity="0.5" />
-
-            {/* Main Center Crystal Spire */}
-            <polygon points="40,105 32,70 52,30 68,64 60,105" fill="#00f0ff" stroke="#151710" strokeWidth="3" />
-            <polygon points="40,105 52,30 60,105" fill="#e0ffff" opacity="0.65" style={{ animation: 'pulseGlow 3s infinite' }} />
-
-            {/* Floating Spark particles (using custom SVG delay/offset circles) */}
-            <circle cx="28" cy="40" r="2.5" fill="#e0ffff" style={{ animation: 'floatSparkle 2.5s infinite', animationDelay: '0.2s' }} />
-            <circle cx="52" cy="20" r="3" fill="#00f0ff" style={{ animation: 'floatSparkle 3s infinite', animationDelay: '1s' }} />
-            <circle cx="78" cy="50" r="2" fill="#e0ffff" style={{ animation: 'floatSparkle 2.2s infinite', animationDelay: '0.5s' }} />
-          </svg>
+          <img 
+            src="/arti3-removebg-preview.png" 
+            alt="Crystal Spire" 
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain', 
+              imageRendering: 'pixelated' 
+            }} 
+          />
         </div>
 
-        {/* ── ARTIFACT 4: BOTTOM OBELISK (INTEGRATION OBELISK) ── */}
+        {/* ═══════════════════════════════════════════════════════════
+            ARTIFACT 4 — INTEGRATION OBELISK  (FULLSTACK & TOOLS)
+           ═══════════════════════════════════════════════════════════ */}
         <div 
-          className="glow-hover"
+          className="lake-relic"
           onClick={() => handleOpenModal('fullstack-obelisk')}
           onMouseEnter={() => setHoveredCategory('fullstack-obelisk')}
           onMouseLeave={() => setHoveredCategory(null)}
           style={{
             position: 'absolute',
-            left: '60%',
-            top: '94%',
-            width: '100px',
-            height: '160px',
+            left: '68.9%',
+            top: '15.5%',
+            width: '210px',
+            height: '286px',
             pointerEvents: 'auto',
-          }}
+            animationDelay: '3.6s',
+            '--base-filter': 'brightness(0.8) saturate(0.8)',
+            '--hover-filter': 'brightness(1.0) saturate(0.8)',
+          } as React.CSSProperties}
         >
-          <svg width="100%" height="100%" viewBox="0 0 80 140">
-            {/* Water ripples at base */}
-            <ellipse cx="40" cy="128" rx="20" ry="5" fill="none" stroke="#2d352c" strokeWidth="2" opacity="0.5" />
-            <ellipse cx="40" cy="128" rx="12" ry="3" fill="none" stroke="#00f0ff" strokeWidth="1" opacity="0.4" style={{ animation: 'pulseGlow 2.5s infinite' }} />
-
-            {/* Chiseled Stone Base */}
-            <path d="M 22,125 L 30,115 L 50,115 L 58,125 Z" fill="#2d352c" stroke="#151710" strokeWidth="2.5" />
-            <path d="M 30,115 L 34,110 L 46,110 L 50,115 Z" fill="#424c3e" stroke="#151710" strokeWidth="2" />
-
-            {/* Obelisk Shaft */}
-            <path d="M 32,110 L 35,35 L 40,25 L 45,35 L 48,110 Z" fill="#2d352c" stroke="#151710" strokeWidth="2.5" />
-            {/* Chiseled Face Highlights */}
-            <path d="M 35,110 L 37,36 L 40,27 Z" fill="#424c3e" />
-            <path d="M 40,27 L 43,36 L 45,110 Z" fill="#1b201a" opacity="0.3" />
-
-            {/* Vertical Glowing Runes on the front face */}
-            <g style={{ animation: 'pulseGlow 2s infinite' }}>
-              <rect x="39" y="42" width="2.5" height="5" fill="#00f0ff" />
-              <rect x="39" y="58" width="2.5" height="2.5" fill="#00f0ff" />
-              <rect x="39" y="70" width="2.5" height="5" fill="#00f0ff" />
-              <rect x="39" y="86" width="2.5" height="2.5" fill="#00f0ff" />
-              <rect x="39" y="98" width="2.5" height="5" fill="#00f0ff" />
-            </g>
-
-            {/* Floating Capstone/Crystal right above obelisk tip */}
-            <g style={{
-              transformOrigin: '40px 15px',
-              animation: 'flickerFlame 2.5s ease-in-out infinite',
-            }}>
-              <polygon points="40,5 44,12 40,19 36,12" fill="#00f0ff" stroke="#151710" strokeWidth="1.5" style={{ animation: 'pulseGlow 1.5s infinite' }} />
-            </g>
-          </svg>
+          <img 
+            src="/arti4-removebg-preview.png" 
+            alt="Integration Obelisk" 
+            style={{ 
+              width: '100%', 
+              height: '100%', 
+              objectFit: 'contain', 
+              imageRendering: 'pixelated' 
+            }} 
+          />
         </div>
 
 
-        {/* ── VECTOR POINTER LINES AND LABELS OVERLAYS ── */}
-        <svg 
-          width="100%" 
-          height="100%" 
-          viewBox="0 0 1400 800"
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            pointerEvents: 'none',
-            zIndex: 2,
-            overflow: 'visible',
-          }}
-        >
-          {/* ── PORTAL LINE ── */}
-          <path 
-            d="M 220 540 L 150 490 L 80 490" 
-            className={`pointer-line ${hoveredCategory === 'ai-portal' ? 'pointer-line-hover' : ''}`}
-          />
-          <text 
-            x="80" 
-            y="475" 
-            className={`pointer-text ${hoveredCategory === 'ai-portal' ? 'pointer-text-hover' : ''}`}
-          >
-            PROJECT 1 // AI MODEL
-          </text>
-
-          {/* ── CAIRN LINE ── */}
-          <path 
-            d="M 680 390 L 730 350 L 830 350" 
-            className={`pointer-line ${hoveredCategory === 'systems-cairn' ? 'pointer-line-hover' : ''}`}
-          />
-          <text 
-            x="730" 
-            y="335" 
-            className={`pointer-text ${hoveredCategory === 'systems-cairn' ? 'pointer-text-hover' : ''}`}
-          >
-            PROJECT 2 // BACKEND
-          </text>
-
-          {/* ── CRYSTAL LINE ── */}
-          <path 
-            d="M 1200 480 L 1150 430 L 1050 430" 
-            className={`pointer-line ${hoveredCategory === 'frontend-spire' ? 'pointer-line-hover' : ''}`}
-          />
-          <text 
-            x="1050" 
-            y="415" 
-            className={`pointer-text ${hoveredCategory === 'frontend-spire' ? 'pointer-text-hover' : ''}`}
-            textAnchor="start"
-          >
-            PROJECT 3 // FRONTEND
-          </text>
-
-          {/* ── OBELISK LINE ── */}
-          <path 
-            d="M 880 828 L 790 750 L 690 750" 
-            className={`pointer-line ${hoveredCategory === 'fullstack-obelisk' ? 'pointer-line-hover' : ''}`}
-          />
-          <text 
-            x="690" 
-            y="735" 
-            className={`pointer-text ${hoveredCategory === 'fullstack-obelisk' ? 'pointer-text-hover' : ''}`}
-          >
-            PROJECT 4 // FULLSTACK & TOOLS
-          </text>
-        </svg>
 
       </div>
-
 
       {/* ── CHISELED STONE TABLET MODAL OVERLAY ── */}
       {activeCategory && selectedCategory && (
