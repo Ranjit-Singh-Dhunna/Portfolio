@@ -201,6 +201,9 @@ export default function ProjectsLake() {
           transition: filter 0.35s ease;
           filter: var(--base-filter, none);
         }
+        .lake-relic:hover img {
+          filter: var(--hover-filter, none);
+        }
         .pixel-rune-glow {
           animation: pixelRuneGlow 2.5s ease-in-out infinite;
         }
@@ -245,7 +248,7 @@ export default function ProjectsLake() {
             pointerEvents: 'auto',
             animationDelay: '0s',
             '--base-filter': 'brightness(0.65) saturate(0.65)',
-            '--hover-filter': 'brightness(0.85) saturate(0.65)',
+            '--hover-filter': 'brightness(1.35) saturate(1.25)',
             transform: 'rotate(12deg)',
           } as React.CSSProperties}
         >
@@ -279,7 +282,7 @@ export default function ProjectsLake() {
             pointerEvents: 'auto',
             animationDelay: '2.4s',
             '--base-filter': 'brightness(0.65) saturate(0.65)',
-            '--hover-filter': 'brightness(0.85) saturate(0.65)',
+            '--hover-filter': 'brightness(1.35) saturate(1.25)',
           } as React.CSSProperties}
         >
           <img 
@@ -311,7 +314,7 @@ export default function ProjectsLake() {
             pointerEvents: 'auto',
             animationDelay: '3.6s',
             '--base-filter': 'brightness(0.8) saturate(0.8)',
-            '--hover-filter': 'brightness(1.0) saturate(0.8)',
+            '--hover-filter': 'brightness(1.45) saturate(1.35)',
           } as React.CSSProperties}
         >
           <img 
