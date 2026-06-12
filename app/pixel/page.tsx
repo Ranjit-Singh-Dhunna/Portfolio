@@ -197,6 +197,22 @@ export default function PixelPage() {
                 zIndex: -1
               }} />
 
+              {/* project-rock.png at the top left */}
+              <img 
+                src="/project-rock.png" 
+                alt="Project Rock"
+                style={{
+                  position: 'absolute',
+                  top: '5%',
+                  left: '5%',
+                  zIndex: 8,
+                  maxWidth: '220px',
+                  height: 'auto',
+                  imageRendering: 'pixelated',
+                  pointerEvents: 'none',
+                }}
+              />
+
               {/* ── PROJECTS LAKE OVERLAY ── */}
               <div style={{
                 position: 'absolute',
