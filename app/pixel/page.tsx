@@ -204,14 +204,43 @@ export default function PixelPage() {
                 style={{
                   position: 'absolute',
                   top: '5%',
-                  left: '5%',
+                  left: '3%',
                   zIndex: 8,
-                  maxWidth: '220px',
+                  maxWidth: '400px',
                   height: 'auto',
                   imageRendering: 'pixelated',
                   pointerEvents: 'none',
+                  transform: 'rotate(5deg)',
+                  transformOrigin: 'right center',
                 }}
               />
+
+              {/* ── SECTION TITLE ── */}
+              <div style={{
+                position: 'absolute',
+                top: '7.2rem',
+                left: '9%',
+                zIndex: 15,
+                pointerEvents: 'none',
+                transform: 'rotate(-5deg)',
+                transformOrigin: 'right center',
+              }}>
+                <TextRoll
+                  center
+                  style={{
+                    fontFamily: 'var(--font-pixelify), monospace',
+                    fontSize: 'clamp(1.1rem, 2.6vw, 1.6rem)',
+                    fontWeight: 'bold',
+                    color: '#33ccff',
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    WebkitTextStroke: '1px black',
+                    textShadow: '2px 2px 0 #003366',
+                  }}
+                >
+                  Project Pool
+                </TextRoll>
+              </div>
 
               {/* ── PROJECTS LAKE OVERLAY ── */}
               <div style={{
