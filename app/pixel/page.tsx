@@ -219,7 +219,7 @@ export default function PixelPage() {
               <div style={{
                 position: 'absolute',
                 top: '7.2rem',
-                left: '9%',
+                left: '9.5%',
                 zIndex: 15,
                 pointerEvents: 'none',
                 transform: 'rotate(-5deg)',
