@@ -218,28 +218,28 @@ export default function PixelPage() {
               {/* ── SECTION TITLE ── */}
               <div style={{
                 position: 'absolute',
-                top: '7.2rem',
-                left: '9.5%',
+                top: '6.7rem',
+                left: '10%',
                 zIndex: 15,
                 pointerEvents: 'none',
-                transform: 'rotate(-5deg)',
+                transform: 'rotate(-6deg)',
                 transformOrigin: 'right center',
               }}>
-                <TextRoll
-                  center
+                <span
                   style={{
                     fontFamily: 'var(--font-pixelify), monospace',
-                    fontSize: 'clamp(1.1rem, 2.6vw, 1.6rem)',
+                    fontSize: 'clamp(1.05rem, 2.47vw, 1.52rem)',
                     fontWeight: 'bold',
-                    color: '#33ccff',
+                    color: '#3da2c4',
                     letterSpacing: '0.2em',
                     textTransform: 'uppercase',
                     WebkitTextStroke: '1px black',
                     textShadow: '2px 2px 0 #003366',
+                    display: 'inline-block',
                   }}
                 >
                   Project Pool
-                </TextRoll>
+                </span>
               </div>
 
               {/* ── PROJECTS LAKE OVERLAY ── */}
