@@ -26,6 +26,7 @@ export default function PixelPage() {
       {sections.map((section) => (
         <section 
           key={section.id}
+          data-section-id={section.id}
           style={{
             height: '100vh',
             width: '100vw',

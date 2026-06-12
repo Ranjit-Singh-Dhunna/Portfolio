@@ -1,5 +1,5 @@
 "use client";
-import { useState, UIEvent, useEffect } from 'react';
+import { useState, useRef, UIEvent, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -74,6 +74,7 @@ const projectsData = [
 
 export default function Page() {
   const router = useRouter();
+  const mainRef = useRef<HTMLElement>(null);
 
   const handlePixelClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -128,10 +129,27 @@ export default function Page() {
     }
   };
 
+  // Restore scroll section on mount
+  useEffect(() => {
+    const savedSection = sessionStorage.getItem('activeSection');
+    if (savedSection) {
+      const target = document.getElementById(savedSection);
+      if (target) {
+        // Use instant scroll to beat scroll-snap reset
+        requestAnimationFrame(() => {
+          target.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
+        });
+      }
+    }
+  }, []);
+
   const handleScroll = (e: UIEvent<HTMLElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
-    const threshold = window.innerHeight * 0.3;
-    setShowProjectsLink(scrollTop < threshold);
+    const threshold = window.innerHeight * 0.5;
+    // Determine which section is active based on scroll position
+    const activeSection = scrollTop >= threshold ? 'projects' : 'intro';
+    sessionStorage.setItem('activeSection', activeSection);
+    setShowProjectsLink(scrollTop < window.innerHeight * 0.3);
   };
 
   return (
@@ -188,7 +206,7 @@ export default function Page() {
         </div>
       </nav>
 
-      <main onScroll={handleScroll}>
+      <main ref={mainRef} onScroll={handleScroll}>
         {/* INTRO SECTION */}
         <section id="intro">
           <div className="intro-container">

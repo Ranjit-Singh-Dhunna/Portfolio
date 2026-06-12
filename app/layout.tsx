@@ -14,6 +14,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import CustomCursor from "@/components/CustomCursor";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "600"], style: ["normal", "italic"], variable: '--font-cormorant' });
@@ -43,6 +44,7 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: `*, *::before, *::after, html, body { cursor: none !important; }` }} />
       </head>
       <body style={{ cursor: 'none' }} className={`${inter.variable} ${cormorant.variable} ${bangers.variable} ${pixel.variable} ${vt323.variable} ${playfair.variable} ${creepster.variable} ${righteous.variable} ${spaceGrotesk.variable} ${fleur.variable} ${pixelify.variable}`}>
+        <Script src="/scroll-persist.js" strategy="beforeInteractive" />
         <CustomCursor />
         <div style={{ cursor: 'none' }}>
           {children}
