@@ -1,6 +1,169 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+interface Firefly {
+  angle: number;
+  speed: number;
+  radius: number;
+  yOffset: number;
+  riseSpeed: number;
+  size: number;
+  color: string;
+}
+
+interface FireflyCanvasProps {
+  width: number;
+  height: number;
+  particleCount?: number;
+  colorTheme?: 'cyan' | 'blue' | 'mixed';
+  verticalMin?: number;
+  verticalMax?: number;
+  radiusMin?: number;
+  radiusMax?: number;
+  style?: React.CSSProperties;
+}
+
+const FireflyCanvas: React.FC<FireflyCanvasProps> = ({
+  width,
+  height,
+  particleCount = 15,
+  colorTheme = 'mixed',
+  verticalMin = -100,
+  verticalMax = 100,
+  radiusMin = 30,
+  radiusMax = 60,
+  style,
+}) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+
+    const colors = {
+      cyan: ['#00f0ff', '#80f7ff', '#00e1ff'],
+      blue: ['#00a2ff', '#4faeff', '#0072ff'],
+      mixed: ['#00f0ff', '#00a2ff', '#80f7ff', '#4faeff']
+    }[colorTheme];
+
+    const particles: Firefly[] = [];
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        angle: Math.random() * Math.PI * 2,
+        speed: 0.002 + Math.random() * 0.003, // Slightly reduced spin speed
+        radius: radiusMin + Math.random() * (radiusMax - radiusMin), // Custom orbital radius per relic
+        yOffset: verticalMin + Math.random() * (verticalMax - verticalMin),
+        riseSpeed: 0.08 + Math.random() * 0.12, // Restored vertical rise speed
+        size: 2 + Math.random() * 1.5, // 2px to 3.5px base wisp core size
+        color: colors[Math.floor(Math.random() * colors.length)],
+      });
+    }
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      particles.forEach((p) => {
+        p.angle = (p.angle + p.speed) % (Math.PI * 2);
+        p.yOffset -= p.riseSpeed;
+        if (p.yOffset < verticalMin) {
+          p.yOffset = verticalMax;
+          p.angle = Math.random() * Math.PI * 2;
+        }
+
+        const x = centerX + p.radius * Math.cos(p.angle);
+        const y = centerY + p.yOffset + (p.radius * 0.22) * Math.sin(p.angle);
+
+        const sinVal = Math.sin(p.angle);
+        if (sinVal > 0) {
+          const opacity = 0.5 + sinVal * 0.5; // Baseline opacity 0.5
+          const pSize = p.size;
+
+          ctx.save();
+          // Use additive blend mode for maximum luminescent brightness
+          ctx.globalCompositeOperation = 'lighter';
+
+          // ================= PASS 1: SOFT NEON BLOOM AURA =================
+          ctx.save();
+          ctx.shadowBlur = 18 + pSize * 4.0;
+          ctx.shadowColor = p.color;
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = opacity * 0.45; // Soft glow aura
+          ctx.beginPath();
+          ctx.arc(x, y, pSize, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // ================= PASS 2: SOLID CORE & CARDINAL FLARES =================
+          ctx.save();
+          ctx.shadowBlur = 6 + pSize;
+          ctx.shadowColor = p.color;
+          
+          // Center Core (Pure white hot-spot for intense luminescent center)
+          ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = opacity * 1.0;
+          ctx.beginPath();
+          ctx.arc(x, y, pSize / 2, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Cardinal Flares (Neon color)
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = opacity * 0.85;
+          ctx.beginPath();
+          ctx.arc(x, y - pSize * 1.1, pSize / 3.5, 0, Math.PI * 2); // Top flare
+          ctx.arc(x, y + pSize * 1.1, pSize / 3.5, 0, Math.PI * 2); // Bottom flare
+          ctx.arc(x - pSize * 1.1, y, pSize / 3.5, 0, Math.PI * 2); // Left flare
+          ctx.arc(x + pSize * 1.1, y, pSize / 3.5, 0, Math.PI * 2); // Right flare
+          ctx.fill();
+
+          // Corner outer details
+          ctx.globalAlpha = opacity * 0.50;
+          ctx.beginPath();
+          ctx.arc(x - pSize, y - pSize, pSize / 5, 0, Math.PI * 2); // Top-Left
+          ctx.arc(x + pSize, y - pSize, pSize / 5, 0, Math.PI * 2); // Top-Right
+          ctx.arc(x - pSize, y + pSize, pSize / 5, 0, Math.PI * 2); // Bottom-Left
+          ctx.arc(x + pSize, y + pSize, pSize / 5, 0, Math.PI * 2); // Bottom-Right
+          ctx.fill();
+
+          ctx.restore();
+          ctx.restore();
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [width, height, particleCount, colorTheme, verticalMin, verticalMax, radiusMin, radiusMax]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={width}
+      height={height}
+      style={{
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50%, -50%)',
+        pointerEvents: 'none',
+        zIndex: 5,
+        ...style,
+      }}
+    />
+  );
+};
 
 // Define project interface
 interface Project {
@@ -215,7 +378,6 @@ export default function ProjectsLake() {
         }
         .portal-swirl {
           animation: portalSwirl 4s ease-in-out infinite;
-        }
       `}</style>
 
       {/* ── INTERACTIVE ARTIFACTS OVERLAY VIEWPORT ── */}
@@ -262,6 +424,17 @@ export default function ProjectsLake() {
               imageRendering: 'pixelated' 
             }} 
           />
+          <FireflyCanvas 
+            width={300} 
+            height={300} 
+            particleCount={12} 
+            colorTheme="mixed" 
+            verticalMin={-85} 
+            verticalMax={85} 
+            radiusMin={50}
+            radiusMax={85}
+            style={{ transform: 'translate(-54%, -55%)' }}
+          />
         </div>
 
 
@@ -275,14 +448,15 @@ export default function ProjectsLake() {
           onMouseLeave={() => setHoveredCategory(null)}
           style={{
             position: 'absolute',
-            left: '35.5%',
-            top: '78%',
+            left: '50.2%',
+            top: '89.5%',
             width: '170px',
             height: '187px',
             pointerEvents: 'auto',
             animationDelay: '2.4s',
             '--base-filter': 'brightness(0.65) saturate(0.65)',
             '--hover-filter': 'brightness(1.35) saturate(1.25)',
+            transform: 'rotate(35deg)',
           } as React.CSSProperties}
         >
           <img 
@@ -294,6 +468,15 @@ export default function ProjectsLake() {
               objectFit: 'contain', 
               imageRendering: 'pixelated' 
             }} 
+          />
+          <FireflyCanvas 
+            width={250} 
+            height={250} 
+            particleCount={9} 
+            colorTheme="blue" 
+            verticalMin={-65} 
+            verticalMax={65} 
+            style={{ transform: 'translate(-53%, -54%)' }}
           />
         </div>
 
@@ -326,6 +509,14 @@ export default function ProjectsLake() {
               objectFit: 'contain', 
               imageRendering: 'pixelated' 
             }} 
+          />
+          <FireflyCanvas 
+            width={320} 
+            height={320} 
+            particleCount={14} 
+            colorTheme="cyan" 
+            verticalMin={-110} 
+            verticalMax={110} 
           />
         </div>
 

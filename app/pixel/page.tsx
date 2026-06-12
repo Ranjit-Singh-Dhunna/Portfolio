@@ -18,7 +18,7 @@ export default function PixelPage() {
   ];
 
   return (
-    <div style={{ fontFamily: 'monospace', backgroundColor: '#000', color: '#0f0' }}>
+    <div style={{ fontFamily: 'monospace', backgroundColor: '#000', color: '#0f0', maxWidth: '100vw', overflowX: 'hidden' }}>
       <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 100 }}>
         <ChangeArtstyleButton />
       </div>
@@ -216,10 +216,14 @@ export default function PixelPage() {
               {/* px4-5: Transition from section 4 (behind px5) */}
               <div style={{
                 position: 'absolute',
-                inset: 0,
+                top: '-41vh',
+                bottom: 0,
+                left: '-4vw',
+                right: 0,
                 backgroundImage: 'url(/px4-5.png)',
-                backgroundSize: '180%',
-                backgroundPosition: 'center 95%',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center bottom',
+                filter: 'brightness(1.8)',
                 zIndex: -2
               }} />
               {/* px5: Base layer for section 5 */}
