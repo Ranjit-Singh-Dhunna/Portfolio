@@ -230,7 +230,7 @@ export default function PixelPage() {
                     fontFamily: 'var(--font-pixelify), monospace',
                     fontSize: 'clamp(1.05rem, 2.47vw, 1.52rem)',
                     fontWeight: 'bold',
-                    color: '#3da2c4',
+                    color: '#5deeff',
                     letterSpacing: '0.2em',
                     textTransform: 'uppercase',
                     WebkitTextStroke: '1px black',
@@ -281,6 +281,83 @@ export default function PixelPage() {
                 backgroundPosition: 'bottom',
                 zIndex: -1
               }} />
+
+              {/* ── ANIMATED RETRO HELICOPTER ── */}
+              <div style={{
+                position: 'absolute',
+                width: '670px',
+                height: '750px',
+                zIndex: 4,
+                pointerEvents: 'none',
+                overflow: 'visible',
+                filter: 'brightness(3.0)'
+              }} className="heli-fly-container">
+                <div className="heli-bob-container" style={{ width: '100%', height: '100%', position: 'relative' }}>
+                  <img 
+                    src="/he1-removebg-preview.png" 
+                    alt="Helicopter Frame 1" 
+                    className="heli-frame-1"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      imageRendering: 'pixelated'
+                    }}
+                  />
+                  <img 
+                    src="/he2-removebg-preview.png" 
+                    alt="Helicopter Frame 2" 
+                    className="heli-frame-2"
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      imageRendering: 'pixelated',
+                      transform: 'translateY(2.367%)'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* ── HELICOPTER KEYFRAME ANIMATIONS ── */}
+              <style>{`
+                @keyframes heliFly {
+                  0% { left: 100vw; top: 15%; }
+                  49.9% { left: -680px; top: 15%; animation-timing-function: step-end; }
+                  50% { left: 100vw; top: 32%; }
+                  99.9% { left: -680px; top: 32%; animation-timing-function: step-end; }
+                  100% { left: 100vw; top: 15%; }
+                }
+                @keyframes heliBob {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-30px); }
+                }
+                @keyframes heliFrameToggle {
+                  0%, 49.9% { opacity: 1; }
+                  50%, 100% { opacity: 0; }
+                }
+                @keyframes heliFrameToggleInverse {
+                  0%, 49.9% { opacity: 0; }
+                  50%, 100% { opacity: 1; }
+                }
+                
+                .heli-fly-container {
+                  animation: heliFly 70s linear infinite;
+                }
+                .heli-bob-container {
+                  animation: heliBob 18s ease-in-out infinite;
+                }
+                .heli-frame-1 {
+                  animation: heliFrameToggle 0.38s steps(1) infinite;
+                }
+                .heli-frame-2 {
+                  animation: heliFrameToggleInverse 0.38s steps(1) infinite;
+                }
+              `}</style>
             </>
           )}
 
@@ -323,7 +400,7 @@ export default function PixelPage() {
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dull layer
+            backgroundColor: 'rgba(0, 0, 0, 0.58)', // Duller layer
             zIndex: 5,
             pointerEvents: 'none'
           }} />

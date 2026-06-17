@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import DitherButton from './dither-button';
+import Button03 from './pixel-broke-button';
 
 interface Firefly {
   angle: number;
@@ -193,121 +196,132 @@ export default function ProjectsLake() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const categories: ProjectCategory[] = [
     {
       id: 'ai-portal',
       title: 'AI PORTAL',
-      subtitle: 'PROJECT 1 // AI MODEL',
+      subtitle: 'GROUP 1 // COMPUTER VISION & ANALYTICS',
       iconName: 'portal',
       projects: [
         {
-          id: 'ai-1',
-          title: 'SofiaPulse GenAI Ad-Builder',
-          description: 'A full-stack, AI-powered ad template generator that integrates generative diffusion models directly with responsive HTML layouts. Allows advertisers to tweak prompts and overlay text in a seamless, real-time editor.',
-          tech: ['Next.js', 'FastAPI', 'Stable Diffusion', 'PostgreSQL', 'TailwindCSS'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/ad-builder' }
+          id: 'scenix',
+          title: 'Scénix: Biomechanics Coach',
+          description: 'Built an end-to-end athletic performance analysis platform leveraging Google\'s BlazePose CNN for real-time joint tracking and Gemini 2.5 Flash AI for biomechanical assessment, enabling users to capture movement data via webcam or video upload and receive detailed coaching feedback on form, symmetry, and technique.',
+          tech: ['React', 'Vite', 'Google GenAI', 'Supabase', 'MediaPipe BlazePose', 'Tailwind CSS'],
+          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/scenix' }
         },
         {
-          id: 'ai-2',
-          title: 'Neural Style Transfer Studio',
-          description: 'Real-time feed styling using convolutional neural network models in TensorFlow. Features low-latency filters and a customizable style weight dashboard for fine-grained style blend controls.',
-          tech: ['Python', 'TensorFlow', 'OpenCV', 'React', 'WebSockets'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/neural-style' }
+          id: 'skin-lesion',
+          title: 'Skin Lesion CNN Classifier',
+          description: 'Engineered a full deep learning pipeline to classify skin lesions across 3 dermoscopic datasets (ISIC 2017, HAM10000, DERM12345), benchmarking 3 CNN architectures: ResNet-18, VGG-16 and MobileNetV2, in both from-scratch and transfer learning modes for early melanoma detection. Implemented Grad-CAM visual explainability and inverse-frequency weighted loss to handle class imbalance.',
+          tech: ['PyTorch', 'ResNet-18', 'VGG-16', 'MobileNetV2', 'YAML'],
+          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/skin-lesion' }
         },
         {
-          id: 'ai-3',
-          title: 'SimTerrain RL Agent',
-          description: 'A reinforcement learning agent trained with PPO to navigate challenging, procedural 2D pixel-art obstacles. Includes a visual web monitor showing live Q-values and training progress charts.',
-          tech: ['Python', 'PyTorch', 'Gymnasium', 'HTML5 Canvas', 'TypeScript'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/rl-terrain-agent' }
-        }
-      ]
-    },
-    {
-      id: 'systems-cairn',
-      title: 'SYSTEMS CAIRN',
-      subtitle: 'PROJECT 2 // BACKEND',
-      iconName: 'cairn',
-      projects: [
-        {
-          id: 'sys-1',
-          title: 'High-Throughput Go Task Queue',
-          description: 'A distributed asynchronous task runner written in Go using gRPC. Processes hundreds of thousands of jobs per second with custom priority queuing, automatic retries, and distributed Redis coordination.',
-          tech: ['Go', 'gRPC', 'Redis', 'Docker', 'Prometheus'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/go-runner' }
+          id: 'customer-churn',
+          title: 'Predicting Customer Churn',
+          description: 'Built an end-to-end churn prediction pipeline on 1,001 StreamFlex subscriber records, training a Decision Tree Classifier tuned via GridSearchCV across 224 hyperparameter combinations, achieving 81.5% accuracy and 92.75% recall on a held-out test set. Conducted full EDA with 14 custom visualisations and surfaced top 3 churn drivers.',
+          tech: ['Python', 'scikit-learn', 'pandas', 'seaborn'],
+          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/churn-prediction' }
         },
         {
-          id: 'sys-2',
-          title: 'GraphQL API Gatekeeper',
-          description: 'A performant API Gateway layer for microservices that handles real-time GraphQL query validation, nested query depth analysis, JWT auth, and token-bucket rate limiting.',
-          tech: ['TypeScript', 'GraphQL', 'Apollo Server', 'Redis', 'Express'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/gatekeeper' }
+          id: 'resume-parser',
+          title: 'Universal Resume Parser',
+          description: 'Built a resume parser using Ollama LLM to extract employability-specific data from any resume. Implemented hyperlink detection, multi-domain support, and context-aware parsing for tech, business, healthcare, and creative resumes.',
+          tech: ['Python', 'Ollama LLM', 'PDFPlumber', 'LangChain'],
+          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/resume-parser' }
         },
         {
-          id: 'sys-3',
-          title: 'Chiseled Secure Vault DB',
-          description: 'A custom, lightweight chiseled key-value store with an append-only Write-Ahead Log (WAL), a binary search log compactor, and secure AES-256 encryption at rest.',
-          tech: ['Rust', 'Cargo', 'AES-256', 'Linux Systems'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/secure-vault-db' }
-        }
-      ]
-    },
-    {
-      id: 'frontend-spire',
-      title: 'CRYSTAL SPIRE',
-      subtitle: 'PROJECT 3 // FRONTEND',
-      iconName: 'crystals',
-      projects: [
-        {
-          id: 'fe-1',
-          title: 'Interactive Pixel Canvas',
-          description: 'A real-time collaborative whiteboard workspace that allows thousands of simultaneous users to paint pixel art. Synchronized using lock-free WebSockets and rendered via optimized low-latency canvas buffers.',
-          tech: ['React', 'TypeScript', 'WebSockets', 'HTML5 Canvas', 'Node.js'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/pixel-canvas', demo: '#' }
-        },
-        {
-          id: 'fe-2',
-          title: 'Responsive Ad Template Renderer',
-          description: 'A custom layout engine designed for the ad publishing pipeline. Translates dynamic structured JSON templates into pixel-perfect, lightning-fast rendering components that support diverse dimensions and aspect ratios.',
-          tech: ['React', 'CSS Grid', 'ResizeObserver', 'Vite', 'Vitest'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/ad-renderer' }
-        },
-        {
-          id: 'fe-3',
-          title: 'Retro Arcade Physics Engine',
-          description: 'A lightweight 2D rigid-body arcade physics library written in TypeScript. Designed specifically for retro pixel-art games, featuring AABB collision resolutions and FM-synthesized sound effects.',
-          tech: ['TypeScript', 'HTML5 Audio', 'Canvas API', 'Webpack'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/retro-engine' }
+          id: 'drip-genius',
+          title: 'DRIP GENIUS: Outfit Recommender',
+          description: 'Fashion recommendation app to analyze clothing images and generate personalized outfit suggestions. Implemented computer vision-based clothing detection, K-means colour analysis, and responsive UI.',
+          tech: ['Roboflow', 'K-means Clustering', 'React', 'TailwindCSS'],
+          links: { demo: '#' }
         }
       ]
     },
     {
       id: 'fullstack-obelisk',
       title: 'INTEGRATION OBELISK',
-      subtitle: 'PROJECT 4 // FULLSTACK & TOOLS',
+      subtitle: 'GROUP 2 // FULLSTACK & AI INTEGRATIONS',
       iconName: 'obelisk',
       projects: [
         {
-          id: 'fs-1',
-          title: 'SofiaPulse AI Ad Editor',
-          description: 'A full-stack interactive ad editor that enables users to generate and integrate GenAI images directly into custom ad templates, utilizing stable diffusion APIs and a customized HTML canvas layout renderer.',
-          tech: ['Next.js', 'FastAPI', 'Stable Diffusion', 'PostgreSQL', 'TailwindCSS'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/ad-builder' }
+          id: 'canhealth',
+          title: 'CANHEALTH: FinTech Platform',
+          description: 'Architected a healthcare fintech platform combining AI-powered fraud detection and a patient credit line system. Integrated Google Gemini for real-time anomaly tracking, ElevenLabs voice agents for conversational financial support, and Brim Financial infrastructure for programmable cards and policy automation.',
+          tech: ['Python', 'FastAPI', 'React', 'TypeScript', 'Google Gemini', 'ElevenLabs', 'Brim Financial'],
+          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/canhealth' }
         },
         {
-          id: 'fs-2',
-          title: 'Ad Template Compiler CLI',
-          description: 'A performance-focused command-line utility and web-compiling workspace that parses and compiles structural ad components into compressed, single-bundle responsive ad widgets ready for production delivery.',
-          tech: ['Node.js', 'TypeScript', 'Webpack', 'Babel', 'Commander.js'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/ad-compiler' }
+          id: 'medivault',
+          title: 'MediVault',
+          description: 'Built a decentralized marketplace enabling patients to securely digitize, own, and monetize their medical records. Integrated OpenRouter and ElevenLabs for AI engagement, Solana for transactions, and Snowflake/MongoDB for secure data infrastructure.',
+          tech: ['OpenRouter', 'Dialogue', 'MongoDB', 'ElevenLabs', 'Snowflake', 'Vultr', 'Solana'],
+          links: { demo: '#' }
         },
         {
-          id: 'fs-3',
-          title: 'Multi-Agent Pixel Simulator',
-          description: 'A real-time simulator that models pathfinding and goal-directed cooperation between autonomous agents in a procedurally generated pixel-art grid.',
-          tech: ['TypeScript', 'HTML5 Canvas', 'Express', 'A* Algorithm'],
-          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/agent-simulator' }
+          id: 'flux',
+          title: 'FLUX: Scheduling App',
+          description: 'Developed scheduling platform as a team of 5, leveraging Gemini AI to automate the extraction of structured availability from timetable screenshots. Utilized dimensional graph analysis to model cognitive load and peak focus hours to finalize meetings.',
+          tech: ['React', 'TypeScript', 'Supabase', 'Gemini AI'],
+          links: { demo: '#' }
+        },
+        {
+          id: 'interbu',
+          title: 'INTERBU: AI Interview Coach',
+          description: 'Built an AI interview coach for personalized, resume and job description-based practice. Added local data storage and offline LLM fallback for privacy and reliability.',
+          tech: ['React', 'Flask', 'Whisper'],
+          links: { demo: '#' }
+        },
+        {
+          id: 'code-buddy',
+          title: 'Code Buddy: Code Review Tool',
+          description: 'Built an AI-powered code review tool providing instant, syntax-aware feedback for learners. Integrated a live code editor and markdown-rendered responses.',
+          tech: ['React', 'Vite', 'Node.js', 'Express'],
+          links: { demo: '#' }
+        }
+      ]
+    },
+    {
+      id: 'frontend-spire',
+      title: 'CRYSTAL SPIRE',
+      subtitle: 'GROUP 3 // WEB APPLICATIONS & SYSTEMS',
+      iconName: 'crystals',
+      projects: [
+        {
+          id: 'events-ticketing',
+          title: 'Events & Ticketing App',
+          description: 'Led a 7-person team to build a campus events and ticketing platform. Developed features enabling event discovery, QR code ticketing, social connections, organizer analytics dashboards, and admin moderation tools.',
+          tech: ['React', 'TypeScript', 'Supabase', 'PostgreSQL'],
+          links: { demo: '#' }
+        },
+        {
+          id: 'hospital-db',
+          title: 'Hospital Database System',
+          description: 'Developed a hospital database management system handling patient records, appointments, staff schedules, billing, and medical histories. Designed two flexible architectures for both SQL (PostgreSQL) and NoSQL (MongoDB).',
+          tech: ['PostgreSQL', 'MongoDB', 'SQL', 'NoSQL'],
+          links: {}
+        },
+        {
+          id: 'click2bill',
+          title: 'Click2Bill Invoice System',
+          description: 'Developed a service request and invoicing system streamlining form submissions, invoice generation, and email delivery for a real shop owner. Implemented workflow automation with searchable records and PDF templates.',
+          tech: ['Google Sheets', 'Apps Script', 'PDF-Email Integration'],
+          links: { demo: '#' }
+        },
+        {
+          id: 'health-companion',
+          title: 'Health Companion App',
+          description: 'Spearheaded mixed-methods research with 60 participants to engineer an Adaptive UI system with three distinct interface modes, successfully bridging the tech-literacy gap for senior users. Developed OCR onboarding flow with high-fidelity prototype in Figma.',
+          tech: ['Figma', 'UX Research', 'Mixed-Methods', 'WCAG AA'],
+          links: { github: 'https://github.com/Ranjit-Singh-Dhunna/health-companion' }
         }
       ]
     }
@@ -409,8 +423,8 @@ export default function ProjectsLake() {
             height: '226px',
             pointerEvents: 'auto',
             animationDelay: '0s',
-            '--base-filter': 'brightness(0.65) saturate(0.65)',
-            '--hover-filter': 'brightness(1.35) saturate(1.25)',
+            '--base-filter': 'brightness(0.72) saturate(0.72)',
+            '--hover-filter': 'brightness(1.08) saturate(1.05)',
             transform: 'rotate(12deg)',
           } as React.CSSProperties}
         >
@@ -449,13 +463,13 @@ export default function ProjectsLake() {
           style={{
             position: 'absolute',
             left: '50.2%',
-            top: '89.5%',
-            width: '170px',
-            height: '187px',
+            top: '87%',
+            width: '195px',
+            height: '215px',
             pointerEvents: 'auto',
             animationDelay: '2.4s',
-            '--base-filter': 'brightness(0.65) saturate(0.65)',
-            '--hover-filter': 'brightness(1.35) saturate(1.25)',
+            '--base-filter': 'brightness(0.72) saturate(0.72)',
+            '--hover-filter': 'brightness(1.08) saturate(1.05)',
             transform: 'rotate(35deg)',
           } as React.CSSProperties}
         >
@@ -496,8 +510,8 @@ export default function ProjectsLake() {
             height: '286px',
             pointerEvents: 'auto',
             animationDelay: '3.6s',
-            '--base-filter': 'brightness(0.8) saturate(0.8)',
-            '--hover-filter': 'brightness(1.45) saturate(1.35)',
+            '--base-filter': 'brightness(0.85) saturate(0.85)',
+            '--hover-filter': 'brightness(1.15) saturate(1.1)',
           } as React.CSSProperties}
         >
           <img 
@@ -525,7 +539,7 @@ export default function ProjectsLake() {
       </div>
 
       {/* ── CHISELED STONE TABLET MODAL OVERLAY ── */}
-      {activeCategory && selectedCategory && (
+      {mounted && activeCategory && selectedCategory && createPortal(
         <div style={{
           position: 'fixed',
           inset: 0,
@@ -533,32 +547,50 @@ export default function ProjectsLake() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          zIndex: 100,
+          zIndex: 99999,
           backdropFilter: 'blur(3px)',
         }}>
-          {/* Stone Tablet Outer Board Container */}
+          {/* Parent filter wrapper to apply drop-shadow to the clipped shape */}
           <div style={{
             position: 'relative',
-            width: '90%',
-            maxWidth: '960px',
-            backgroundColor: '#242921', // Chiseled slate background
-            border: '6px solid #3c4538', // Muted green-gray stone border
-            boxShadow: `
-              inset 0 0 0 4px #151710,
-              0 10px 25px rgba(0, 0, 0, 0.85)
-            `,
-            clipPath: `polygon(
-              0px 16px, 6px 16px, 6px 10px, 10px 10px, 10px 6px, 16px 6px, 16px 0px,
-              calc(100% - 16px) 0px, calc(100% - 16px) 6px, calc(100% - 10px) 6px, calc(100% - 10px) 10px, calc(100% - 6px) 10px, calc(100% - 6px) 16px, 100% 16px,
-              100% calc(100% - 16px), calc(100% - 6px) calc(100% - 16px), calc(100% - 6px) calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) calc(100% - 6px), calc(100% - 16px) calc(100% - 6px), calc(100% - 16px) 100%,
-              16px 100%, 16px calc(100% - 6px), 10px calc(100% - 6px), 10px calc(100% - 10px), 6px calc(100% - 10px), 6px calc(100% - 16px), 0px calc(100% - 16px)
-            )`,
-            padding: '2.5rem',
-            color: '#7d9685', // Faded ancient green-gray text color
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.5rem',
+            width: '94%',
+            maxWidth: '1150px',
+            filter: 'drop-shadow(0 12px 35px rgba(0, 0, 0, 0.95))',
           }}>
+            {/* Stone Tablet Outer Board (Behaves as the solid stone border) */}
+            <div style={{
+              backgroundColor: '#3c4538', // Stone border color
+              padding: '6px', // border thickness (6px)
+              boxSizing: 'border-box',
+              clipPath: `polygon(
+                0px 16px, 6px 16px, 6px 10px, 10px 10px, 10px 6px, 16px 6px, 16px 0px,
+                calc(100% - 16px) 0px, calc(100% - 16px) 6px, calc(100% - 10px) 6px, calc(100% - 10px) 10px, calc(100% - 6px) 10px, calc(100% - 6px) 16px, 100% 16px,
+                100% calc(100% - 16px), calc(100% - 6px) calc(100% - 16px), calc(100% - 6px) calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) calc(100% - 6px), calc(100% - 16px) calc(100% - 6px), calc(100% - 16px) 100%,
+                16px 100%, 16px calc(100% - 6px), 10px calc(100% - 6px), 10px calc(100% - 10px), 6px calc(100% - 10px), 6px calc(100% - 16px), 0px calc(100% - 16px)
+              )`,
+            }}>
+              {/* Stone Tablet Inner Body (Popup content container) */}
+              <div style={{
+                backgroundColor: '#242921', // Chiseled slate background
+                boxShadow: `
+                  inset 4px 4px 0 0 #56665a,
+                  inset -4px -4px 0 0 #151710
+                `,
+                clipPath: `polygon(
+                  0px 16px, 6px 16px, 6px 10px, 10px 10px, 10px 6px, 16px 6px, 16px 0px,
+                  calc(100% - 16px) 0px, calc(100% - 16px) 6px, calc(100% - 10px) 6px, calc(100% - 10px) 10px, calc(100% - 6px) 10px, calc(100% - 6px) 16px, 100% 16px,
+                  100% calc(100% - 16px), calc(100% - 6px) calc(100% - 16px), calc(100% - 6px) calc(100% - 10px), calc(100% - 10px) calc(100% - 10px), calc(100% - 10px) calc(100% - 6px), calc(100% - 16px) calc(100% - 6px), calc(100% - 16px) 100%,
+                  16px 100%, 16px calc(100% - 6px), 10px calc(100% - 6px), 10px calc(100% - 10px), 6px calc(100% - 10px), 6px calc(100% - 16px), 0px calc(100% - 16px)
+                )`,
+                padding: '2.5rem',
+                color: '#7d9685', // Faded ancient green-gray text color
+                display: 'flex',
+                fontFamily: 'var(--font-pixelify), monospace',
+                flexDirection: 'column',
+                gap: '1.5rem',
+                width: '100%',
+                boxSizing: 'border-box',
+              }}>
             
             {/* Modal Header */}
             <div style={{
@@ -635,38 +667,19 @@ export default function ProjectsLake() {
                 {selectedCategory.projects.map((proj) => {
                   const isActive = proj.id === activeProjectId;
                   return (
-                    <button
+                    <Button03
                       key={proj.id}
+                      text={proj.title}
                       onClick={() => setActiveProjectId(proj.id)}
+                      isActive={isActive}
+                      align="center"
                       style={{
                         width: '100%',
-                        textAlign: 'left',
-                        backgroundColor: isActive ? '#3c4538' : '#1b201a',
-                        border: isActive ? '3px solid #00f0ff' : '3px solid #3c4538',
-                        boxShadow: 'inset 0 0 0 2px #151710',
-                        color: isActive ? '#00f0ff' : '#7d9685',
-                        fontFamily: 'inherit',
                         fontSize: '1.2rem',
-                        padding: '0.8rem 1.2rem',
-                        cursor: 'pointer',
-                        clipPath: `polygon(
-                          0px 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0px,
-                          calc(100% - 8px) 0px, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
-                          100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%,
-                          8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0px calc(100% - 8px)
-                        )`,
-                        outline: 'none',
-                        transition: 'all 0.25s ease',
+                        fontFamily: 'var(--font-pixelify), monospace',
+                        fontWeight: 'bold',
                       }}
-                      onMouseOver={(e) => {
-                        if (!isActive) e.currentTarget.style.color = '#e0fff0';
-                      }}
-                      onMouseOut={(e) => {
-                        if (!isActive) e.currentTarget.style.color = '#7d9685';
-                      }}
-                    >
-                      {proj.title}
-                    </button>
+                    />
                   );
                 })}
               </div>
@@ -695,7 +708,9 @@ export default function ProjectsLake() {
                         lineHeight: 1.6,
                         color: '#b8c0af', // Chalk green text for description
                         margin: 0,
-                        fontFamily: 'monospace',
+                        fontFamily: 'var(--font-pixelify), monospace',
+                        fontWeight: 'bold',
+                        letterSpacing: '0.02em',
                       }}>
                         {selectedProject.description}
                       </p>
@@ -716,7 +731,14 @@ export default function ProjectsLake() {
                               padding: '0.2rem 0.6rem',
                               fontSize: '0.9rem',
                               color: '#7d9685',
-                              fontFamily: 'monospace',
+                              fontFamily: 'var(--font-pixelify), monospace',
+                              fontWeight: 'bold',
+                              clipPath: `polygon(
+                                0px 4px, 4px 4px, 4px 0px,
+                                calc(100% - 4px) 0px, calc(100% - 4px) 4px, 100% 4px,
+                                100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+                                4px 100%, 4px calc(100% - 4px), 0px calc(100% - 4px)
+                              )`
                             }}
                           >
                             {t}
@@ -733,17 +755,17 @@ export default function ProjectsLake() {
                         borderTop: '2px solid #3c4538',
                         paddingTop: '1rem',
                       }}>
-                        {selectedProject.links.github && (
-                          <a
-                            href={selectedProject.links.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        {selectedProject.links?.github && (
+                          <DitherButton
+                            onClick={() => window.open(selectedProject.links?.github, '_blank', 'noopener,noreferrer')}
+                            ditherColor="#9e8143"
+                            ditherOpacity={0.55}
+                            ditherSize={4}
                             style={{
                               backgroundColor: '#2d352c',
                               border: '3px solid #3c4538',
                               boxShadow: 'inset 0 0 0 2px #151710',
                               color: '#dfb65d',
-                              textDecoration: 'none',
                               fontSize: '1.1rem',
                               padding: '0.4rem 1.2rem',
                               clipPath: `polygon(
@@ -752,7 +774,8 @@ export default function ProjectsLake() {
                                 100% calc(100% - 6px), calc(100% - 4px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 4px), calc(100% - 6px) 100%,
                                 6px 100%, 6px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 6px), 0px calc(100% - 6px)
                               )`,
-                              transition: 'all 0.2s ease',
+                              cursor: 'pointer',
+                              fontFamily: 'var(--font-pixelify), monospace',
                             }}
                             onMouseOver={(e) => {
                               e.currentTarget.style.borderColor = '#dfb65d';
@@ -764,19 +787,19 @@ export default function ProjectsLake() {
                             }}
                           >
                             GITHUB REPO
-                          </a>
+                          </DitherButton>
                         )}
-                        {selectedProject.links.demo && (
-                          <a
-                            href={selectedProject.links.demo}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        {selectedProject.links?.demo && (
+                          <DitherButton
+                            onClick={() => window.open(selectedProject.links?.demo, '_blank', 'noopener,noreferrer')}
+                            ditherColor="#3c96a6"
+                            ditherOpacity={0.55}
+                            ditherSize={4}
                             style={{
                               backgroundColor: '#2d352c',
                               border: '3px solid #3c4538',
                               boxShadow: 'inset 0 0 0 2px #151710',
                               color: '#00f0ff',
-                              textDecoration: 'none',
                               fontSize: '1.1rem',
                               padding: '0.4rem 1.2rem',
                               clipPath: `polygon(
@@ -785,7 +808,8 @@ export default function ProjectsLake() {
                                 100% calc(100% - 6px), calc(100% - 4px) calc(100% - 6px), calc(100% - 4px) calc(100% - 4px), calc(100% - 6px) calc(100% - 4px), calc(100% - 6px) 100%,
                                 6px 100%, 6px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 6px), 0px calc(100% - 6px)
                               )`,
-                              transition: 'all 0.2s ease',
+                              cursor: 'pointer',
+                              fontFamily: 'var(--font-pixelify), monospace',
                             }}
                             onMouseOver={(e) => {
                               e.currentTarget.style.borderColor = '#00f0ff';
@@ -797,7 +821,7 @@ export default function ProjectsLake() {
                             }}
                           >
                             LIVE DEMO
-                          </a>
+                          </DitherButton>
                         )}
                       </div>
                     )}
@@ -807,12 +831,13 @@ export default function ProjectsLake() {
                     Select a project to view its details.
                   </div>
                 )}
-              </div>
             </div>
-
           </div>
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+      , document.body)}
 
     </div>
   );

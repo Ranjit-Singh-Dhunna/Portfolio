@@ -174,13 +174,21 @@ export default function CustomCursor() {
       const vx = mousePos.current.x - cursorPos.current.x;
       const vy = mousePos.current.y - cursorPos.current.y;
       const speed = Math.sqrt(vx*vx + vy*vy);
-      setIsWalking(speed > 2);
+      setIsWalking(speed > 1);
 
       if (cursorRef.current) {
         if (pathnameRef.current.startsWith('/pixel')) {
+          let rotation = 0;
+          let scaleX = directionRef.current === 1 ? 1.2 : -1.2;
+          if (speed > 1) {
+            const refVx = directionRef.current === 1 ? vx : -vx;
+            rotation = Math.atan2(vy, refVx) * (180 / Math.PI);
+          }
+          cursorRef.current.style.transformOrigin = '0px 0px';
           // The container is 0x0, so we just translate it to the center point
-          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${directionRef.current === 1 ? 1.2 : -1.2}, 1.2) rotate(0deg)`;
+          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${scaleX}, 1.2) rotate(${rotation}deg)`;
         } else {
+          cursorRef.current.style.transformOrigin = '21px 6px';
           cursorRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
         }
       }
@@ -383,7 +391,7 @@ export default function CustomCursor() {
             left: '-2px',
             right: '-2px',
             bottom: '-2px',
-            zIndex: 10001,
+            zIndex: 999999,
             pointerEvents: 'none',
             backgroundColor: '#000',
           }}
@@ -395,7 +403,7 @@ export default function CustomCursor() {
               left: '2px',
               right: '2px',
               bottom: '2px',
-              backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/px1.png)',
+              backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)), url(/px1.png)',
               backgroundSize: 'cover',
               backgroundPosition: 'bottom',
               backgroundRepeat: 'no-repeat',
@@ -411,7 +419,7 @@ export default function CustomCursor() {
         style={{ 
           position: 'fixed', 
           pointerEvents: 'none', 
-          zIndex: 9999,
+          zIndex: 999999,
           left: 0,
           top: 0,
           width: 0,
@@ -431,7 +439,7 @@ export default function CustomCursor() {
             borderRadius: '50%',
             border: `1.5px solid ${themeColor.petal}`,
             backgroundColor: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'transparent' : 'rgba(255, 255, 255, 0.03)',
-            backgroundImage: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/px1.png)' : 'none',
+            backgroundImage: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)), url(/px1.png)' : 'none',
             backgroundSize: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? undefined : 'cover',
             backgroundRepeat: 'no-repeat',
             backdropFilter: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'none' : 'blur(2px)',
@@ -450,14 +458,14 @@ export default function CustomCursor() {
       {isPixelPage ? (
         <div style={{
           position: 'absolute',
-          width: '80px',
-          height: '130px',
+          width: '120px',
+          height: '195px',
           left: 0,
           top: 0,
           transform: 'translate(-50%, -50%)',
           backgroundImage: isWalking 
-            ? ((Math.floor(walkFrame / 2) % 2) === 0 ? 'url(/m1.svg)' : 'url(/m2.svg)')
-            : ((Math.floor(walkFrame / 2) % 2) === 0 ? 'url(/s1.svg)' : 'url(/s2.svg)'),
+            ? ((Math.floor(walkFrame / 2) % 2) === 0 ? 'url(/mov1.png)' : 'url(/mov2.png)')
+            : ((Math.floor(walkFrame / 2) % 2) === 0 ? 'url(/fly1.png)' : 'url(/fly2.png)'),
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
