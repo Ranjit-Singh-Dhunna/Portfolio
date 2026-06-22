@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from 'react';
 import { PromptingIsAllYouNeed } from "@/components/ui/animated-hero-section";
 import TextRoll, { TextRollParagraph } from "@/components/ui/text-roll";
 
@@ -7,6 +10,7 @@ import ExperienceBoard from "@/components/ui/experience-board";
 import ProjectsLake from "@/components/ui/projects-lake";
 
 export default function PixelPage() {
+  const [activeCategory, setActiveCategory] = useState<'ctf' | 'hackathon'>('ctf');
   const sections = [
     { id: 0, bg: "/px1.png" },
     { id: 2, bg: "/px2.png" },
@@ -363,14 +367,283 @@ export default function PixelPage() {
 
           {/* Section 6: Base Layer for Section 6 */}
           {section.id === 6 && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: 'url(/px6.png)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'bottom',
-              zIndex: -1
-            }} />
+            <>
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: 'url(/px6.png)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'bottom',
+                zIndex: -1
+              }} />
+
+              {/* ── CTF & HACK IMAGES OVERLAY ── */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 10,
+                display: 'flex',
+                alignItems: 'flex-start',
+                paddingTop: '16vh',
+                justifyContent: 'center',
+                gap: '8%',
+                paddingLeft: '2rem',
+                paddingRight: '2rem',
+                flexWrap: 'wrap',
+              }}>
+                {/* ctf.png Container */}
+                <div 
+                  onClick={() => setActiveCategory('ctf')}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    maxWidth: '250px',
+                    transform: 'translate(45px, -180px)',
+                    cursor: 'pointer',
+                    opacity: 1,
+                    transition: 'all 0.3s ease',
+                    filter: activeCategory === 'ctf' ? 'drop-shadow(0 0 10px rgba(93, 238, 255, 0.4))' : 'none',
+                  }}
+                >
+                  <img
+                    src="/ctf.png"
+                    alt="Capture The Flag"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      maxHeight: '200px',
+                      objectFit: 'contain',
+                      imageRendering: 'pixelated',
+                    }}
+                  />
+                </div>
+
+                {/* hack.png Container */}
+                <div 
+                  onClick={() => setActiveCategory('hackathon')}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    maxWidth: '220px',
+                    cursor: 'pointer',
+                    opacity: 1,
+                    transition: 'all 0.3s ease',
+                    filter: activeCategory === 'hackathon' ? 'drop-shadow(0 0 10px rgba(124, 255, 155, 0.4))' : 'none',
+                  }}
+                >
+                  <img
+                    src="/hack.png"
+                    alt="Ethical Hacking"
+                    style={{
+                      width: '100%',
+                      height: 'auto',
+                      maxHeight: '170px',
+                      objectFit: 'contain',
+                      imageRendering: 'pixelated',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* ── COMPETITIONS & HACKATHONS LOG PANEL ── */}
+              <div style={{
+                position: 'absolute',
+                bottom: '10vh',
+                right: '4vw',
+                width: 'min(900px, 92vw)',
+                maxHeight: '28vh',
+                backgroundColor: 'rgba(10, 15, 35, 0.85)',
+                border: `3px solid ${activeCategory === 'ctf' ? '#5deeff' : '#7cff9b'}`,
+                borderRadius: '8px',
+                padding: '1.2rem',
+                fontFamily: 'var(--font-pixelify), monospace',
+                fontSize: '0.85rem',
+                color: '#f8f8f2',
+                zIndex: 20,
+                display: 'flex',
+                flexDirection: 'column',
+                boxShadow: `0 0 15px ${activeCategory === 'ctf' ? 'rgba(93, 238, 255, 0.2)' : 'rgba(124, 255, 155, 0.2)'}`,
+                overflow: 'hidden',
+                transition: 'all 0.3s ease',
+              }}>
+                {/* Header */}
+                <div style={{
+                  borderBottom: `2px solid ${activeCategory === 'ctf' ? '#5deeff' : '#7cff9b'}`,
+                  paddingBottom: '0.5rem',
+                  marginBottom: '0.8rem',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                  <span style={{
+                    fontFamily: 'var(--font-pixel), monospace',
+                    fontSize: '11px',
+                    color: '#ffd84d',
+                    textShadow: '1px 1px 0 #000',
+                  }}>
+                    ❖ LOGS // {activeCategory === 'ctf' ? 'CTF_RECORD' : 'HACK_RECORD'}
+                  </span>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <span style={{ width: '6px', height: '6px', backgroundColor: '#7cff9b', borderRadius: '50%' }} />
+                    <span style={{ width: '6px', height: '6px', backgroundColor: '#ffd84d', borderRadius: '50%' }} />
+                  </div>
+                </div>
+
+                {/* Content Container (Scrollable) */}
+                <div 
+                  style={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    paddingRight: '6px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                  className="pixel-panel-scroll"
+                >
+                  {activeCategory === 'ctf' ? (
+                    /* CTF Section */
+                    <div>
+                      <h4 style={{
+                        fontFamily: 'var(--font-pixel), monospace',
+                        fontSize: '10px',
+                        color: '#5deeff',
+                        marginBottom: '0.6rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}>
+                        <span>►</span> CTFs
+                      </h4>
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(345px, 1fr))', 
+                        gap: '1rem 1.5rem',
+                        marginTop: '0.4rem',
+                      }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>CyberSci Canada CTF</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>Nov 2025</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Earned an award from event sponsor Cineplex and represented Concordia University.
+                          </p>
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>@hack 2025 CTF</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>Mar 2025</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.
+                          </p>
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>CS Games 2026</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>Mar 2026</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Won 3rd place in the CTF and represented Concordia University.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Hackathons Section */
+                    <div>
+                      <h4 style={{
+                        fontFamily: 'var(--font-pixel), monospace',
+                        fontSize: '10px',
+                        color: '#7cff9b',
+                        marginBottom: '0.6rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                      }}>
+                        <span>►</span> HACKATHONS
+                      </h4>
+                      <div style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(345px, 1fr))', 
+                        gap: '1rem 1.5rem',
+                        marginTop: '0.4rem',
+                      }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>CS Games 2026</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>Mar 2026</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Won 1st place in the Web Challenge and 2nd place in AI, representing Concordia University.
+                          </p>
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>ConUHacks X Hackathon</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>Jan 2026</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.
+                          </p>
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>ConUHacks IX Hackathon</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>Feb 2025</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.
+                          </p>
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>Hack the Mountain</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>May 2026</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Participated in a hackathon hosted by Polytechnique Montréal and Université de Montréal.
+                          </p>
+                        </div>
+
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                            <strong style={{ color: '#ffd84d' }}>MPC Hacks</strong>
+                            <span style={{ color: '#8da592', fontSize: '11px' }}>May 2026</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
+                            Participated in a hackathon hosted by Polytechnique Montréal, Concordia University, and McGill University.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <style dangerouslySetInnerHTML={{ __html: `
+                  .pixel-panel-scroll::-webkit-scrollbar {
+                    width: 6px;
+                  }
+                  .pixel-panel-scroll::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0.2);
+                  }
+                  .pixel-panel-scroll::-webkit-scrollbar-thumb {
+                    background: ${activeCategory === 'ctf' ? '#5deeff' : '#7cff9b'};
+                    border-radius: 3px;
+                  }
+                  .pixel-panel-scroll::-webkit-scrollbar-thumb:hover {
+                    background: #ffd84d;
+                  }
+                ` }} />
+              </div>
+            </>
           )}
 
           {/* Section 7: Transition (px6-7) and New Layer (px7) */}
