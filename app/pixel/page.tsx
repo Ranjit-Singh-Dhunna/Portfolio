@@ -403,7 +403,7 @@ export default function PixelPage() {
                     cursor: 'pointer',
                     opacity: 1,
                     transition: 'all 0.3s ease',
-                    filter: activeCategory === 'ctf' ? 'drop-shadow(0 0 10px rgba(93, 238, 255, 0.4))' : 'none',
+                    filter: activeCategory === 'ctf' ? 'drop-shadow(0 0 14px rgba(223, 182, 93, 0.8))' : 'none',
                   }}
                 >
                   <img
@@ -430,7 +430,7 @@ export default function PixelPage() {
                     cursor: 'pointer',
                     opacity: 1,
                     transition: 'all 0.3s ease',
-                    filter: activeCategory === 'hackathon' ? 'drop-shadow(0 0 10px rgba(124, 255, 155, 0.4))' : 'none',
+                    filter: activeCategory === 'hackathon' ? 'drop-shadow(0 0 14px rgba(223, 182, 93, 0.8))' : 'none',
                   }}
                 >
                   <img
@@ -447,201 +447,442 @@ export default function PixelPage() {
                 </div>
               </div>
 
-              {/* ── COMPETITIONS & HACKATHONS LOG PANEL ── */}
+              {/* ── COMPETITIONS & HACKATHONS LOG PANEL (WOODEN RPG NOTICE BOARD THEME) ── */}
               <div style={{
                 position: 'absolute',
                 bottom: '10vh',
                 right: '4vw',
                 width: 'min(900px, 92vw)',
-                maxHeight: '28vh',
-                backgroundColor: 'rgba(10, 15, 35, 0.85)',
-                border: `3px solid ${activeCategory === 'ctf' ? '#5deeff' : '#7cff9b'}`,
-                borderRadius: '8px',
-                padding: '1.2rem',
-                fontFamily: 'var(--font-pixelify), monospace',
-                fontSize: '0.85rem',
-                color: '#f8f8f2',
                 zIndex: 20,
-                display: 'flex',
-                flexDirection: 'column',
-                boxShadow: `0 0 15px ${activeCategory === 'ctf' ? 'rgba(93, 238, 255, 0.2)' : 'rgba(124, 255, 155, 0.2)'}`,
-                overflow: 'hidden',
                 transition: 'all 0.3s ease',
+                filter: 'drop-shadow(0 14px 30px rgba(0, 0, 0, 0.9))',
               }}>
-                {/* Header */}
+                {/* Wooden Board Outer Frame (Stepped Pixelated Shape) */}
                 <div style={{
-                  borderBottom: `2px solid ${activeCategory === 'ctf' ? '#5deeff' : '#7cff9b'}`,
-                  paddingBottom: '0.5rem',
-                  marginBottom: '0.8rem',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
+                  backgroundColor: '#4e311c', // Classic warm wood border bezel
+                  padding: '5px',
+                  boxSizing: 'border-box',
+                  transition: 'all 0.3s ease',
+                  clipPath: `polygon(
+                    0px 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0px,
+                    calc(100% - 12px) 0px, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px,
+                    100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%,
+                    12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0px calc(100% - 12px)
+                  )`,
                 }}>
-                  <span style={{
-                    fontFamily: 'var(--font-pixel), monospace',
-                    fontSize: '11px',
-                    color: '#ffd84d',
-                    textShadow: '1px 1px 0 #000',
-                  }}>
-                    ❖ LOGS // {activeCategory === 'ctf' ? 'CTF_RECORD' : 'HACK_RECORD'}
-                  </span>
-                  <div style={{ display: 'flex', gap: '4px' }}>
-                    <span style={{ width: '6px', height: '6px', backgroundColor: '#7cff9b', borderRadius: '50%' }} />
-                    <span style={{ width: '6px', height: '6px', backgroundColor: '#ffd84d', borderRadius: '50%' }} />
-                  </div>
-                </div>
-
-                {/* Content Container (Scrollable) */}
-                <div 
-                  style={{
-                    flex: 1,
-                    overflowY: 'auto',
-                    paddingRight: '6px',
+                  {/* Wooden Board Inner Surface (Recessed Dark Wood Plate) */}
+                  <div style={{
+                    backgroundColor: '#261407', // Very dark mahogany backing
+                    boxShadow: `
+                      inset 4px 4px 0 0 #734c29,
+                      inset -4px -4px 0 0 #180a03
+                    `,
+                    clipPath: `polygon(
+                      0px 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0px,
+                      calc(100% - 12px) 0px, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px,
+                      100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%,
+                      12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0px calc(100% - 12px)
+                    )`,
+                    padding: '1.2rem',
+                    maxHeight: '28vh',
+                    boxSizing: 'border-box',
                     display: 'flex',
                     flexDirection: 'column',
-                  }}
-                  className="pixel-panel-scroll"
-                >
-                  {activeCategory === 'ctf' ? (
-                    /* CTF Section */
-                    <div>
-                      <h4 style={{
+                    fontFamily: 'var(--font-pixelify), monospace',
+                    fontSize: '0.85rem',
+                    color: '#f4ebd0',
+                    transition: 'all 0.3s ease',
+                    overflow: 'hidden',
+                  }}>
+                    {/* Header */}
+                    <div style={{
+                      borderBottom: '3px double #4a2e17',
+                      paddingBottom: '0.5rem',
+                      marginBottom: '0.8rem',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      transition: 'all 0.3s ease',
+                    }}>
+                      <span style={{
                         fontFamily: 'var(--font-pixel), monospace',
-                        fontSize: '10px',
-                        color: '#5deeff',
-                        marginBottom: '0.6rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
+                        fontSize: '11px',
+                        color: '#dfb65d', // Gilded Gold Title
+                        textShadow: '2px 2px 0 #120701',
+                        letterSpacing: '1.5px',
                       }}>
-                        <span>►</span> CTFs
-                      </h4>
+                        {activeCategory === 'ctf' ? '🏆 CTF QUEST LOG' : '🏆 HACKATHON QUEST LOG'}
+                      </span>
+                      <span style={{
+                        fontFamily: 'var(--font-pixelify), monospace',
+                        fontSize: '10px',
+                        color: '#9e7b5a', // Tan accent info
+                        fontWeight: 'bold',
+                      }}>
+                        ❖ ADVENTURER RECORD
+                      </span>
+                    </div>
+
+                    {/* Content Container (Scrollable) */}
+                    <div 
+                      style={{
+                        flex: 1,
+                        overflowY: 'auto',
+                        paddingRight: '6px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                      }}
+                      className="pixel-panel-scroll"
+                    >
                       <div style={{ 
                         display: 'grid', 
                         gridTemplateColumns: 'repeat(auto-fit, minmax(345px, 1fr))', 
                         gap: '1rem 1.5rem',
-                        marginTop: '0.4rem',
+                        marginTop: '0.2rem',
+                        paddingRight: '4px',
+                        paddingBottom: '4px',
                       }}>
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>CyberSci Canada CTF</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>Nov 2025</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Earned an award from event sponsor Cineplex and represented Concordia University.
-                          </p>
-                        </div>
+                        {activeCategory === 'ctf' ? (
+                          /* CTFs */
+                          <>
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8', // Warm aged paper cream
+                                border: '3px solid #7c6248', // Burned leather/paper border
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>CyberSci Canada CTF</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Nov 2025</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Earned an award from event sponsor Cineplex and represented Concordia University.
+                              </p>
+                            </div>
 
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>@hack 2025 CTF</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>Mar 2025</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.
-                          </p>
-                        </div>
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>@hack 2025 CTF</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Mar 2025</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.
+                              </p>
+                            </div>
 
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>CS Games 2026</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>Mar 2026</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Won 3rd place in the CTF and represented Concordia University.
-                          </p>
-                        </div>
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>CS Games 2026</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Mar 2026</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Won 3rd place in the CTF and represented Concordia University.
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          /* Hackathons */
+                          <>
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>CS Games 2026</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Mar 2026</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Won 1st place in the Web Challenge and 2nd place in AI, representing Concordia University.
+                              </p>
+                            </div>
+
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>ConUHacks X Hackathon</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Jan 2026</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.
+                              </p>
+                            </div>
+
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>ConUHacks IX Hackathon</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Feb 2025</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.
+                              </p>
+                            </div>
+
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>Hack the Mountain</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>May 2026</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Participated in a hackathon hosted by Polytechnique Montréal and Université de Montréal.
+                              </p>
+                            </div>
+
+                            <div 
+                              style={{
+                                backgroundColor: '#eedfb8',
+                                border: '3px solid #7c6248',
+                                boxShadow: `
+                                  inset 2px 2px 0 0 #fff7e0,
+                                  inset -2px -2px 0 0 #d9c596,
+                                  0 4px 6px rgba(0, 0, 0, 0.4)
+                                `,
+                                clipPath: `polygon(
+                                  0px 6px, 6px 6px, 6px 0px,
+                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
+                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
+                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
+                                )`,
+                                padding: '0.8rem 1.1rem',
+                                transition: 'all 0.2s ease',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
+                                <strong style={{ color: '#563517', fontSize: '13px' }}>MPC Hacks</strong>
+                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>May 2026</span>
+                              </div>
+                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                                Participated in a hackathon hosted by Polytechnique Montréal, Concordia University, and McGill University.
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
-                  ) : (
-                    /* Hackathons Section */
-                    <div>
-                      <h4 style={{
-                        fontFamily: 'var(--font-pixel), monospace',
-                        fontSize: '10px',
-                        color: '#7cff9b',
-                        marginBottom: '0.6rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                      }}>
-                        <span>►</span> HACKATHONS
-                      </h4>
-                      <div style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(345px, 1fr))', 
-                        gap: '1rem 1.5rem',
-                        marginTop: '0.4rem',
-                      }}>
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>CS Games 2026</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>Mar 2026</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Won 1st place in the Web Challenge and 2nd place in AI, representing Concordia University.
-                          </p>
-                        </div>
 
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>ConUHacks X Hackathon</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>Jan 2026</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.
-                          </p>
-                        </div>
-
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>ConUHacks IX Hackathon</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>Feb 2025</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.
-                          </p>
-                        </div>
-
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>Hack the Mountain</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>May 2026</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Participated in a hackathon hosted by Polytechnique Montréal and Université de Montréal.
-                          </p>
-                        </div>
-
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                            <strong style={{ color: '#ffd84d' }}>MPC Hacks</strong>
-                            <span style={{ color: '#8da592', fontSize: '11px' }}>May 2026</span>
-                          </div>
-                          <p style={{ margin: '4px 0 0', color: '#f8f8f2', fontSize: '13px', lineHeight: '1.4' }}>
-                            Participated in a hackathon hosted by Polytechnique Montréal, Concordia University, and McGill University.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    <style dangerouslySetInnerHTML={{ __html: `
+                      .pixel-panel-scroll::-webkit-scrollbar {
+                        width: 8px;
+                      }
+                      .pixel-panel-scroll::-webkit-scrollbar-track {
+                        background: #1c0e05;
+                        box-shadow: inset 1px 1px 0 0 #0d0602;
+                      }
+                      .pixel-panel-scroll::-webkit-scrollbar-thumb {
+                        background: #734c29;
+                        border: 2px solid #1c0e05;
+                        box-shadow: inset 1px 1px 0 0 #9e6f43;
+                      }
+                      .pixel-panel-scroll::-webkit-scrollbar-thumb:hover {
+                        background: #dfb65d;
+                      }
+                    ` }} />
+                  </div>
                 </div>
-
-                <style dangerouslySetInnerHTML={{ __html: `
-                  .pixel-panel-scroll::-webkit-scrollbar {
-                    width: 6px;
-                  }
-                  .pixel-panel-scroll::-webkit-scrollbar-track {
-                    background: rgba(0, 0, 0, 0.2);
-                  }
-                  .pixel-panel-scroll::-webkit-scrollbar-thumb {
-                    background: ${activeCategory === 'ctf' ? '#5deeff' : '#7cff9b'};
-                    border-radius: 3px;
-                  }
-                  .pixel-panel-scroll::-webkit-scrollbar-thumb:hover {
-                    background: #ffd84d;
-                  }
-                ` }} />
               </div>
             </>
           )}
