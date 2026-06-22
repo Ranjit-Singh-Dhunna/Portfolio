@@ -447,7 +447,7 @@ export default function PixelPage() {
                 </div>
               </div>
 
-              {/* ── COMPETITIONS & HACKATHONS LOG PANEL (WOODEN RPG NOTICE BOARD THEME) ── */}
+              {/* ── COMPETITIONS & HACKATHONS LOG PANEL (RETRO RPG QUEST JOURNAL THEME) ── */}
               <div style={{
                 position: 'absolute',
                 bottom: '10vh',
@@ -455,35 +455,35 @@ export default function PixelPage() {
                 width: 'min(900px, 92vw)',
                 zIndex: 20,
                 transition: 'all 0.3s ease',
-                filter: 'drop-shadow(0 14px 30px rgba(0, 0, 0, 0.9))',
+                filter: 'drop-shadow(0 10px 24px rgba(0, 0, 0, 0.8))',
               }}>
-                {/* Wooden Board Outer Frame (Stepped Pixelated Shape) */}
+                {/* Gold Bezel Panel Outer Frame */}
                 <div style={{
-                  backgroundColor: '#4e311c', // Classic warm wood border bezel
-                  padding: '5px',
+                  backgroundColor: '#c89d4c', // Gilded gold border frame
+                  padding: '3px',
                   boxSizing: 'border-box',
                   transition: 'all 0.3s ease',
                   clipPath: `polygon(
-                    0px 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0px,
-                    calc(100% - 12px) 0px, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px,
-                    100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%,
-                    12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0px calc(100% - 12px)
+                    0px 10px, 4px 10px, 4px 6px, 6px 6px, 6px 4px, 10px 4px, 10px 0px,
+                    calc(100% - 10px) 0px, calc(100% - 10px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 10px, 100% 10px,
+                    100% calc(100% - 10px), calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px), calc(100% - 10px) 100%,
+                    10px 100%, 10px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 10px), 0px calc(100% - 10px)
                   )`,
                 }}>
-                  {/* Wooden Board Inner Surface (Recessed Dark Wood Plate) */}
+                  {/* Slate Screen Inner Body */}
                   <div style={{
-                    backgroundColor: '#261407', // Very dark mahogany backing
+                    backgroundColor: 'rgba(20, 26, 35, 0.93)', // Semi-translucent dark slate
                     boxShadow: `
-                      inset 4px 4px 0 0 #734c29,
-                      inset -4px -4px 0 0 #180a03
+                      inset 3px 3px 0 0 #5a421b,
+                      inset -3px -3px 0 0 #181d26
                     `,
                     clipPath: `polygon(
-                      0px 12px, 4px 12px, 4px 8px, 8px 8px, 8px 4px, 12px 4px, 12px 0px,
-                      calc(100% - 12px) 0px, calc(100% - 12px) 4px, calc(100% - 8px) 4px, calc(100% - 8px) 8px, calc(100% - 4px) 8px, calc(100% - 4px) 12px, 100% 12px,
-                      100% calc(100% - 12px), calc(100% - 4px) calc(100% - 12px), calc(100% - 4px) calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) calc(100% - 4px), calc(100% - 12px) calc(100% - 4px), calc(100% - 12px) 100%,
-                      12px 100%, 12px calc(100% - 4px), 8px calc(100% - 4px), 8px calc(100% - 8px), 4px calc(100% - 8px), 4px calc(100% - 12px), 0px calc(100% - 12px)
+                      0px 10px, 4px 10px, 4px 6px, 6px 6px, 6px 4px, 10px 4px, 10px 0px,
+                      calc(100% - 10px) 0px, calc(100% - 10px) 4px, calc(100% - 6px) 4px, calc(100% - 6px) 6px, calc(100% - 4px) 6px, calc(100% - 4px) 10px, 100% 10px,
+                      100% calc(100% - 10px), calc(100% - 4px) calc(100% - 10px), calc(100% - 4px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) calc(100% - 4px), calc(100% - 10px) calc(100% - 4px), calc(100% - 10px) 100%,
+                      10px 100%, 10px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 10px), 0px calc(100% - 10px)
                     )`,
-                    padding: '1.2rem',
+                    padding: '1.1rem 1.4rem',
                     maxHeight: '28vh',
                     boxSizing: 'border-box',
                     display: 'flex',
@@ -496,7 +496,7 @@ export default function PixelPage() {
                   }}>
                     {/* Header */}
                     <div style={{
-                      borderBottom: '3px double #4a2e17',
+                      borderBottom: '2px solid #5a421b',
                       paddingBottom: '0.5rem',
                       marginBottom: '0.8rem',
                       display: 'flex',
@@ -508,7 +508,7 @@ export default function PixelPage() {
                         fontFamily: 'var(--font-pixel), monospace',
                         fontSize: '11px',
                         color: '#dfb65d', // Gilded Gold Title
-                        textShadow: '2px 2px 0 #120701',
+                        textShadow: '2px 2px 0 #181d26',
                         letterSpacing: '1.5px',
                       }}>
                         {activeCategory === 'ctf' ? '🏆 CTF QUEST LOG' : '🏆 HACKATHON QUEST LOG'}
@@ -516,10 +516,10 @@ export default function PixelPage() {
                       <span style={{
                         fontFamily: 'var(--font-pixelify), monospace',
                         fontSize: '10px',
-                        color: '#9e7b5a', // Tan accent info
+                        color: '#8e7a63', // Soft warm brown/tan
                         fontWeight: 'bold',
                       }}>
-                        ❖ ADVENTURER RECORD
+                        ❖ ADVENTURER JOURNAL
                       </span>
                     </div>
 
@@ -537,7 +537,7 @@ export default function PixelPage() {
                       <div style={{ 
                         display: 'grid', 
                         gridTemplateColumns: 'repeat(auto-fit, minmax(345px, 1fr))', 
-                        gap: '1rem 1.5rem',
+                        gap: '0.8rem 2.5rem',
                         marginTop: '0.2rem',
                         paddingRight: '4px',
                         paddingBottom: '4px',
@@ -545,119 +545,38 @@ export default function PixelPage() {
                         {activeCategory === 'ctf' ? (
                           /* CTFs */
                           <>
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8', // Warm aged paper cream
-                                border: '3px solid #7c6248', // Burned leather/paper border
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>CyberSci Canada CTF</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Nov 2025</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CyberSci Canada CTF</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Nov 2025</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Earned an award from event sponsor Cineplex and represented Concordia University.
                               </p>
                             </div>
 
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>@hack 2025 CTF</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Mar 2025</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>@hack 2025 CTF</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mar 2025</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.
                               </p>
                             </div>
 
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>CS Games 2026</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Mar 2026</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CS Games 2026</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mar 2026</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Won 3rd place in the CTF and represented Concordia University.
                               </p>
                             </div>
@@ -665,197 +584,62 @@ export default function PixelPage() {
                         ) : (
                           /* Hackathons */
                           <>
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>CS Games 2026</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Mar 2026</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CS Games 2026</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mar 2026</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Won 1st place in the Web Challenge and 2nd place in AI, representing Concordia University.
                               </p>
                             </div>
 
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>ConUHacks X Hackathon</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Jan 2026</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>ConUHacks X Hackathon</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Jan 2026</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.
                               </p>
                             </div>
 
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>ConUHacks IX Hackathon</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>Feb 2025</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>ConUHacks IX Hackathon</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Feb 2025</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.
                               </p>
                             </div>
 
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>Hack the Mountain</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>May 2026</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>Hack the Mountain</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>May 2026</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Participated in a hackathon hosted by Polytechnique Montréal and Université de Montréal.
                               </p>
                             </div>
 
-                            <div 
-                              style={{
-                                backgroundColor: '#eedfb8',
-                                border: '3px solid #7c6248',
-                                boxShadow: `
-                                  inset 2px 2px 0 0 #fff7e0,
-                                  inset -2px -2px 0 0 #d9c596,
-                                  0 4px 6px rgba(0, 0, 0, 0.4)
-                                `,
-                                clipPath: `polygon(
-                                  0px 6px, 6px 6px, 6px 0px,
-                                  calc(100% - 6px) 0px, calc(100% - 6px) 6px, 100% 6px,
-                                  100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%,
-                                  6px 100%, 6px calc(100% - 6px), 0px calc(100% - 6px)
-                                )`,
-                                padding: '0.8rem 1.1rem',
-                                transition: 'all 0.2s ease',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '4px',
-                              }}
-                              onMouseOver={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 6px 12px rgba(0, 0, 0, 0.55)';
-                              }}
-                              onMouseOut={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = 'inset 2px 2px 0 0 #fff7e0, inset -2px -2px 0 0 #d9c596, 0 4px 6px rgba(0, 0, 0, 0.4)';
-                              }}
-                            >
-                              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
-                                <strong style={{ color: '#563517', fontSize: '13px' }}>MPC Hacks</strong>
-                                <span style={{ color: '#8b7155', fontSize: '11px', fontWeight: 'bold' }}>May 2026</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px' }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>MPC Hacks</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>May 2026</span>
                               </div>
-                              <p style={{ margin: '2px 0 0', color: '#3c2817', fontSize: '13px', lineHeight: '1.45' }}>
+                              <p style={{ margin: '3px 0 0 16px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Participated in a hackathon hosted by Polytechnique Montréal, Concordia University, and McGill University.
                               </p>
                             </div>
@@ -869,13 +653,12 @@ export default function PixelPage() {
                         width: 8px;
                       }
                       .pixel-panel-scroll::-webkit-scrollbar-track {
-                        background: #1c0e05;
-                        box-shadow: inset 1px 1px 0 0 #0d0602;
+                        background: rgba(0, 0, 0, 0.25);
+                        border-radius: 4px;
                       }
                       .pixel-panel-scroll::-webkit-scrollbar-thumb {
-                        background: #734c29;
-                        border: 2px solid #1c0e05;
-                        box-shadow: inset 1px 1px 0 0 #9e6f43;
+                        background: #5a421b;
+                        border-radius: 4px;
                       }
                       .pixel-panel-scroll::-webkit-scrollbar-thumb:hover {
                         background: #dfb65d;
