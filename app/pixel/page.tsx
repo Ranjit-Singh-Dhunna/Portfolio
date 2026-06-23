@@ -22,7 +22,7 @@ export default function PixelPage() {
   ];
 
   return (
-    <div style={{ fontFamily: 'monospace', backgroundColor: '#000', color: '#0f0', maxWidth: '100vw', overflowX: 'hidden' }}>
+    <div style={{ fontFamily: 'monospace', backgroundColor: 'transparent', color: '#0f0', maxWidth: '100vw', overflowX: 'hidden' }}>
       <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 100 }}>
         <ChangeArtstyleButton />
       </div>
@@ -35,8 +35,9 @@ export default function PixelPage() {
             height: section.id === 7 ? 'auto' : '100vh',
             width: '100vw',
             position: 'relative',
-            overflow: 'visible', 
+            overflow: section.id === 7 ? 'hidden' : 'visible',
             zIndex: section.id === 4 ? 6 : section.id,
+            backgroundColor: section.id === 7 ? '#080d07' : 'transparent',
             // Only apply standard background for sections > 7 (none in this list)
             ...(section.id > 7 ? {
               backgroundImage: `url(${section.bg})`,
