@@ -753,7 +753,7 @@ export default function PixelPage() {
                 inset: 0,
                 backgroundImage: 'url(/px7.png)',
                 backgroundSize: 'cover',
-                backgroundPosition: 'center bottom 8vh',
+                backgroundPosition: 'center bottom',
                 zIndex: -1
               }} />
             </>
