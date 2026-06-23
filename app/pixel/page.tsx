@@ -740,8 +740,8 @@ export default function PixelPage() {
               position: 'absolute',
               inset: 0,
               backgroundImage: 'url(/IMG-20260622-WA0089.jpg)',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center bottom',
+              backgroundSize: '140%',
+              backgroundPosition: 'center top',
               zIndex: -1
             }} />
           )}
@@ -752,7 +752,7 @@ export default function PixelPage() {
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: section.id === 7 ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.58)',
+            backgroundColor: 'rgba(0, 0, 0, 0.58)', // Duller layer
             zIndex: 5,
             pointerEvents: 'none'
           }} />
