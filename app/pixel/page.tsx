@@ -18,7 +18,6 @@ export default function PixelPage() {
     { id: 4, bg: "/px4.png" },
     { id: 5, bg: "/px5.png" },
     { id: 6, bg: "/px6.png" },
-    { id: 7, bg: "/IMG-20260622-WA0089.jpg" },
   ];
 
   return (
@@ -32,12 +31,12 @@ export default function PixelPage() {
           key={section.id}
           data-section-id={section.id}
           style={{
-            height: section.id === 7 ? 'auto' : '100vh',
+            height: '100vh',
             width: '100vw',
             position: 'relative',
-            overflow: section.id === 7 ? 'hidden' : 'visible',
+            overflow: 'visible',
             zIndex: section.id === 4 ? 6 : section.id,
-            backgroundColor: section.id === 7 ? '#080d07' : 'transparent',
+            backgroundColor: 'transparent',
             // Only apply standard background for sections > 7 (none in this list)
             ...(section.id > 7 ? {
               backgroundImage: `url(${section.bg})`,
@@ -735,38 +734,72 @@ export default function PixelPage() {
               </div>
             </>
           )}
-
-          {section.id === 7 && (
-            <img
-              src="/IMG-20260622-WA0089.jpg"
-              alt=""
-              style={{
-                display: 'block',
-                width: '100vw',
-                height: 'auto',
-                position: 'relative',
-                zIndex: 0,
-                margin: 0,
-                padding: 0,
-                verticalAlign: 'bottom',
-              }}
-            />
-          )}
-
-
-
-          {/* Dull Overlay Layer over all images in the section — skip for section 7 */}
-          {section.id !== 7 && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.58)',
-              zIndex: 5,
-              pointerEvents: 'none'
-            }} />
-          )}
+          {/* Dull Overlay Layer over all images in the section */}
+          <div style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.58)',
+            zIndex: 5,
+            pointerEvents: 'none'
+          }} />
         </section>
       ))}
+
+      {/* Closing image — full width, 20% taller than natural height */}
+      <div style={{
+        width: '100vw',
+        height: '48.2vh',
+        position: 'relative',
+        overflow: 'hidden',
+        lineHeight: 0,
+        fontSize: 0,
+      }}>
+        <img
+          src="/IMG-20260622-WA0089.jpg"
+          alt="Cliff and forest landscape"
+          style={{
+            display: 'block',
+            width: '100%',
+            height: '100%',
+            objectFit: 'fill',
+            margin: 0,
+            padding: 0,
+          }}
+        />
+        {/* Dark overlay to dull the image */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.55)',
+          pointerEvents: 'none',
+        }} />
+        {/* LinkedIn rock — right side */}
+        <a
+          href="https://www.linkedin.com/in/ranjit-singh-dhunna-772790307/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            position: 'absolute',
+            right: '6vw',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            zIndex: 10,
+          }}
+        >
+          <img
+            src="/LinkedInROCK.png"
+            alt="LinkedIn"
+            className="linkedin-rock-hover"
+            style={{
+              display: 'block',
+              width: '8.5vw',
+              height: 'auto',
+              opacity: 1,
+              filter: 'brightness(0.55) sepia(0.2) saturate(1.1)',
+            }}
+          />
+        </a>
+      </div>
     </div>
   );
 }
