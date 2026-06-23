@@ -32,7 +32,7 @@ export default function PixelPage() {
           key={section.id}
           data-section-id={section.id}
           style={{
-            height: section.id === 7 ? '50vh' : '100vh',
+            height: '100vh',
             width: '100vw',
             position: 'relative',
             overflow: 'visible', 
@@ -747,15 +747,7 @@ export default function PixelPage() {
                 backgroundPosition: 'center 360%',
                 zIndex: -2
               }} />
-              {/* px7: Base layer for section 7 */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: 'url(/px7.png)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center bottom',
-                zIndex: -1
-              }} />
+
             </>
           )}
           {/* Dull Overlay Layer over all images in the section */}
