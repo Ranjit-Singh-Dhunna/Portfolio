@@ -547,8 +547,14 @@ export default function PixelPage() {
                           <>
                             <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
                               <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
-                                {/* Pixelated Gift Box Icon */}
-                                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', marginRight: '8px', flexShrink: 0 }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CyberSci Canada CTF</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>Nov 2025</span>
+                              </div>
+                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
+                                Earned an award{' '}
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block', verticalAlign: 'middle', margin: '0 4px', position: 'relative', top: '-1px', imageRendering: 'pixelated', shapeRendering: 'crispEdges' }}>
                                   <rect x="5" y="2" width="2" height="2" fill="#ffd84d" />
                                   <rect x="9" y="2" width="2" height="2" fill="#ffd84d" />
                                   <rect x="7" y="3" width="2" height="2" fill="#dfb65d" />
@@ -559,20 +565,21 @@ export default function PixelPage() {
                                   <rect x="2" y="5" width="1" height="3" fill="#500000" />
                                   <rect x="13" y="5" width="1" height="3" fill="#500000" />
                                   <rect x="3" y="14" width="10" height="1" fill="#500000" />
-                                </svg>
-                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CyberSci Canada CTF</strong>
-                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Nov 2025</span>
-                              </div>
-                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
-                                Earned an award from event sponsor Cineplex and represented Concordia University.
+                                </svg>{' '}
+                                from event sponsor Cineplex and represented Concordia University.
                               </p>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
                               <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
-                                {/* Pixelated Podium Icon */}
-                                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', marginRight: '8px', flexShrink: 0 }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>@hack <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '14px', fontWeight: 'normal' }}>2025</span> CTF</strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>Mar 2025</span>
+                              </div>
+                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
+                                Ranked <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>6th</span>{' '}
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block', verticalAlign: 'middle', margin: '0 4px', position: 'relative', top: '-1px', imageRendering: 'pixelated', shapeRendering: 'crispEdges' }}>
                                   <rect x="6" y="4" width="4" height="11" fill="#94a3b8" />
                                   <rect x="7" y="4" width="2" height="11" fill="#cbd5e1" />
                                   <rect x="2" y="7" width="4" height="8" fill="#64748b" />
@@ -580,20 +587,21 @@ export default function PixelPage() {
                                   <rect x="10" y="9" width="4" height="6" fill="#475569" />
                                   <rect x="11" y="9" width="2" height="6" fill="#64748b" />
                                   <rect x="1" y="14" width="14" height="1" fill="#1e293b" />
-                                </svg>
-                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>@hack 2025 CTF</strong>
-                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mar 2025</span>
-                              </div>
-                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
-                                Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.
+                                </svg>{' '}
+                                in Quebec’s largest CTF, exceeding <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>36</span> hours while competing against over <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>600</span> participants.
                               </p>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
                               <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
-                                {/* Pixelated Bronze Medal Icon */}
-                                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', marginRight: '8px', flexShrink: 0 }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CS Games <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '14px', fontWeight: 'normal' }}>2026</span></strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>Mar 2026</span>
+                              </div>
+                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
+                                Won <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>3rd</span> place{' '}
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block', verticalAlign: 'middle', margin: '0 4px', position: 'relative', top: '-1px', imageRendering: 'pixelated', shapeRendering: 'crispEdges' }}>
                                   <rect x="4" y="1" width="3" height="5" fill="#d01010" />
                                   <rect x="9" y="1" width="3" height="5" fill="#1010d0" />
                                   <rect x="7" y="3" width="2" height="3" fill="#b45309" />
@@ -605,13 +613,8 @@ export default function PixelPage() {
                                   <rect x="12" y="14" width="1" height="1" fill="#451a03" />
                                   <rect x="7" y="9" width="2" height="4" fill="#ffffff" />
                                   <rect x="6" y="10" width="4" height="2" fill="#ffffff" />
-                                </svg>
-                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CS Games 2026</strong>
-                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mar 2026</span>
-                              </div>
-                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
-                                Won 3rd place in the CTF and represented Concordia University.
+                                </svg>{' '}
+                                in the CTF and represented Concordia University.
                               </p>
                             </div>
                           </>
@@ -620,8 +623,14 @@ export default function PixelPage() {
                           <>
                             <div style={{ display: 'flex', flexDirection: 'column', paddingBottom: '4px' }}>
                               <div style={{ display: 'flex', alignItems: 'baseline', width: '100%' }}>
-                                {/* Pixelated Gold Medal Icon */}
-                                <svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ imageRendering: 'pixelated', shapeRendering: 'crispEdges', marginRight: '8px', flexShrink: 0 }}>
+                                <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
+                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CS Games <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '14px', fontWeight: 'normal' }}>2026</span></strong>
+                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>Mar 2026</span>
+                              </div>
+                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
+                                Won <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>1st</span> place{' '}
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block', verticalAlign: 'middle', margin: '0 4px', position: 'relative', top: '-1px', imageRendering: 'pixelated', shapeRendering: 'crispEdges' }}>
                                   <rect x="4" y="1" width="3" height="5" fill="#d01010" />
                                   <rect x="9" y="1" width="3" height="5" fill="#1010d0" />
                                   <rect x="7" y="3" width="2" height="3" fill="#dfb65d" />
@@ -633,13 +642,22 @@ export default function PixelPage() {
                                   <rect x="12" y="14" width="1" height="1" fill="#201a0e" />
                                   <rect x="7" y="9" width="2" height="4" fill="#ffffff" />
                                   <rect x="6" y="10" width="4" height="2" fill="#ffffff" />
-                                </svg>
-                                <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>CS Games 2026</strong>
-                                <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Mar 2026</span>
-                              </div>
-                              <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
-                                Won 1st place in the Web Challenge and 2nd place in AI, representing Concordia University.
+                                </svg>{' '}
+                                in the Web Challenge and <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>2nd</span> place{' '}
+                                <svg width="15" height="15" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'inline-block', verticalAlign: 'middle', margin: '0 4px', position: 'relative', top: '-1px', imageRendering: 'pixelated', shapeRendering: 'crispEdges' }}>
+                                  <rect x="4" y="1" width="3" height="5" fill="#d01010" />
+                                  <rect x="9" y="1" width="3" height="5" fill="#1010d0" />
+                                  <rect x="7" y="3" width="2" height="3" fill="#cbd5e1" />
+                                  <rect x="3" y="7" width="10" height="8" fill="#64748b" />
+                                  <rect x="4" y="8" width="8" height="6" fill="#cbd5e1" />
+                                  <rect x="3" y="7" width="1" height="1" fill="#1e293b" />
+                                  <rect x="12" y="7" width="1" height="1" fill="#1e293b" />
+                                  <rect x="3" y="14" width="1" height="1" fill="#1e293b" />
+                                  <rect x="12" y="14" width="1" height="1" fill="#1e293b" />
+                                  <rect x="7" y="9" width="2" height="4" fill="#ffffff" />
+                                  <rect x="6" y="10" width="4" height="2" fill="#ffffff" />
+                                </svg>{' '}
+                                in AI, representing Concordia University.
                               </p>
                             </div>
 
@@ -648,10 +666,10 @@ export default function PixelPage() {
                                 <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
                                 <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>ConUHacks X Hackathon</strong>
                                 <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Jan 2026</span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>Jan 2026</span>
                               </div>
                               <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
-                                Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.
+                                Participated in Quebec’s largest hackathon, exceeding <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>36</span> hours while competing against over <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>850</span> participants.
                               </p>
                             </div>
 
@@ -660,10 +678,10 @@ export default function PixelPage() {
                                 <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
                                 <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>ConUHacks IX Hackathon</strong>
                                 <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Feb 2025</span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>Feb 2025</span>
                               </div>
                               <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
-                                Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.
+                                Participated in Quebec’s largest hackathon, exceeding <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>24</span> hours while competing against over <span style={{ fontFamily: 'var(--font-desktop), monospace', fontSize: '15px', color: '#eedfb8' }}>800</span> participants.
                               </p>
                             </div>
 
@@ -672,7 +690,7 @@ export default function PixelPage() {
                                 <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
                                 <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>Hack the Mountain</strong>
                                 <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>May 2026</span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>May 2026</span>
                               </div>
                               <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Participated in a hackathon hosted by Polytechnique Montréal and Université de Montréal.
@@ -684,7 +702,7 @@ export default function PixelPage() {
                                 <span style={{ color: '#dfb65d', marginRight: '8px', fontSize: '12px', width: '18px', textAlign: 'center', display: 'inline-block', flexShrink: 0 }}>✦</span>
                                 <strong style={{ color: '#eedfb8', fontWeight: 'bold', fontSize: '13px', whiteSpace: 'nowrap' }}>MPC Hacks</strong>
                                 <span style={{ flex: 1, borderBottom: '1px dashed #5a421b', margin: '0 8px', position: 'relative', top: '-3px' }}></span>
-                                <span style={{ color: '#a68a67', fontSize: '11px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>May 2026</span>
+                                <span style={{ color: '#a68a67', fontSize: '13px', fontFamily: 'var(--font-desktop), monospace', whiteSpace: 'nowrap' }}>May 2026</span>
                               </div>
                               <p style={{ margin: '3px 0 0 26px', color: '#b8c0af', fontSize: '13px', lineHeight: '1.45' }}>
                                 Participated in a hackathon hosted by Polytechnique Montréal, Concordia University, and McGill University.
