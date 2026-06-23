@@ -450,7 +450,7 @@ export default function PixelPage() {
               {/* ── COMPETITIONS & HACKATHONS LOG PANEL (RETRO RPG QUEST JOURNAL THEME) ── */}
               <div style={{
                 position: 'absolute',
-                bottom: '8.5vh',
+                bottom: activeCategory === 'ctf' ? '13vh' : '8.5vh',
                 right: '3vw',
                 width: 'min(1200px, 94vw)',
                 zIndex: 20,
@@ -484,7 +484,7 @@ export default function PixelPage() {
                       10px 100%, 10px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 10px), 0px calc(100% - 10px)
                     )`,
                     padding: '1.1rem 1.4rem',
-                    height: '45vh',
+                    height: '35vh',
                     boxSizing: 'border-box',
                     display: 'flex',
                     flexDirection: 'column',
