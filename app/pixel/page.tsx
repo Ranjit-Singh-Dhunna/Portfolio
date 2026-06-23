@@ -741,24 +741,29 @@ export default function PixelPage() {
               alt=""
               style={{
                 display: 'block',
-                width: '100%',
+                width: '100vw',
                 height: 'auto',
                 position: 'relative',
                 zIndex: 0,
+                margin: 0,
+                padding: 0,
+                verticalAlign: 'bottom',
               }}
             />
           )}
 
 
 
-          {/* Dull Overlay Layer over all images in the section */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.58)', // Duller layer
-            zIndex: 5,
-            pointerEvents: 'none'
-          }} />
+          {/* Dull Overlay Layer over all images in the section — skip for section 7 */}
+          {section.id !== 7 && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.58)',
+              zIndex: 5,
+              pointerEvents: 'none'
+            }} />
+          )}
         </section>
       ))}
     </div>
