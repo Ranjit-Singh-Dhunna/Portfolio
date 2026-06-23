@@ -32,7 +32,7 @@ export default function PixelPage() {
           key={section.id}
           data-section-id={section.id}
           style={{
-            height: section.id === 7 ? '66vh' : '100vh',
+            height: section.id === 7 ? 'auto' : '100vh',
             width: '100vw',
             position: 'relative',
             overflow: 'visible', 
@@ -736,14 +736,17 @@ export default function PixelPage() {
           )}
 
           {section.id === 7 && (
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: 'url(/IMG-20260622-WA0089.jpg)',
-              backgroundSize: '140%',
-              backgroundPosition: 'center top',
-              zIndex: -1
-            }} />
+            <img
+              src="/IMG-20260622-WA0089.jpg"
+              alt=""
+              style={{
+                display: 'block',
+                width: '100%',
+                height: 'auto',
+                position: 'relative',
+                zIndex: 0,
+              }}
+            />
           )}
 
 
