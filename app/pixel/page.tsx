@@ -18,6 +18,7 @@ export default function PixelPage() {
     { id: 4, bg: "/px4.png" },
     { id: 5, bg: "/px5.png" },
     { id: 6, bg: "/px6.png" },
+    { id: 7, bg: "/IMG-20260622-WA0089.jpg" },
   ];
 
   return (
@@ -31,7 +32,7 @@ export default function PixelPage() {
           key={section.id}
           data-section-id={section.id}
           style={{
-            height: '100vh',
+            height: section.id === 7 ? '66vh' : '100vh',
             width: '100vw',
             position: 'relative',
             overflow: 'visible', 
@@ -733,6 +734,18 @@ export default function PixelPage() {
               </div>
             </>
           )}
+
+          {section.id === 7 && (
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'url(/IMG-20260622-WA0089.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center bottom',
+              zIndex: -1
+            }} />
+          )}
+
 
 
           {/* Dull Overlay Layer over all images in the section */}
