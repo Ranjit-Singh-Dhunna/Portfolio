@@ -32,7 +32,7 @@ export default function PixelPage() {
           key={section.id}
           data-section-id={section.id}
           style={{
-            height: '100vh',
+            height: section.id === 7 ? '50vh' : '100vh',
             width: '100vw',
             position: 'relative',
             overflow: 'visible', 
