@@ -450,7 +450,7 @@ export default function PixelPage() {
               {/* ── COMPETITIONS & HACKATHONS LOG PANEL (RETRO RPG QUEST JOURNAL THEME) ── */}
               <div style={{
                 position: 'absolute',
-                bottom: '6vh',
+                bottom: '8.5vh',
                 right: '3vw',
                 width: 'min(1200px, 94vw)',
                 zIndex: 20,
