@@ -18,7 +18,6 @@ export default function PixelPage() {
     { id: 4, bg: "/px4.png" },
     { id: 5, bg: "/px5.png" },
     { id: 6, bg: "/px6.png" },
-    { id: 7, bg: "/px7.png" },
   ];
 
   return (
@@ -735,21 +734,7 @@ export default function PixelPage() {
             </>
           )}
 
-          {/* Section 7: Transition (px6-7) and New Layer (px7) */}
-          {section.id === 7 && (
-            <>
-              {/* px6-7: Transition from section 6 (behind px7) */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage: 'url(/px6-7.png)',
-                backgroundSize: '108%',
-                backgroundPosition: 'center 360%',
-                zIndex: -2
-              }} />
 
-            </>
-          )}
           {/* Dull Overlay Layer over all images in the section */}
           <div style={{
             position: 'absolute',
