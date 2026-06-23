@@ -484,7 +484,7 @@ export default function PixelPage() {
                       10px 100%, 10px calc(100% - 4px), 6px calc(100% - 4px), 6px calc(100% - 6px), 4px calc(100% - 6px), 4px calc(100% - 10px), 0px calc(100% - 10px)
                     )`,
                     padding: '1.1rem 1.4rem',
-                    maxHeight: '45vh',
+                    height: '45vh',
                     boxSizing: 'border-box',
                     display: 'flex',
                     flexDirection: 'column',
