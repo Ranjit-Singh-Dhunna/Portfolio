@@ -752,7 +752,7 @@ export default function PixelPage() {
           <div style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.58)', // Duller layer
+            backgroundColor: section.id === 7 ? 'rgba(0, 0, 0, 0.25)' : 'rgba(0, 0, 0, 0.58)',
             zIndex: 5,
             pointerEvents: 'none'
           }} />
