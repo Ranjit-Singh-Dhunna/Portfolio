@@ -215,7 +215,7 @@ export default function CustomCursor() {
         }
       }
 
-      const showCircle = !pathnameRef.current.startsWith('/pixel') || isTransitioningRef.current || isFadingOutRef.current;
+      const showCircle = (!pathnameRef.current.startsWith('/pixel') && !pathnameRef.current.startsWith('/book')) || isTransitioningRef.current || isFadingOutRef.current;
       if (circleRef.current && showCircle && !isFadingOutRef.current) {
         if (hoveredThemeRef.current === 'pixel' || isTransitioningRef.current) {
           if (isTransitioningRef.current) {
@@ -380,6 +380,7 @@ export default function CustomCursor() {
 
   const cursorClass = `custom-cursor ${isHovering ? 'hovering' : ''} ${isGrabbing ? 'grabbing' : ''} ${isIdle ? 'idle' : ''}`;
   const isPixelPage = pathname.startsWith('/pixel');
+  const isBookPage = pathname.startsWith('/book');
   return (
     <>
       {fullScreenOverlay && (
@@ -427,7 +428,7 @@ export default function CustomCursor() {
           display: mounted ? 'block' : 'none'
         }}
       >
-      {(!isPixelPage || isTransitioning || isFadingOut) && !fullScreenOverlay && (
+      {(!isPixelPage && !isBookPage || isTransitioning || isFadingOut) && !fullScreenOverlay && (
         <div 
           ref={circleRef}
           style={{
@@ -479,7 +480,7 @@ export default function CustomCursor() {
           left: 0,
           top: 0,
           transform: `translate(-14px, -4px) ${isHovering ? 'scale(1.2)' : 'scale(1)'}`,
-          opacity: (isTransitioning || isFadingOut) ? 0 : (isHovering ? 0 : 1),
+          opacity: (isTransitioning || isFadingOut) ? 0 : 1,
           transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease'
         }}>
           <svg viewBox="0 0 52 64" width="36" height="44" xmlns="http://www.w3.org/2000/svg">
