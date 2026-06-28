@@ -80,6 +80,13 @@ export default function BookThemePage() {
   const [isPlayingMusic, setIsPlayingMusic] = useState<boolean>(false);
   const [musicProgress, setMusicProgress] = useState<number>(0);
 
+  // Camera States
+  const [cameraState, setCameraState] = useState<'idle' | 'floating' | 'flashing' | 'printing' | 'finished'>('idle');
+  const [pictureData, setPictureData] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
+
   // Color options for customizing
   const colorPalette = [
     // Top row
@@ -172,12 +179,83 @@ export default function BookThemePage() {
     setSurprises(prev => [...prev, { id: surpriseCounter, x, y, text }]);
     setSurpriseCounter(c => c + 1);
   };
+  // Camera click handler
+  const handleCameraClick = async () => {
+    if (cameraState !== 'idle') return;
+
+    setCameraState('floating');
+    
+    // Wait for the camera to float to the center
+    setTimeout(async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        cameraStreamRef.current = stream;
+        
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          await videoRef.current.play();
+        }
+        
+        // Brief delay for webcam to adjust light
+        setTimeout(() => {
+          setCameraState('flashing');
+          
+          // Flash effect timing - capture the image while flash is active
+          setTimeout(() => {
+            if (canvasRef.current && videoRef.current) {
+              const context = canvasRef.current.getContext('2d');
+              if (context) {
+                canvasRef.current.width = videoRef.current.videoWidth;
+                canvasRef.current.height = videoRef.current.videoHeight;
+                context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+                setPictureData(canvasRef.current.toDataURL('image/png'));
+              }
+            }
+            
+            // Wait for flash to subside before finishing
+            setTimeout(() => {
+              if (cameraStreamRef.current) {
+                cameraStreamRef.current.getTracks().forEach(track => track.stop());
+              }
+              setCameraState('finished');
+            }, 500);
+          }, 150);
+        }, 500);
+      } catch (err) {
+        console.log("Webcam access denied or unavailable", err);
+        // Fallback dummy image logic
+        const dummyCanvas = document.createElement('canvas');
+        dummyCanvas.width = 400;
+        dummyCanvas.height = 300;
+        const ctx = dummyCanvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#ff9ed2';
+          ctx.fillRect(0, 0, 400, 300);
+          ctx.fillStyle = '#fff';
+          ctx.font = '24px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Webcam Unavailable', 200, 150);
+          setPictureData(dummyCanvas.toDataURL('image/png'));
+        }
+        
+        setCameraState('flashing');
+        setTimeout(() => {
+          setCameraState('finished');
+        }, 650);
+      }
+    }, 1000);
+  };
 
   return (
     <div 
       ref={deskRef}
       className="book-page-container" 
       style={{ backgroundColor }}
+      onClick={() => {
+        if (activeControl === 'cover' || activeControl === 'background') {
+          setActiveControl(null);
+        }
+      }}
     >
       {/* Hidden Audio Player for iPod Lo-Fi Theme */}
       <audio 
@@ -223,7 +301,10 @@ export default function BookThemePage() {
       </a>
 
       {/* ── TOP CONTROL PILLS ── */}
-      <div className="control-pills-bar">
+      <div 
+        className="control-pills-bar"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Cover Color Pill */}
         <button 
           onClick={() => setActiveControl(activeControl === 'cover' ? null : 'cover')}
@@ -243,34 +324,50 @@ export default function BookThemePage() {
         </button>
 
         {/* Color Palette Popover */}
-        {(activeControl === 'cover' || activeControl === 'background') && (
-          <div className={`color-picker-popover pointer-${activeControl}`}>
-            <div className="colors-grid">
-              {colorPalette.map((col, idx) => {
-                const isSelected = activeControl === 'cover' 
-                  ? coverColor === col.hex 
-                  : backgroundColor === col.hex;
+        <AnimatePresence>
+          {(activeControl === 'cover' || activeControl === 'background') && (
+            <motion.div 
+              className={`color-picker-popover pointer-${activeControl}`}
+              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+            >
+              <div className="colors-grid">
+                {colorPalette.map((col, idx) => {
+                  const isSelected = activeControl === 'cover' 
+                    ? coverColor === col.hex 
+                    : backgroundColor === col.hex;
 
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      if (activeControl === 'cover') {
-                        setCoverColor(col.hex);
-                      } else if (activeControl === 'background') {
-                        setBackgroundColor(col.hex);
-                      }
-                    }}
-                    className={`color-circle-btn ${isSelected ? 'selected' : ''}`}
-                    style={{ backgroundColor: col.hex, color: col.hex }}
-                    title={`Select ${col.name}`}
-                  >
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                  return (
+                    <motion.button
+                      key={idx}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ 
+                        delay: idx * 0.03, 
+                        type: "spring", 
+                        stiffness: 400, 
+                        damping: 17 
+                      }}
+                      onClick={() => {
+                        if (activeControl === 'cover') {
+                          setCoverColor(col.hex);
+                        } else if (activeControl === 'background') {
+                          setBackgroundColor(col.hex);
+                        }
+                      }}
+                      className={`color-circle-btn ${isSelected ? 'selected' : ''}`}
+                      style={{ backgroundColor: col.hex, color: col.hex }}
+                      title={`Select ${col.name}`}
+                    >
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Surprise Pill */}
         <button 
@@ -391,18 +488,41 @@ export default function BookThemePage() {
 
       {/* ── DRAGGABLE POLAROID CAMERA ── */}
       <motion.div
-        drag
+        drag={cameraState === 'idle' || cameraState === 'finished'}
         dragMomentum={false}
         dragConstraints={deskRef}
+        onTap={handleCameraClick}
         className="camera-container"
         initial={{ rotate: -7, scale: 0.85, x: 50, y: 600 }}
+        animate={
+          (cameraState === 'idle' || cameraState === 'finished') ? { zIndex: 15 } :
+          { x: typeof window !== 'undefined' ? window.innerWidth / 2 - 120 : 500, y: typeof window !== 'undefined' ? window.innerHeight / 2 - 150 : 400, rotate: 0, scale: 1, zIndex: 100 }
+        }
+        transition={{ duration: cameraState === 'finished' ? 2.5 : 0.8, type: "spring", bounce: 0.2 }}
         whileDrag={{ scale: 0.9, zIndex: 50 }}
         style={{ position: 'absolute', zIndex: 15 }}
       >
         <div className="camera-shadow" />
         <div className="camera-body-top">
+          <AnimatePresence>
+            {cameraState === 'flashing' && (
+              <motion.div
+                className="camera-flash-glow"
+                initial={{ opacity: 0, scale: 1 }}
+                animate={{ opacity: 1, scale: 40 }}
+                exit={{ opacity: 0, scale: 40 }}
+                transition={{ duration: 0.2 }}
+              />
+            )}
+          </AnimatePresence>
           <div className="camera-flash">
             <div className="flash-texture" />
+            <motion.div 
+              className="flash-active-light"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: cameraState === 'flashing' ? 1 : 0 }}
+              transition={{ duration: 0.1 }}
+            />
           </div>
           <div className="camera-viewfinder">
             <div className="viewfinder-lens" />
@@ -946,6 +1066,52 @@ export default function BookThemePage() {
         +
       </button>
 
+      {/* Hidden webcam elements */}
+      <video ref={videoRef} style={{ display: 'none' }} playsInline muted />
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
+
+      {/* Final Picture Display */}
+      <AnimatePresence>
+        {cameraState === 'finished' && pictureData && (
+          <motion.div
+            className="final-picture-container"
+            initial={{ opacity: 1, scale: 0.1, y: 250, rotate: -20 }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1, 
+              y: 0, 
+              rotate: [0, -15, 15, -10, 10, -5, 5, 0]
+            }}
+            exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+            transition={{ duration: 2.5, ease: "easeOut" }}
+          >
+            <div className="polaroid-frame">
+              <div className="polaroid-image-wrapper">
+                <img src={pictureData} alt="Captured" />
+                <svg className="polaroid-flower-doodle-top" width="70" height="65" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="translate(10, 10) scale(0.7)">
+                    <path d="M50 20 Q60 5 70 20 Q85 10 80 25 Q95 35 80 45 Q90 60 75 60 Q80 75 65 70 Q55 85 45 70 Q30 75 35 60 Q20 60 30 45 Q15 35 30 25 Q25 10 40 20 Q30 5 50 20 Z" stroke="#111827" strokeWidth="5" fill="#7dd3fc" strokeLinejoin="round" />
+                    <circle cx="55" cy="45" r="10" stroke="#111827" strokeWidth="5" fill="#fef08a" />
+                  </g>
+                  <g transform="translate(50, 35) scale(0.55) rotate(25)">
+                    <path d="M50 20 Q60 5 70 20 Q85 10 80 25 Q95 35 80 45 Q90 60 75 60 Q80 75 65 70 Q55 85 45 70 Q30 75 35 60 Q20 60 30 45 Q15 35 30 25 Q25 10 40 20 Q30 5 50 20 Z" stroke="#111827" strokeWidth="6" fill="#86efac" strokeLinejoin="round" />
+                    <circle cx="55" cy="45" r="12" stroke="#111827" strokeWidth="6" fill="#fef08a" />
+                  </g>
+                </svg>
+                <svg className="polaroid-flower-doodle" width="50" height="50" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M50 20 Q60 5 70 20 Q85 10 80 25 Q95 35 80 45 Q90 60 75 60 Q80 75 65 70 Q55 85 45 70 Q30 75 35 60 Q20 60 30 45 Q15 35 30 25 Q25 10 40 20 Q30 5 50 20 Z" stroke="#111827" strokeWidth="4" fill="#f9a8d4" strokeLinejoin="round" />
+                  <circle cx="55" cy="45" r="8" stroke="#111827" strokeWidth="4" fill="#fef08a" />
+                </svg>
+              </div>
+              <div className="polaroid-caption">Today's Vibe!!</div>
+            </div>
+            <div className="polaroid-actions">
+              <a href={pictureData} download="my_desk_picture.png" className="polaroid-btn">Download</a>
+              <button onClick={() => { setCameraState('idle'); setPictureData(null); }} className="polaroid-btn close-btn">X</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
