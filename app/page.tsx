@@ -93,22 +93,14 @@ export default function Page() {
 
   const welcomeTexts = [
     "WELCOME",
-    "ਜੀ ਆਇਆਂ ਨੂੰ",
     "BONJOUR",
-    "欢迎",
-    "BIENVENIDO",
-    "ДОБРО ПОЖАЛОВАТЬ",
-    "ようこそ"
+    "ਜੀ ਆਇਆਂ ਨੂੰ"
   ];
 
   const projectTitleTexts = [
     "HAVE A LOOK AT SOME PROJECTS",
-    "ਕੁਝ ਪ੍ਰੋਜੈਕਟਾਂ 'ਤੇ ਨਜ਼ਰ ਮਾਰੋ",
     "VOICI QUELQUES PROJETS",
-    "看看一些项目",
-    "ECHA UN VISTAZO A ALGUNOS PROYECTOS",
-    "ПОСМОТРИТЕ НА НЕКОТОРЫЕ ПРОЕКТЫ",
-    "いくつかのプロジェクトを見てください"
+    "ਕੁਝ ਪ੍ਰੋਜੈਕਟਾਂ 'ਤੇ ਨਜ਼ਰ ਮਾਰੋ"
   ];
 
   useEffect(() => {
@@ -118,7 +110,7 @@ export default function Page() {
         setLangIndex((prev) => (prev + 1) % welcomeTexts.length);
         setFade(true);
       }, 600);
-    }, 4000);
+    }, 7000);
     return () => clearInterval(interval);
   }, []);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { PromptingIsAllYouNeed } from "@/components/ui/animated-hero-section";
 import TextRoll, { TextRollParagraph } from "@/components/ui/text-roll";
 
@@ -11,6 +11,81 @@ import ProjectsLake from "@/components/ui/projects-lake";
 
 export default function PixelPage() {
   const [activeCategory, setActiveCategory] = useState<'ctf' | 'hackathon'>('ctf');
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.35;
+      audioRef.current.play().catch(e => {
+        console.log("Audio autoplay was prevented:", e);
+      });
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        audioRef.current?.pause();
+      } else {
+        audioRef.current?.play().catch(e => {
+          console.log("Audio autoplay was prevented:", e);
+        });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // Global interaction listener to start background music if autoplay was blocked
+    const handleGlobalInteraction = () => {
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play().catch(e => console.log("Background music play prevented:", e));
+      }
+      // Remove listeners once it's playing to avoid unnecessary checks
+      document.removeEventListener("click", handleGlobalInteraction);
+      document.removeEventListener("keydown", handleGlobalInteraction);
+    };
+    
+    document.addEventListener("click", handleGlobalInteraction);
+    document.addEventListener("keydown", handleGlobalInteraction);
+
+    const blipAudio = new Audio("/Blip93.wav");
+    blipAudio.volume = 0.15;
+
+    const handleInteractableClick = (e: MouseEvent) => {
+      let target = e.target as HTMLElement;
+      let isInteractable = false;
+      
+      // Bubble up to see if any ancestor is a link, button, or has cursor: pointer
+      while (target && target !== document.body) {
+        const computedStyle = window.getComputedStyle(target);
+        if (
+          target.tagName.toLowerCase() === 'button' ||
+          target.tagName.toLowerCase() === 'a' ||
+          computedStyle.cursor === 'pointer' ||
+          target.style.cursor === 'pointer' ||
+          target.classList.contains('lake-relic')
+        ) {
+          isInteractable = true;
+          break;
+        }
+        target = target.parentElement as HTMLElement;
+      }
+      
+      if (isInteractable) {
+        const clickSound = blipAudio.cloneNode() as HTMLAudioElement;
+        clickSound.volume = 0.15;
+        clickSound.play().catch(err => console.log("Click audio prevented:", err));
+      }
+    };
+
+    document.addEventListener("click", handleInteractableClick);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("click", handleInteractableClick);
+      document.removeEventListener("click", handleGlobalInteraction);
+      document.removeEventListener("keydown", handleGlobalInteraction);
+    };
+  }, []);
+
   const sections = [
     { id: 0, bg: "/px1.png" },
     { id: 2, bg: "/px2.png" },
@@ -22,9 +97,25 @@ export default function PixelPage() {
 
   return (
     <div style={{ fontFamily: 'monospace', backgroundColor: 'transparent', color: '#0f0', maxWidth: '100vw', overflowX: 'hidden' }}>
+      <audio 
+        ref={audioRef} 
+        src="/Blue%20Dot%20Sessions%20-%20Winter%20Theme.mp3" 
+        loop 
+        playsInline
+      />
       <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 100 }}>
         <ChangeArtstyleButton />
       </div>
+      
+      {/* Soft black gradient overlay on left and right borders for immersion */}
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        pointerEvents: 'none',
+        zIndex: 90,
+        background: 'linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 6vw, transparent 94vw, rgba(0,0,0,0) 94vw, rgba(0,0,0,0.2) 100%)',
+        mixBlendMode: 'multiply'
+      }} />
 
       {sections.map((section) => (
         <section 
@@ -97,22 +188,58 @@ export default function PixelPage() {
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
                   gridTemplateRows: 'auto auto',
-                  gap: '4rem 3rem',
-                  width: '100%',
-                  maxWidth: '1100px',
+                  gap: '4rem 4rem',
+                  width: '96%',
+                  maxWidth: '1250px',
+                  marginTop: '22vh',
                 }}>
 
-                  {/* ── MY JOURNEY (spans both columns) ── */}
-                  <div style={{ gridColumn: '1 / -1' }}>
+                  {/* ── THE ART STYLE ── */}
+                  <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
                       <TextRoll
                         center
                         style={{
                           fontFamily: 'var(--font-pixelify), monospace',
-                          fontSize: 'clamp(2rem, 5vw, 3rem)',
+                          fontSize: 'clamp(2rem, 4.5vw, 2.8rem)',
                           fontWeight: 'bold',
-                          color: '#00ff41',
-                          letterSpacing: '0.2em',
+                          color: '#6bdf8a',
+                          letterSpacing: '0.15em',
+                          textTransform: 'uppercase',
+                          WebkitTextStroke: '2px black',
+                          textShadow: '2px 4px 0 #003300',
+                        }}
+                      >
+                        WHY PIXEL ART?
+                      </TextRoll>
+                    </div>
+                    <TextRollParagraph
+                      style={{
+                        fontFamily: 'var(--font-pixelify), monospace',
+                        fontSize: 'clamp(1.35rem, 2.25vw, 1.8rem)',
+                        fontWeight: 'bold',
+                        color: '#d4eedc',
+                        lineHeight: '1.6',
+                        WebkitTextStroke: '1px black',
+                        textShadow: '2px 2px 0 rgba(0,0,0,1)',
+                        maxWidth: '90%',
+                      }}
+                    >
+                      Retro-pixel art is a gateway to the 90s era of gaming and nostalgia. This visual honors the foundational era of interactive media. Embracing this visual language establishes a distinct connection of timeless appeal.
+                    </TextRollParagraph>
+                  </div>
+
+                  {/* ── MY JOURNEY ── */}
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                      <TextRoll
+                        center
+                        style={{
+                          fontFamily: 'var(--font-pixelify), monospace',
+                          fontSize: 'clamp(2rem, 4.5vw, 2.8rem)',
+                          fontWeight: 'bold',
+                          color: '#6bdf8a',
+                          letterSpacing: '0.15em',
                           textTransform: 'uppercase',
                           WebkitTextStroke: '2px black',
                           textShadow: '2px 4px 0 #003300',
@@ -124,15 +251,16 @@ export default function PixelPage() {
                     <TextRollParagraph
                       style={{
                         fontFamily: 'var(--font-pixelify), monospace',
-                        fontSize: 'clamp(1.6rem, 3vw, 2.1rem)',
+                        fontSize: 'clamp(1.35rem, 2.25vw, 1.8rem)',
                         fontWeight: 'bold',
-                        color: '#e0fff0',
-                        lineHeight: '2',
+                        color: '#d4eedc',
+                        lineHeight: '1.6',
                         WebkitTextStroke: '1px black',
                         textShadow: '2px 2px 0 rgba(0,0,0,1)',
+                        maxWidth: '90%',
                       }}
                     >
-                      My journey began in 4th grade when I discovered HTML & CSS, realizing a blank screen held endless possibilities. By 6th grade, I was solving algorithmic puzzles for fun, which naturally led me to master Java, JavaScript, Python, React, and Express. What started as childhood tinkering has evolved into a relentless drive to build impactful, full-stack products. Today, that same curiosity fuels my active participation in tech clubs, hackathons, and competitive programming, constantly pushing me to build things that matter.
+                      In 4th grade, I discovered HTML and CSS and realized that a blank screen held endless possibilities. That early curiosity quickly evolved by 6th grade when I was diving into Java and Python. What started as childhood tinkering is now a relentless drive to build impactful, pixel perfect experiences.
                     </TextRollParagraph>
                   </div>
 
@@ -234,7 +362,7 @@ export default function PixelPage() {
                     fontFamily: 'var(--font-pixelify), monospace',
                     fontSize: 'clamp(1.05rem, 2.47vw, 1.52rem)',
                     fontWeight: 'bold',
-                    color: '#5deeff',
+                    color: '#8bdbe8',
                     letterSpacing: '0.2em',
                     textTransform: 'uppercase',
                     WebkitTextStroke: '1px black',

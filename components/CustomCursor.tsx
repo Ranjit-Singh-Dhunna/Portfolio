@@ -458,8 +458,8 @@ export default function CustomCursor() {
       {isPixelPage ? (
         <div style={{
           position: 'absolute',
-          width: '120px',
-          height: '195px',
+          width: '105px',
+          height: '170px',
           left: 0,
           top: 0,
           transform: 'translate(-50%, -50%)',
