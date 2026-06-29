@@ -56,6 +56,87 @@
   100% { transform: translateX(100vw) translateY(0); }
 }
 
+.hot-air-balloon {
+  position: absolute;
+  left: -100px;
+  animation: floatBalloon linear infinite;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+@keyframes floatBalloon {
+  0% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(60vw) translateY(-40px); }
+  100% { transform: translateX(120vw) translateY(0); }
+}
+
+.dust-motes-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.dust-mote {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 4px 1px rgba(255,255,255,0.4);
+  animation: floatDust linear infinite alternate;
+}
+
+@keyframes floatDust {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+  33% { transform: translate(20px, -30px) scale(1.2); opacity: 0.5; }
+  66% { transform: translate(-10px, -60px) scale(0.8); opacity: 0.2; }
+  100% { transform: translate(15px, -90px) scale(1.1); opacity: 0; }
+}
+
+/* Ultrarealistic Water Droplets */
+.water-drops-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999; /* above all desk objects */
+  overflow: hidden;
+}
+
+.water-drop {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    inset 0 10px 10px rgba(0, 0, 0, 0.1), 
+    inset 0 -10px 10px rgba(255, 255, 255, 0.5), 
+    0 5px 8px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(2px) contrast(1.1);
+  animation: raindropCycle linear infinite;
+  opacity: 0;
+}
+
+@keyframes raindropCycle {
+  0% { transform: scale(0); opacity: 0; }
+  5% { transform: scale(1.1); opacity: 1; }
+  10% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1); opacity: 1; }
+  60% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(0.5); opacity: 0; }
+}
+
+.water-drop::after {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 25%;
+  height: 25%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  filter: blur(1px);
+}
+
 /* Coffee Cup Steam */
 .steam-container {
   position: absolute;
@@ -884,12 +965,9 @@
 .open-book-spread {
   width: 640px;
   height: 440px;
-  background-color: #fcf9f2;
-  border-radius: 8px;
-  box-shadow: 12px 24px 48px rgba(0,0,0,0.25);
   display: flex;
   position: relative;
-  overflow: hidden;
+  perspective: 1500px;
 }
 
 .open-book-spine-rings {
@@ -922,15 +1000,42 @@
 .open-book-left {
   width: 50%;
   height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  z-index: 30;
+}
+
+.open-book-left-front {
+  position: absolute;
+  inset: 0;
   padding: 24px;
+  padding-right: 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   background-color: #fcf9f4;
-  position: relative;
-  padding-right: 24px;
-  box-shadow: inset -8px 0 12px rgba(0,0,0,0.02);
+  box-shadow: inset -8px 0 12px rgba(0,0,0,0.02), -12px 24px 48px rgba(0,0,0,0.25);
+  border-radius: 12px 0 0 12px;
   overflow: hidden;
+  backface-visibility: hidden;
+}
+
+.open-book-left-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 0 12px 12px 0;
+  box-shadow: 12px 24px 48px rgba(0,0,0,0.25);
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  cursor: pointer;
+  border-left: 14px solid rgba(0,0,0,0.12);
+  border-right: 1px solid rgba(255,255,255,0.15);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(0,0,0,0.12);
 }
 
 .open-book-right {
@@ -943,7 +1048,8 @@
   background-color: #faf7ef;
   position: relative;
   padding-left: 32px;
-  box-shadow: inset 8px 0 12px rgba(0,0,0,0.02);
+  box-shadow: inset 8px 0 12px rgba(0,0,0,0.02), 12px 24px 48px rgba(0,0,0,0.25);
+  border-radius: 0 12px 12px 0;
   overflow: hidden;
 }
 
@@ -987,14 +1093,15 @@
 
 .profile-name {
   font-family: 'Caveat', cursive;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 700;
   line-height: 1.1;
   color: #3d2b1f;
+  margin-bottom: 4px;
 }
 
 .profile-tag {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: 0.5px;
   color: #6b7280;
   text-transform: uppercase;
@@ -1003,11 +1110,89 @@
 
 .journal-bio {
   font-family: 'Caveat', cursive;
-  font-size: 13.5px;
+  font-size: 15px;
   color: #3d2b1f;
   line-height: 1.55;
   margin-top: 16px;
   padding-left: 4px;
+}
+
+.journal-philosophy {
+  font-family: 'Caveat', cursive;
+  font-size: 15.5px;
+  color: #3d2b1f;
+  line-height: 1.6;
+  margin-top: 16px;
+  padding-left: 4px;
+}
+.journal-philosophy p {
+  margin-bottom: 12px;
+}
+
+.journal-works {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.work-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.work-info h4 {
+  font-family: 'Caveat', cursive;
+  font-size: 18px;
+  font-weight: 700;
+  color: #3d2b1f;
+  margin-bottom: 2px;
+}
+
+.work-info p {
+  font-family: monospace;
+  font-size: 10px;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+}
+
+.go-btn {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.15s ease;
+}
+
+.go-btn:hover {
+  transform: translateY(-1px);
+}
+
+.journal-pagination {
+  margin-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.journal-pagination button {
+  background: transparent;
+  border: none;
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  font-weight: 700;
+  color: #3d2b1f;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.journal-pagination button:hover {
+  color: #f43f5e;
 }
 
 .journal-stack-section {
@@ -1665,21 +1850,43 @@
 .color-circle-btn {
   width: 24px;
   height: 24px;
-  border-radius: 9999px;
-  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 50%;
+  border: 2px solid transparent;
   cursor: pointer;
-  position: relative;
-  transition: all 0.2s ease;
+  padding: 0;
+  outline: none;
+  background-color: transparent;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
 .color-circle-btn:hover {
   transform: scale(1.1);
 }
-
 .color-circle-btn.selected {
-  transform: scale(1.05);
-  box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
-  border-color: transparent;
+  border-color: #333;
+  transform: scale(1.1);
+}
+
+.pattern-btn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: white;
+  color: #333;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  text-align: center;
+}
+.pattern-btn:hover {
+  background: #f5f5f5;
+}
+.pattern-btn.selected {
+  background: #333;
+  color: white;
+  border-color: #333;
 }
 
 .sparkle-surprise-btn {
@@ -2173,4 +2380,266 @@
 
 .polaroid-btn.close-btn:hover {
   background: #dc2626;
+}
+
+/* --- STICKERS --- */
+.sticker-add-btn {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s;
+}
+.sticker-add-btn:hover {
+  transform: scale(1.05);
+}
+
+.sticker-menu-overlay {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  z-index: 2000;
+}
+
+.sticker-menu-popover {
+  background: white;
+  width: 340px;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  position: absolute;
+  bottom: 84px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform-origin: bottom right;
+}
+
+.sticker-close-btn {
+  position: absolute;
+  bottom: -72px;
+  right: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.sticker-item-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid rgba(0,0,0,0.03);
+  cursor: pointer;
+  padding: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sticker-item-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.sticker-item-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Outline for preview */
+  filter: drop-shadow(0 -1px 0 white) drop-shadow(1px 0 0 white) drop-shadow(0 1px 0 white) drop-shadow(-1px 0 0 white);
+}
+
+.sticker-categories-wrapper {
+  background: #f4efeb;
+  padding: 6px;
+  border-radius: 14px;
+}
+.sticker-categories {
+  display: flex;
+  justify-content: space-between;
+}
+.sticker-cat-btn {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.sticker-cat-btn.active {
+  background: white;
+  color: #333;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.placed-sticker {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  cursor: grab;
+  z-index: 50;
+}
+.placed-sticker:active {
+  cursor: grabbing;
+}
+.placed-sticker img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* The magic paper sticker effect */
+  filter: 
+    drop-shadow(0px -3px 0px white) 
+    drop-shadow(3px 0px 0px white) 
+    drop-shadow(0px 3px 0px white) 
+    drop-shadow(-3px 0px 0px white)
+    drop-shadow(0px -2px 0px white) 
+    drop-shadow(2px -2px 0px white) 
+    drop-shadow(2px 2px 0px white) 
+    drop-shadow(-2px 2px 0px white)
+    drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+}
+
+/* --- STICKER CONTEXT MENU --- */
+.placed-sticker-wrapper {
+  position: absolute;
+}
+.placed-sticker-wrapper .placed-sticker {
+  position: relative; /* Override previous absolute */
+}
+
+.sticker-context-popover {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -120px;
+  margin-top: 16px;
+  background: white;
+  border-radius: 24px;
+  padding: 16px 20px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+  width: 240px;
+  z-index: 300;
+  cursor: default;
+}
+
+.sticker-actions-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sticker-actions-menu button {
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sticker-actions-menu button:hover {
+  background: #f4f4f5;
+}
+
+.sticker-actions-menu .delete-btn:hover {
+  background: #fef2f2;
+}
+
+.sticker-edit-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 4px;
+}
+
+.slider-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-row span:first-child {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  text-align: left;
+}
+
+.slider-row .slider-val {
+  color: #666;
+  text-align: right;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.slider-row input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  background: #d4e2f9; /* Light blue track */
+  height: 32px;
+  border-radius: 16px;
+  outline: none;
+  margin: 0;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 4px;
+  height: 18px;
+  background: #111; /* Black handle */
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.edit-done-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+.edit-done-row button {
+  background: transparent;
+  border: none;
+  color: #007aff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
 }

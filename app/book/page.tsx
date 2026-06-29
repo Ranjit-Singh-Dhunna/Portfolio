@@ -66,6 +66,15 @@ export default function BookThemePage() {
   const [activeControl, setActiveControl] = useState<'cover' | 'background' | 'surprise' | null>(null);
   const [coverColor, setCoverColor] = useState<string>('#a3e0cb'); // default mint cover
   const [backgroundColor, setBackgroundColor] = useState<string>('#f6afcb'); // default pink desk
+  const [bgPattern, setBgPattern] = useState<string>('dots'); // pattern: dots, grid, diamond, water, none
+  const [dustMotes, setDustMotes] = useState<any[]>([]);
+  const [waterDrops, setWaterDrops] = useState<any[]>([]);
+  const [stickers, setStickers] = useState<any[]>([]);
+  const [stickerMenuOpen, setStickerMenuOpen] = useState(false);
+  const [stickerCategory, setStickerCategory] = useState<'Cute' | 'Stationery' | 'Plants' | 'Desk' | 'Dev'>('Cute');
+  const stickerPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const [activeStickerMenu, setActiveStickerMenu] = useState<string | null>(null);
+  const [stickerMenuMode, setStickerMenuMode] = useState<'actions' | 'edit'>('actions');
   
   // Interactive features states
   const [lampOn, setLampOn] = useState<boolean>(false);
@@ -73,6 +82,9 @@ export default function BookThemePage() {
   const [devActiveTab, setDevActiveTab] = useState<'React' | 'SVG' | 'Motion'>('React');
   const [surprises, setSurprises] = useState<Array<{ id: number; x: number; y: number; text: string }>>([]);
   const [surpriseCounter, setSurpriseCounter] = useState(0);
+  const [currentSpread, setCurrentSpread] = useState(1);
+  const [hoverFlipRight, setHoverFlipRight] = useState(false);
+  const [hoverFlipLeft, setHoverFlipLeft] = useState(false);
 
   // iPod States
   const [ipodMenu, setIpodMenu] = useState<number>(0); // 0: Play Lo-Fi, 1: About Ranjit, 2: Core Stack, 3: Projects, 4: Contact
@@ -113,14 +125,25 @@ export default function BookThemePage() {
     { cover: '#a0cff0', bg: '#c8b0f5' }  // Blue & Purple
   ];
 
-  // iPod lists
   const ipodMenuItems = [
-    "♫ Play Lo-Fi Music",
-    "☕ About Ranjit",
-    "⚡ Core Stack",
-    "💼 Projects Index",
-    "✉ Get In Touch"
+    "♫ Play Lo-Fi Music"
   ];
+
+  const patterns = [
+    { id: 'dots', label: 'Dots' },
+    { id: 'grid', label: 'Grid' },
+    { id: 'diamond', label: 'Diamond' },
+    { id: 'water', label: 'Rain' },
+    { id: 'none', label: 'None' }
+  ];
+
+  const stickerPacks = {
+    Cute: ['cute_bear_1782691975916.png', 'cute_cat_1782691963839.png', 'cute_kirby_1782691950902.png', 'cute_pig_1782691969568.png'],
+    Plants: ['flower.svg', 'cactus.svg', 'herb.svg', 'leaf.svg', 'tree.svg'],
+    Stationery: ['pencil.svg', 'palette.svg'],
+    Desk: ['coffee.svg', 'book.svg', 'computer.svg'],
+    Dev: ['react.svg', 'ts.svg', 'js.svg', 'html.svg', 'css.svg', 'python.svg', 'github.svg', 'figma.svg', 'cpp.svg', 'tailwind.svg', 'nextjs.svg']
+  };
 
   // Dev activity grid configurations
   const getDevGridPattern = () => {
@@ -141,6 +164,54 @@ export default function BookThemePage() {
     }
     return baseGrid;
   };
+
+  // Auto play music when opened (optional effect)
+  useEffect(() => {
+    // any side effects
+  }, []);
+
+  // Generate dust motes on client-side only to prevent SSR hydration mismatch
+  useEffect(() => {
+    const motes = Array.from({ length: 25 }).map(() => {
+      const size = 2 + Math.random() * 4;
+      return {
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animationDuration: `${15 + Math.random() * 25}s`,
+        animationDelay: `-${Math.random() * 20}s`,
+        width: `${size}px`,
+        height: `${size}px`,
+        opacity: 0.1 + Math.random() * 0.4
+      };
+    });
+    setDustMotes(motes);
+
+    const drops: any[] = [];
+    while (drops.length < 30) {
+      const leftRaw = Math.random() * 100;
+      const topRaw = Math.random() * 100;
+      
+      // Book is roughly at left: 15-45%, top: 20-80%
+      const isOnBook = leftRaw > 15 && leftRaw < 45 && topRaw > 20 && topRaw < 80;
+      
+      // 85% chance to reject a drop if it lands on the book to keep drops there minimal
+      if (isOnBook && Math.random() > 0.15) {
+        continue;
+      }
+
+      // Slightly smaller drops
+      const size = 8 + Math.random() * 18;
+      drops.push({
+        left: `${leftRaw}%`,
+        top: `${topRaw}%`,
+        width: `${size}px`,
+        height: `${size + Math.random() * 4}px`, 
+        animationDuration: `${4 + Math.random() * 6}s`,
+        animationDelay: `-${Math.random() * 8}s`,
+      });
+    }
+    setWaterDrops(drops);
+  }, []);
 
   // Music progress timer effect
   useEffect(() => {
@@ -255,6 +326,9 @@ export default function BookThemePage() {
         if (activeControl === 'cover' || activeControl === 'background') {
           setActiveControl(null);
         }
+        if (activeStickerMenu) {
+          setActiveStickerMenu(null);
+        }
       }}
     >
       {/* Hidden Audio Player for iPod Lo-Fi Theme */}
@@ -265,14 +339,132 @@ export default function BookThemePage() {
         playsInline
       />
 
-      {/* Repeating dot grid on the desk surface */}
-      <div className="desk-grid" />
+      {/* Background Pattern Grid */}
+      {bgPattern !== 'none' && bgPattern !== 'water' && (
+        <div 
+          className="desk-grid" 
+          style={{
+            backgroundImage: bgPattern === 'dots' 
+              ? 'radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px)' 
+              : bgPattern === 'grid'
+              ? 'linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px)'
+              : 'linear-gradient(45deg, transparent 49%, rgba(255, 255, 255, 0.3) 49%, rgba(255, 255, 255, 0.3) 51%, transparent 51%), linear-gradient(-45deg, transparent 49%, rgba(255, 255, 255, 0.3) 49%, rgba(255, 255, 255, 0.3) 51%, transparent 51%)',
+            backgroundSize: bgPattern === 'dots' ? '24px 24px' : bgPattern === 'grid' ? '30px 30px' : '40px 40px'
+          }}
+        />
+      )}
+
+      {/* Water Droplets Pattern */}
+      {bgPattern === 'water' && (
+        <div className="water-drops-container">
+          {waterDrops.map((dropStyle, i) => (
+            <div 
+              key={i} 
+              className="water-drop" 
+              style={dropStyle}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Soft overlay shadows */}
       <div className={`darkness-overlay ${lampOn ? 'lamp-on' : ''}`} />
       <div className={`spotlight-overlay ${lampOn ? 'lamp-on' : ''}`} />
 
-      {/* Floating clouds in background with faces */}
+      {/* Placed Stickers */}
+      {stickers.map((stk) => (
+        <motion.div
+          key={stk.id}
+          drag
+          dragMomentum={false}
+          initial={{ x: stk.x, y: stk.y }}
+          className="placed-sticker-wrapper"
+          style={{ zIndex: activeStickerMenu === stk.id ? 200 : 50, position: 'absolute' }}
+          onPointerDown={() => {
+            stickerPressTimer.current = setTimeout(() => {
+              setActiveStickerMenu(stk.id);
+              setStickerMenuMode('actions');
+            }, 500);
+          }}
+          onPointerUp={() => {
+            if (stickerPressTimer.current) clearTimeout(stickerPressTimer.current);
+          }}
+          onPointerLeave={() => {
+            if (stickerPressTimer.current) clearTimeout(stickerPressTimer.current);
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <motion.div
+            className="placed-sticker"
+            initial={{ rotate: stk.rotation, scale: 0 }}
+            animate={{ rotate: stk.rotation, scale: stk.scale || 1 }}
+            whileDrag={{ scale: (stk.scale || 1) * 1.1 }}
+          >
+            <img src={stk.url} alt="sticker" draggable="false" />
+          </motion.div>
+
+          <AnimatePresence>
+            {activeStickerMenu === stk.id && (
+              <motion.div 
+                className="sticker-context-popover"
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {stickerMenuMode === 'actions' ? (
+                  <div className="sticker-actions-menu">
+                    <button onClick={() => setStickerMenuMode('edit')}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+                      <span>Resize</span>
+                    </button>
+                    <button className="delete-btn" onClick={() => {
+                       setStickers(prev => prev.filter(s => s.id !== stk.id));
+                       setActiveStickerMenu(null);
+                    }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="sticker-edit-menu">
+                    <div className="slider-row">
+                      <span>Size</span>
+                      <input 
+                        type="range" 
+                        min="50" max="250" 
+                        value={(stk.scale || 1) * 100}
+                        onChange={(e) => {
+                           setStickers(prev => prev.map(s => s.id === stk.id ? {...s, scale: parseInt(e.target.value) / 100} : s));
+                        }}
+                      />
+                      <span className="slider-val">{Math.round((stk.scale || 1) * 100)}%</span>
+                    </div>
+                    <div className="slider-row">
+                      <span>Tilt</span>
+                      <input 
+                        type="range" 
+                        min="-180" max="180" 
+                        value={stk.rotation}
+                        onChange={(e) => {
+                           setStickers(prev => prev.map(s => s.id === stk.id ? {...s, rotation: parseInt(e.target.value)} : s));
+                        }}
+                      />
+                      <span className="slider-val">{Math.round(stk.rotation)}°</span>
+                    </div>
+                    <div className="edit-done-row">
+                      <button onClick={() => setActiveStickerMenu(null)}>Done</button>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      ))}
+
+      {/* Paper airplane */}
       <div className="cloud-bg">
         <div className="cloud-element" style={{ width: '180px', height: '60px', top: '15%', left: '5%', animationDuration: '40s' }}>
           <span className="cloud-face">( •◡•)</span>
@@ -282,6 +474,18 @@ export default function BookThemePage() {
         </div>
         <div className="cloud-element" style={{ width: '200px', height: '70px', bottom: '10%', left: '25%', animationDuration: '50s' }}>
           <span className="cloud-face">( •◡•)</span>
+        </div>
+
+        {/* Distant Hot Air Balloons */}
+        <div className="hot-air-balloon balloon-1" style={{ top: '20%', animationDelay: '0s', animationDuration: '70s' }}>
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="rgba(255, 140, 180, 0.6)">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 2.5 1.5 5.5 3 8h8c1.5-2.5 3-5.5 3-8 0-3.87-3.13-7-7-7zm-1.5 18h3v2h-3v-2z"/>
+          </svg>
+        </div>
+        <div className="hot-air-balloon balloon-2" style={{ top: '55%', animationDelay: '20s', animationDuration: '90s' }}>
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="rgba(160, 207, 240, 0.5)">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 2.5 1.5 5.5 3 8h8c1.5-2.5 3-5.5 3-8 0-3.87-3.13-7-7-7zm-1.5 18h3v2h-3v-2z"/>
+          </svg>
         </div>
       </div>
 
@@ -365,38 +569,42 @@ export default function BookThemePage() {
                   );
                 })}
               </div>
+
+              {/* Pattern Options */}
+              {activeControl === 'background' && (
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                  <div style={{ fontSize: '11px', color: '#888', marginBottom: '8px', fontWeight: 600, letterSpacing: '0.05em' }}>PATTERN</div>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    {patterns.map((pat, idx) => (
+                      <motion.button
+                        key={idx}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        onClick={() => setBgPattern(pat.id)}
+                        className={`pattern-btn ${bgPattern === pat.id ? 'selected' : ''}`}
+                      >
+                        {pat.label}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Surprise Pill */}
+        {/* Inspo Pill */}
         <button 
           onClick={() => {
-            setActiveControl('surprise');
+            setActiveControl('surprise'); // keeping the state as surprise for logic
             triggerSurprise();
           }}
           className={`control-pill-btn ${activeControl === 'surprise' ? 'active-surprise' : ''}`}
         >
           <span style={{ color: '#db2777', animation: 'pulse 1s infinite' }}>✦</span>
-          <span>surprise</span>
+          <span>inspo</span>
         </button>
-
-        {/* Preset pill thumbnails */}
-        <div className="presets-container">
-          {presets.map((preset, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setCoverColor(preset.cover);
-                setBackgroundColor(preset.bg);
-              }}
-              className="preset-thumbnail"
-            >
-              <div style={{ width: '50%', height: '100%', backgroundColor: preset.cover }} />
-              <div style={{ width: '50%', height: '100%', backgroundColor: preset.bg }} />
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* ── DRAGGABLE MECHANICAL KEYBOARD (TOP-LEFT) ── */}
@@ -653,172 +861,274 @@ export default function BookThemePage() {
 
       {/* ── CENTER INTERACTIVE BOOK ── */}
       <div className="book-center-wrapper">
-        <AnimatePresence mode="wait">
-          {!bookOpen ? (
-            /* CLOSED BOOK COVER VIEW */
-            <motion.div
-              key="closed"
-              onClick={() => setBookOpen(true)}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0, rotateY: -90 }}
-              transition={{ duration: 0.4 }}
-              whileHover={{ scale: 1.02 }}
-              className="closed-book-cover"
-              style={{ backgroundColor: coverColor }}
-            >
-              <div className="book-spine-line" />
-              <div className="book-spine-shine" />
-              <div className="book-elastic-strap" />
-              <div className="book-corner-metal" />
-
-              <div />
-
-              {/* Middle Label Sticker */}
-              <div className="closed-book-label">
-                {/* MS logo */}
-                <div className="label-logo-box">
-                  <span>MS</span>
-                  <span className="label-logo-sparkle">✦</span>
-                </div>
-                {/* portfolio title */}
-                <h1 className="label-title">
-                  portfolio
-                </h1>
-                {/* design code text */}
-                <div className="label-sub">
-                  DESIGN + CODE
-                </div>
-              </div>
-
-              {/* Tap to open */}
-              <div className="tap-open-invitation">
-                <span>tap to open</span>
-                <span style={{ color: '#f43f5e' }}>♡</span>
-              </div>
-            </motion.div>
-          ) : (
-            /* OPEN DUAL-PAGE BOOK VIEW */
-            <motion.div
-              key="open"
-              initial={{ scale: 0.95, opacity: 0, rotateY: 90 }}
-              animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="open-book-spread"
-              style={{ border: '6px solid ' + coverColor }}
-            >
+        <motion.div
+          className="open-book-spread"
+          initial={false}
+          animate={{ x: bookOpen ? 0 : -160 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+        >
               {/* Metal spiral rings in the center spine */}
-              <div className="open-book-spine-rings">
+              <div className="open-book-spine-rings" style={{ zIndex: 50 }}>
                 {Array.from({ length: 8 }).map((_, idx) => (
                   <div key={idx} className="spiral-ring" />
                 ))}
               </div>
 
-              {/* ── LEFT PAGE: BIO & SKILLS ── */}
-              <div className="open-book-left">
-                <div>
-                  <h2 className="journal-header">
-                    <span>Profile Journal</span>
-                    <span className="journal-page-num">Page 1</span>
-                  </h2>
-
-                  {/* Profile Picture and details */}
-                  <div className="journal-profile">
-                    <div className="profile-avatar-circle">
-                      <svg viewBox="0 0 40 40" className="w-10 h-10" fill="none" stroke="#3d2b1f" strokeWidth="2.5">
-                        <circle cx="20" cy="14" r="6" fill="#3d2b1f" opacity="0.15" />
-                        <circle cx="20" cy="14" r="6" stroke="#3d2b1f" />
-                        <path d="M10 32c0-6 5-10 10-10s10 4 10 10" stroke="#3d2b1f" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="profile-name">Ranjit Singh Dhunna</h3>
-                      <p className="profile-tag">Software Designer</p>
-                    </div>
-                  </div>
-
-                  {/* Bio */}
-                  <p className="journal-bio">
-                    Hey! I'm a full-stack engineer and machine learning creator based in Canada. 
-                    I focus on building delightful, high-fidelity developer tools, models, and immersive frontends that blend functionality with rich styling.
-                  </p>
-                </div>
-
-                {/* Stack */}
-                <div className="journal-stack-section">
-                  <h4 className="journal-stack-title">Core Stack:</h4>
-                  <ul className="journal-stack-list">
-                    <li>React & Next.js</li>
-                    <li>Framer Motion</li>
-                    <li>Python (ML)</li>
-                    <li>TypeScript & Node</li>
-                  </ul>
-                </div>
-              </div>
-
-              {/* ── RIGHT PAGE: PROJECTS INDEX ── */}
-              <div className="open-book-right">
-                <div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
-                  <div>
+              {/* ── LEFT PAGE: COVER & BIO ── */}
+              <motion.div 
+                className="open-book-left"
+                initial={false}
+                animate={
+                  bookOpen 
+                    ? { rotateY: 0, transitionEnd: { zIndex: 30 } }
+                    : { rotateY: 180, zIndex: 50 }
+                }
+                transition={{ duration: 1.2, ease: "easeInOut" }}
+                style={{ transformOrigin: "right center" }}
+              >
+                {/* ── FRONT FACE (Inner Page - Left Half - PAGE 1) ── */}
+                <div className="open-book-left-front">
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <h2 className="journal-header">
-                      <span>Featured Works</span>
-                      <span className="journal-page-num">Page 2</span>
+                      <span>Profile Journal</span>
+                      <span className="journal-page-num">Page 1</span>
                     </h2>
-
-                    {/* Scrollable projects */}
-                    <div className="book-inner-scroll" style={{ maxHeight: '210px', marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      {projectsData.map((project, idx) => (
-                        <a 
-                          key={idx}
-                          href={project.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="project-item-link"
-                        >
-                          <div className="project-item-header">
-                            <span className="project-item-name">
-                              {project.name}
-                            </span>
-                            <span className="project-item-btn" style={{ backgroundColor: project.color }}>
-                              Go ↗
-                            </span>
-                          </div>
-                          <span className="project-item-tag">
-                            {project.tag}
-                          </span>
+                    <div className="journal-profile">
+                      <div className="profile-avatar-circle">
+                        <img src="/gibli.png" alt="Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                      </div>
+                      <div>
+                        <h3 className="profile-name">Ranjit Singh Dhunna</h3>
+                        <p className="profile-tag">Software Designer</p>
+                      </div>
+                    </div>
+                    <p className="journal-bio">
+                      Hey! I'm a full-stack engineer and machine learning creator based in Canada. 
+                      I focus on building delightful, high-fidelity developer tools, models, and immersive frontends that blend functionality with rich styling.
+                    </p>
+                    <div style={{ flex: 1 }} />
+                    <div className="open-book-footer">
+                      <div className="footer-socials">
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link">
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                         </a>
-                      ))}
+                        <a href="https://www.linkedin.com/in/ranjit-singh-dhunna-772790307" target="_blank" rel="noopener noreferrer" className="footer-social-link">
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                      </div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Footer & close ribbon */}
-                  <div className="open-book-footer">
-                    <div className="footer-socials">
-                      <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                      </a>
-                      <a href="https://www.linkedin.com/in/ranjit-singh-dhunna-772790307" target="_blank" rel="noopener noreferrer" className="footer-social-link">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                      </a>
+                {/* ── BACK FACE (Closed Cover) ── */}
+                <div 
+                  className="open-book-left-back" 
+                  style={{ backgroundColor: coverColor }}
+                  onClick={() => setBookOpen(true)}
+                >
+                  <div className="book-spine-line" />
+                  <div className="book-spine-shine" />
+                  <div className="book-elastic-strap" />
+                  <div className="book-corner-metal" />
+                  <div />
+                  <div className="closed-book-label">
+                    <h1 className="label-title">Journal</h1>
+                    <div className="label-sub">DESIGN + CODE</div>
+                  </div>
+                  <div className="tap-open-invitation">
+                    <span>tap to open</span>
+                    <span style={{ color: '#f43f5e' }}>♡</span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* ── RIGHT PAGE: Right Half - PAGE 4 ── */}
+              <div className="open-book-right">
+                <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <h2 className="journal-header">
+                    <span>Featured Works</span>
+                    <span className="journal-page-num">Page 4</span>
+                  </h2>
+                  <div className="journal-works">
+                    <div className="work-item">
+                      <div className="work-info">
+                        <h4>Events & Ticketing App</h4>
+                        <p>Full Stack • E-Commerce</p>
+                      </div>
+                      <button className="go-btn" style={{backgroundColor: '#f97316'}}>Go ↗</button>
                     </div>
-
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setBookOpen(false);
-                      }}
-                      className="close-bookmark-btn"
-                    >
+                    <div className="work-item">
+                      <div className="work-info">
+                        <h4>FLUX</h4>
+                        <p>Productivity • SaaS</p>
+                      </div>
+                      <button className="go-btn" style={{backgroundColor: '#06b6d4'}}>Go ↗</button>
+                    </div>
+                  </div>
+                  <div style={{ flex: 1 }} />
+                  {/* Close ribbon */}
+                  <div className="open-book-footer">
+                    <div className="footer-socials"></div>
+                    <button onClick={(e) => { 
+                      e.stopPropagation(); 
+                      setCurrentSpread(1); 
+                      setTimeout(() => setBookOpen(false), 600); 
+                    }} className="close-bookmark-btn">
                       <span>Close Bookmark</span>
                       <span className="close-bookmark-ribbon" />
                     </button>
                   </div>
                 </div>
               </div>
+
+              {/* ── 3D TURNING PAGE LAYER (Between spreads) ── */}
+              <motion.div
+                className="turning-page-layer"
+                initial={false}
+                animate={{ 
+                  rotateY: currentSpread === 1 
+                    ? (bookOpen && hoverFlipRight ? -10 : 0) 
+                    : (bookOpen && hoverFlipLeft ? -170 : -180),
+                  zIndex: 40
+                }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  width: '50%',
+                  height: '100%',
+                  transformOrigin: 'left center',
+                  transformStyle: 'preserve-3d',
+                  pointerEvents: 'none'
+                }}
+              >
+                {/* FRONT FACE (Page 2 - Philosophy) */}
+                <div style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backfaceVisibility: 'hidden',
+                  backgroundColor: '#f8f5ee',
+                  borderRadius: '0 12px 12px 0',
+                  overflow: 'hidden',
+                  boxShadow: 'inset 4px 0 10px rgba(0,0,0,0.05)',
+                  padding: '24px',
+                  paddingLeft: '32px',
+                  pointerEvents: 'auto'
+                }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header">
+                      <span>Design Philosophy</span>
+                      <span className="journal-page-num">Page 2</span>
+                    </h2>
+                    <div className="journal-philosophy">
+                      <p>
+                        The tactile nature of physical objects often grounds the creative process but this interactive workspace bridges the gap between digital utility and physical experience, crafting an environment that feels less like software and more like a personal desk.
+                      </p>
+                      <p>
+                        Every draggable sticker, glowing lamp, and rustling page invites exploration. The deliberate imperfections serve to soften the harsh perfection of typical digital interfaces, creating a sanctuary that fosters genuine connection and focused thought.
+                      </p>
+                    </div>
+                    <div style={{ flex: 1 }} />
+                    {/* Close ribbon */}
+                    <div className="open-book-footer">
+                      <div className="footer-socials"></div>
+                      <button onClick={(e) => { e.stopPropagation(); setBookOpen(false); }} className="close-bookmark-btn">
+                        <span>Close Bookmark</span>
+                        <span className="close-bookmark-ribbon" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* BACK FACE (Page 3 - Featured Works part 1) */}
+                <div style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backfaceVisibility: 'hidden',
+                  backgroundColor: '#f8f5ee',
+                  borderRadius: '12px 0 0 12px',
+                  overflow: 'hidden',
+                  transform: 'rotateY(180deg)',
+                  boxShadow: 'inset -4px 0 10px rgba(0,0,0,0.05)',
+                  padding: '24px',
+                  pointerEvents: 'auto'
+                }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header">
+                      <span>Featured Works</span>
+                      <span className="journal-page-num">Page 3</span>
+                    </h2>
+                    <div className="journal-works">
+                      <div className="work-item">
+                        <div className="work-info">
+                          <h4>Predicting Customer Churn</h4>
+                          <p>Machine Learning • Analytics</p>
+                        </div>
+                        <button className="go-btn" style={{backgroundColor: '#f43f5e'}}>Go ↗</button>
+                      </div>
+                      <div className="work-item">
+                        <div className="work-info">
+                          <h4>Skin Lesion CNN</h4>
+                          <p>Deep Learning • Healthcare</p>
+                        </div>
+                        <button className="go-btn" style={{backgroundColor: '#eab308'}}>Go ↗</button>
+                      </div>
+                      <div className="work-item">
+                        <div className="work-info">
+                          <h4>Health Companion</h4>
+                          <p>Mobile App • Wellness</p>
+                        </div>
+                        <button className="go-btn" style={{backgroundColor: '#3b82f6'}}>Go ↗</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* HOTZONES FOR PAGE TURNING */}
+              {currentSpread === 1 && bookOpen && (
+                <div 
+                  style={{
+                    position: 'absolute', right: 0, top: 0, width: '20%', height: '100%', zIndex: 60, cursor: 'pointer'
+                  }}
+                  onMouseEnter={() => setHoverFlipRight(true)}
+                  onMouseLeave={() => setHoverFlipRight(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setHoverFlipRight(false);
+                    setCurrentSpread(2);
+                  }}
+                />
+              )}
+              {currentSpread === 2 && bookOpen && (
+                <div 
+                  style={{
+                    position: 'absolute', left: 0, top: 0, width: '20%', height: '100%', zIndex: 60, cursor: 'pointer'
+                  }}
+                  onMouseEnter={() => setHoverFlipLeft(true)}
+                  onMouseLeave={() => setHoverFlipLeft(false)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setHoverFlipLeft(false);
+                    setCurrentSpread(1);
+                  }}
+                />
+              )}
             </motion.div>
-          )}
-        </AnimatePresence>
+      </div>
+
+      {/* Floating Dust Motes (Sunlight particles) */}
+      <div className="dust-motes-container">
+        {dustMotes.map((moteStyle, i) => (
+          <div 
+            key={i} 
+            className="dust-mote" 
+            style={moteStyle}
+          />
+        ))}
       </div>
 
 
@@ -1058,14 +1368,6 @@ export default function BookThemePage() {
         ))}
       </AnimatePresence>
 
-      {/* Floating Add Item Sticker button bottom-right */}
-      <button
-        onClick={triggerSurprise}
-        className="floating-add-btn"
-      >
-        +
-      </button>
-
       {/* Hidden webcam elements */}
       <video ref={videoRef} style={{ display: 'none' }} playsInline muted />
       <canvas ref={canvasRef} style={{ display: 'none' }} />
@@ -1112,6 +1414,73 @@ export default function BookThemePage() {
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Sticker Menu Overlays and Buttons */}
+      <button 
+        className="sticker-add-btn"
+        onClick={() => setStickerMenuOpen(true)}
+      >
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+
+      <AnimatePresence>
+        {stickerMenuOpen && (
+          <motion.div 
+            className="sticker-menu-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setStickerMenuOpen(false)}
+          >
+            <motion.div 
+              className="sticker-menu-popover"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticker-grid">
+                {stickerPacks[stickerCategory].map((stickerFilename) => (
+                  <button 
+                    key={stickerFilename} 
+                    className="sticker-item-btn"
+                    onClick={() => {
+                      setStickers(prev => [...prev, {
+                        id: Math.random().toString(),
+                        url: `/stickers/${stickerFilename}`,
+                        x: window.innerWidth / 2 - 50 + (Math.random() * 40 - 20),
+                        y: window.innerHeight / 2 - 50 + (Math.random() * 40 - 20),
+                        rotation: Math.random() * 40 - 20,
+                        scale: 1
+                      }]);
+                      setStickerMenuOpen(false);
+                    }}
+                  >
+                    <img src={`/stickers/${stickerFilename}`} alt={stickerFilename} />
+                  </button>
+                ))}
+              </div>
+              
+              <div className="sticker-categories-wrapper">
+                <div className="sticker-categories">
+                  {(['Cute', 'Stationery', 'Plants', 'Desk', 'Dev'] as const).map((cat) => (
+                    <button 
+                      key={cat}
+                      className={`sticker-cat-btn ${stickerCategory === cat ? 'active' : ''}`}
+                      onClick={() => setStickerCategory(cat)}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
