@@ -84,6 +84,15 @@ export default function BookThemePage() {
   const [surpriseCounter, setSurpriseCounter] = useState(0);
   const [currentSpread, setCurrentSpread] = useState(1);
   const [hoverFlipRight, setHoverFlipRight] = useState(false);
+  const [stamps, setStamps] = useState<{x: number, y: number, rotation: number}[]>([]);
+
+  const addStamp = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rotation = Math.random() * 360;
+    setStamps([...stamps, { x, y, rotation }]);
+  };
   const [hoverFlipLeft, setHoverFlipLeft] = useState(false);
 
   // iPod States
@@ -890,7 +899,7 @@ export default function BookThemePage() {
                 <div className="open-book-left-front">
                   <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                     <h2 className="journal-header">
-                      <span>Profile Journal</span>
+                      <span style={{ color: '#b91c1c' }}>Profile Journal</span>
                       <span className="journal-page-num">Page 1</span>
                     </h2>
                     <div className="journal-profile">
@@ -908,13 +917,11 @@ export default function BookThemePage() {
                     </p>
                     <div style={{ flex: 1 }} />
                     <div className="open-book-footer">
-                      <div className="footer-socials">
-                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link">
-                          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                        </a>
-                        <a href="https://www.linkedin.com/in/ranjit-singh-dhunna-772790307" target="_blank" rel="noopener noreferrer" className="footer-social-link">
+                      <div className="footer-socials" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <a href="https://www.linkedin.com/in/ranjit-singh-dhunna-772790307" target="_blank" rel="noopener noreferrer" className="footer-social-link" onClick={(e) => e.stopPropagation()}>
                           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                         </a>
+                        <span style={{ fontSize: '11px', color: '#9ca3af', fontStyle: 'italic' }}>Please hire me, my plants are dying 🌱</span>
                       </div>
                     </div>
                   </div>
@@ -942,86 +949,379 @@ export default function BookThemePage() {
                 </div>
               </motion.div>
 
-              {/* ── RIGHT PAGE: Right Half - PAGE 4 ── */}
+              {/* ── RIGHT PAGE: Base Right - PAGE 8 ── */}
               <div className="open-book-right">
-                <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <h2 className="journal-header">
-                    <span>Featured Works</span>
-                    <span className="journal-page-num">Page 4</span>
+                <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  
+                  {stamps.map((stamp, i) => (
+                    <div 
+                      key={i} 
+                      style={{
+                        position: 'absolute',
+                        left: stamp.x,
+                        top: stamp.y,
+                        transform: `translate(-50%, -50%) rotate(${stamp.rotation}deg)`,
+                        width: '60px',
+                        height: '60px',
+                        border: '3px solid #be123c',
+                        borderRadius: '50%',
+                        color: '#be123c',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontFamily: 'Caveat, cursive',
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        opacity: 0.7,
+                        pointerEvents: 'none',
+                        zIndex: 10
+                      }}
+                    >
+                      APPROVED
+                    </div>
+                  ))}
+
+                  <div 
+                    onClick={addStamp}
+                    style={{
+                      position: 'absolute',
+                      top: 0, left: 0, right: 0, bottom: 0,
+                      cursor: 'crosshair',
+                      zIndex: 5
+                    }}
+                  />
+
+                  <h2 className="journal-header" style={{ width: '100%', pointerEvents: 'none', zIndex: 20 }}>
+                    <span style={{ color: '#0f766e' }}>End of Journal</span>
+                    <span className="journal-page-num">Page 10</span>
                   </h2>
-                  <div className="journal-works">
-                    <div className="work-item">
-                      <div className="work-info">
-                        <h4>Events & Ticketing App</h4>
-                        <p>Full Stack • E-Commerce</p>
-                      </div>
-                      <button className="go-btn" style={{backgroundColor: '#f97316'}}>Go ↗</button>
-                    </div>
-                    <div className="work-item">
-                      <div className="work-info">
-                        <h4>FLUX</h4>
-                        <p>Productivity • SaaS</p>
-                      </div>
-                      <button className="go-btn" style={{backgroundColor: '#06b6d4'}}>Go ↗</button>
-                    </div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', zIndex: 20 }}>
+                    <p style={{ fontFamily: 'Caveat, cursive', fontSize: '32px', color: '#6b7280', transform: 'rotate(-5deg)' }}>Thanks for reading!</p>
+                    <p style={{ fontSize: '12px', color: '#9ca3af', marginTop: '16px' }}>(Click anywhere to leave a stamp)</p>
                   </div>
-                  <div style={{ flex: 1 }} />
-                  {/* Close ribbon */}
-                  <div className="open-book-footer">
+                  <div className="open-book-footer" style={{ width: '100%', pointerEvents: 'auto', zIndex: 20 }}>
                     <div className="footer-socials"></div>
                     <button onClick={(e) => { 
                       e.stopPropagation(); 
-                      setCurrentSpread(1); 
-                      setTimeout(() => setBookOpen(false), 600); 
+                      setStamps([]); 
                     }} className="close-bookmark-btn">
-                      <span>Close Bookmark</span>
+                      <span>Clear Stamps</span>
                       <span className="close-bookmark-ribbon" />
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* ── 3D TURNING PAGE LAYER (Between spreads) ── */}
+              {/* ── 3D TURNING PAGE LAYER 4 (Pages 8 & 9) ── */}
               <motion.div
                 className="turning-page-layer"
                 initial={false}
                 animate={{ 
-                  rotateY: currentSpread === 1 
-                    ? (bookOpen && hoverFlipRight ? -10 : 0) 
-                    : (bookOpen && hoverFlipLeft ? -170 : -180),
-                  zIndex: 40
+                  rotateY: currentSpread > 4
+                    ? (bookOpen && currentSpread === 5 && hoverFlipLeft ? -170 : -180)
+                    : (bookOpen && currentSpread === 4 && hoverFlipRight ? -10 : 0),
+                  ...(currentSpread > 4 ? { transitionEnd: { zIndex: 34 } } : { zIndex: 36 })
                 }}
-                transition={{ duration: 0.6, ease: "easeInOut" }}
+                transition={{ duration: 0.6, ease: "easeInOut", zIndex: { duration: 0 } }}
                 style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: '50%',
-                  height: '100%',
-                  transformOrigin: 'left center',
-                  transformStyle: 'preserve-3d',
-                  pointerEvents: 'none'
+                  position: 'absolute', top: 0, right: 0, width: '50%', height: '100%',
+                  transformOrigin: 'left center', transformStyle: 'preserve-3d', pointerEvents: 'none'
+                }}
+              >
+                {/* FRONT FACE (Page 8) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '0 12px 12px 0', overflow: 'hidden', boxShadow: 'inset 4px 0 10px rgba(0,0,0,0.05)', padding: '24px', paddingLeft: '32px', pointerEvents: 'auto' }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header" style={{ width: '100%' }}>
+                      <span style={{ color: '#c2410c' }}>Competitions & Events</span>
+                      <span className="journal-page-num">Page 8</span>
+                    </h2>
+                    <div className="journal-works">
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>ConUHacks X Hackathon</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>Jan 2026</p>
+                        </div>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>CyberSci Canada CTF</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '2px' }}>Nov 2025</p>
+                          <p style={{ fontSize: '10px', lineHeight: '1.3', color: '#6b7280' }}>Awarded by Cineplex</p>
+                        </div>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>@hack 2025 CTF</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '2px' }}>Mar 2025</p>
+                          <p style={{ fontSize: '10px', lineHeight: '1.3', color: '#6b7280' }}>Ranked 6th</p>
+                        </div>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start' }}>
+                        <div className="work-info">
+                          <h4>ConUHacks IX Hackathon</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>Feb 2025</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* BACK FACE (Page 9) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '12px 0 0 12px', overflow: 'hidden', transform: 'rotateY(180deg)', boxShadow: 'inset -4px 0 10px rgba(0,0,0,0.05)', padding: '24px', pointerEvents: 'auto' }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header"><span style={{ color: '#0f766e' }}>Philosophy & Tech Stack</span><span className="journal-page-num">Page 9</span></h2>
+                    
+                    <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                      <p style={{ fontSize: '11px', lineHeight: '1.5', color: '#4b5563', fontStyle: 'italic', paddingLeft: '8px' }}>
+                        "A craftsman is only as good as their tools, but an engineer is defined by how they adapt them."
+                      </p>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                        <div>
+                          <h4 style={{ fontSize: '10px', color: '#0f766e', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 'bold' }}>Frontend</h4>
+                          <p style={{ fontSize: '11px', color: '#4b5563', lineHeight: '1.4' }}>React, Next.js, Tailwind, Framer Motion, Three.js</p>
+                        </div>
+                        
+                        <div>
+                          <h4 style={{ fontSize: '10px', color: '#0f766e', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 'bold' }}>Backend</h4>
+                          <p style={{ fontSize: '11px', color: '#4b5563', lineHeight: '1.4' }}>Python, Node, Express, FastAPI, Django, PostgreSQL</p>
+                        </div>
+                        
+                        <div>
+                          <h4 style={{ fontSize: '10px', color: '#0f766e', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 'bold' }}>Applied AI</h4>
+                          <p style={{ fontSize: '11px', color: '#4b5563', lineHeight: '1.4' }}>PyTorch, LangChain, OpenCV, Ollama, Whisper</p>
+                        </div>
+                        
+                        <div>
+                          <h4 style={{ fontSize: '10px', color: '#0f766e', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 'bold' }}>Cloud & Ops</h4>
+                          <p style={{ fontSize: '11px', color: '#4b5563', lineHeight: '1.4' }}>Docker, AWS, Vercel, Supabase, Git, Linux</p>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px dashed #d1d5db' }}>
+                        <p style={{ fontSize: '11px', lineHeight: '1.5', color: '#4b5563' }}>
+                          I believe in blending rigorous engineering with delightful user experiences. Whether it's training a neural network or polishing a micro-interaction, every detail matters.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* ── 3D TURNING PAGE LAYER 3 (Pages 6 & 7) ── */}
+              <motion.div
+                className="turning-page-layer"
+                initial={false}
+                animate={{ 
+                  rotateY: currentSpread > 3
+                    ? (bookOpen && currentSpread === 4 && hoverFlipLeft ? -170 : -180)
+                    : (bookOpen && currentSpread === 3 && hoverFlipRight ? -10 : 0),
+                  ...(currentSpread > 3 ? { transitionEnd: { zIndex: 33 } } : { zIndex: 37 })
+                }}
+                transition={{ duration: 0.6, ease: "easeInOut", zIndex: { duration: 0 } }}
+                style={{
+                  position: 'absolute', top: 0, right: 0, width: '50%', height: '100%',
+                  transformOrigin: 'left center', transformStyle: 'preserve-3d', pointerEvents: 'none'
+                }}
+              >
+                {/* FRONT FACE (Page 6) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '0 12px 12px 0', overflow: 'hidden', boxShadow: 'inset 4px 0 10px rgba(0,0,0,0.05)', padding: '24px', paddingLeft: '32px', pointerEvents: 'auto' }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header"><span style={{ color: '#7c2d12' }}>More Featured Work</span><span className="journal-page-num">Page 6</span></h2>
+                    <div className="journal-works">
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Hospital DBMS</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>PostgreSQL • MongoDB</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Click2Bill</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>Google Sheets • Apps Script</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Scénix</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>React • MediaPipe • Gemini 2.5</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start' }}>
+                        <div className="work-info">
+                          <h4>CANHEALTH</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>FastAPI • React • Gemini • ElevenLabs</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* BACK FACE (Page 7) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '12px 0 0 12px', overflow: 'hidden', transform: 'rotateY(180deg)', boxShadow: 'inset -4px 0 10px rgba(0,0,0,0.05)', padding: '24px', pointerEvents: 'auto' }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header"><span style={{ color: '#c2410c' }}>Competitions & Events</span><span className="journal-page-num">Page 7</span></h2>
+                    <div className="journal-works">
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>AlgoTime Member</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>SCS Concordia • Sep 2024 - Present</p>
+                        </div>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Hack the Mountain</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>May 2026</p>
+                        </div>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>MPC Hacks</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>May 2026</p>
+                        </div>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start' }}>
+                        <div className="work-info">
+                          <h4>CS Games 2026</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '2px' }}>Mar 2026</p>
+                          <p style={{ fontSize: '10px', lineHeight: '1.3', color: '#6b7280' }}>1st in Web Challenge, 2nd in AI and 3rd in CTF</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+
+              {/* ── 3D TURNING PAGE LAYER 2 (Pages 4 & 5) ── */}
+              <motion.div
+                className="turning-page-layer"
+                initial={false}
+                animate={{ 
+                  rotateY: currentSpread > 2
+                    ? (bookOpen && currentSpread === 3 && hoverFlipLeft ? -170 : -180)
+                    : (bookOpen && currentSpread === 2 && hoverFlipRight ? -10 : 0),
+                  ...(currentSpread > 2 ? { transitionEnd: { zIndex: 32 } } : { zIndex: 38 })
+                }}
+                transition={{ duration: 0.6, ease: "easeInOut", zIndex: { duration: 0 } }}
+                style={{
+                  position: 'absolute', top: 0, right: 0, width: '50%', height: '100%',
+                  transformOrigin: 'left center', transformStyle: 'preserve-3d', pointerEvents: 'none'
+                }}
+              >
+                {/* FRONT FACE (Page 4) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '0 12px 12px 0', overflow: 'hidden', boxShadow: 'inset 4px 0 10px rgba(0,0,0,0.05)', padding: '24px', paddingLeft: '32px', pointerEvents: 'auto' }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header"><span style={{ color: '#7c2d12' }}>Featured Works</span><span className="journal-page-num">Page 4</span></h2>
+                    <div className="journal-works">
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Predicting Customer Churn</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>Python • scikit-learn • pandas • seaborn</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Skin Lesion CNN Classifier</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>PyTorch • ResNet-18 • VGG-16</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Health Companion App</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>Figma • UI/UX • Accessibility</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>FLUX: Collaborative Scheduling</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>React • TypeScript • Supabase</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start' }}>
+                        <div className="work-info">
+                          <h4>MediVault</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>OpenRouter • MongoDB • ElevenLabs</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {/* BACK FACE (Page 5) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '12px 0 0 12px', overflow: 'hidden', transform: 'rotateY(180deg)', boxShadow: 'inset -4px 0 10px rgba(0,0,0,0.05)', padding: '24px', pointerEvents: 'auto' }}>
+                  <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <h2 className="journal-header"><span style={{ color: '#7c2d12' }}>Featured Works</span><span className="journal-page-num">Page 5</span></h2>
+                    <div className="journal-works">
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Events & Ticketing App</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>React • TypeScript • PostgreSQL</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>INTERBU: AI Interview Coach</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>React • Flask • Whisper</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>DRIP GENIUS</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>Roboflow • K-means • CV</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <div className="work-info">
+                          <h4>Code Buddy</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>React • Vite • Node.js • Express</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                      <div className="work-item" style={{ alignItems: 'flex-start' }}>
+                        <div className="work-info">
+                          <h4>Universal Resume Parser</h4>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>Python • Ollama LLM • LangChain</p>
+                        </div>
+                        <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noopener noreferrer" className="footer-social-link" style={{color: '#6b7280'}}><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* ── 3D TURNING PAGE LAYER 1 (Pages 2 & 3) ── */}
+              <motion.div
+                className="turning-page-layer"
+                initial={false}
+                animate={{ 
+                  rotateY: currentSpread > 1 
+                    ? (bookOpen && currentSpread === 2 && hoverFlipLeft ? -170 : -180) 
+                    : (bookOpen && currentSpread === 1 && hoverFlipRight ? -10 : 0),
+                  ...(currentSpread > 1 ? { transitionEnd: { zIndex: 31 } } : { zIndex: 39 })
+                }}
+                transition={{ 
+                  duration: 0.6, ease: "easeInOut",
+                  zIndex: { duration: 0 }
+                }}
+                style={{
+                  position: 'absolute', top: 0, right: 0, width: '50%', height: '100%',
+                  transformOrigin: 'left center', transformStyle: 'preserve-3d', pointerEvents: 'none'
                 }}
               >
                 {/* FRONT FACE (Page 2 - Philosophy) */}
-                <div style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  backfaceVisibility: 'hidden',
-                  backgroundColor: '#f8f5ee',
-                  borderRadius: '0 12px 12px 0',
-                  overflow: 'hidden',
-                  boxShadow: 'inset 4px 0 10px rgba(0,0,0,0.05)',
-                  padding: '24px',
-                  paddingLeft: '32px',
-                  pointerEvents: 'auto'
-                }}>
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '0 12px 12px 0', overflow: 'hidden', boxShadow: 'inset 4px 0 10px rgba(0,0,0,0.05)', padding: '24px', paddingLeft: '32px', pointerEvents: 'auto' }}>
                   <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <h2 className="journal-header">
-                      <span>Design Philosophy</span>
-                      <span className="journal-page-num">Page 2</span>
-                    </h2>
+                    <h2 className="journal-header"><span style={{ color: '#d97706' }}>Design Philosophy</span><span className="journal-page-num">Page 2</span></h2>
                     <div className="journal-philosophy">
                       <p>
                         The tactile nature of physical objects often grounds the creative process but this interactive workspace bridges the gap between digital utility and physical experience, crafting an environment that feels less like software and more like a personal desk.
@@ -1030,58 +1330,28 @@ export default function BookThemePage() {
                         Every draggable sticker, glowing lamp, and rustling page invites exploration. The deliberate imperfections serve to soften the harsh perfection of typical digital interfaces, creating a sanctuary that fosters genuine connection and focused thought.
                       </p>
                     </div>
-                    <div style={{ flex: 1 }} />
-                    {/* Close ribbon */}
-                    <div className="open-book-footer">
-                      <div className="footer-socials"></div>
-                      <button onClick={(e) => { e.stopPropagation(); setBookOpen(false); }} className="close-bookmark-btn">
-                        <span>Close Bookmark</span>
-                        <span className="close-bookmark-ribbon" />
-                      </button>
-                    </div>
                   </div>
                 </div>
-
-                {/* BACK FACE (Page 3 - Featured Works part 1) */}
-                <div style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  backfaceVisibility: 'hidden',
-                  backgroundColor: '#f8f5ee',
-                  borderRadius: '12px 0 0 12px',
-                  overflow: 'hidden',
-                  transform: 'rotateY(180deg)',
-                  boxShadow: 'inset -4px 0 10px rgba(0,0,0,0.05)',
-                  padding: '24px',
-                  pointerEvents: 'auto'
-                }}>
+                {/* BACK FACE (Page 3 - Work Experience) */}
+                <div style={{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden', backgroundColor: '#f8f5ee', borderRadius: '12px 0 0 12px', overflow: 'hidden', transform: 'rotateY(180deg)', boxShadow: 'inset -4px 0 10px rgba(0,0,0,0.05)', padding: '24px', pointerEvents: 'auto' }}>
                   <div className="journal-content" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    <h2 className="journal-header">
-                      <span>Featured Works</span>
-                      <span className="journal-page-num">Page 3</span>
-                    </h2>
+                    <h2 className="journal-header"><span style={{ color: '#9d174d' }}>Work Experience</span><span className="journal-page-num">Page 3</span></h2>
                     <div className="journal-works">
-                      <div className="work-item">
+                      <div className="work-item" style={{ alignItems: 'flex-start', marginBottom: '8px' }}>
                         <div className="work-info">
-                          <h4>Predicting Customer Churn</h4>
-                          <p>Machine Learning • Analytics</p>
+                          <h4>Software Intern</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>Immense Star Solutions</p>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '4px' }}>May 2026 - Aug 2026</p>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>Django • REST APIs • Git • Databases</p>
                         </div>
-                        <button className="go-btn" style={{backgroundColor: '#f43f5e'}}>Go ↗</button>
                       </div>
-                      <div className="work-item">
+                      <div className="work-item" style={{ alignItems: 'flex-start' }}>
                         <div className="work-info">
-                          <h4>Skin Lesion CNN</h4>
-                          <p>Deep Learning • Healthcare</p>
+                          <h4>Fullstack & Applied AI Developer</h4>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '0' }}>SofiaPulse</p>
+                          <p style={{ fontSize: '11px', color: '#9ca3af', marginBottom: '4px' }}>Dec 2025 - Jan 2026</p>
+                          <p style={{ fontSize: '10px', lineHeight: '1.4', color: '#9ca3af' }}>GenAI Editor • Full-stack • UI/UX • Responsive Design</p>
                         </div>
-                        <button className="go-btn" style={{backgroundColor: '#eab308'}}>Go ↗</button>
-                      </div>
-                      <div className="work-item">
-                        <div className="work-info">
-                          <h4>Health Companion</h4>
-                          <p>Mobile App • Wellness</p>
-                        </div>
-                        <button className="go-btn" style={{backgroundColor: '#3b82f6'}}>Go ↗</button>
                       </div>
                     </div>
                   </div>
@@ -1089,31 +1359,31 @@ export default function BookThemePage() {
               </motion.div>
 
               {/* HOTZONES FOR PAGE TURNING */}
-              {currentSpread === 1 && bookOpen && (
+              {currentSpread < 5 && bookOpen && (
                 <div 
-                  style={{
-                    position: 'absolute', right: 0, top: 0, width: '20%', height: '100%', zIndex: 60, cursor: 'pointer'
-                  }}
+                  style={{ position: 'absolute', right: 0, top: 0, width: '20%', height: 'calc(100% - 80px)', zIndex: 60, cursor: 'pointer' }}
                   onMouseEnter={() => setHoverFlipRight(true)}
                   onMouseLeave={() => setHoverFlipRight(false)}
                   onClick={(e) => {
                     e.stopPropagation();
                     setHoverFlipRight(false);
-                    setCurrentSpread(2);
+                    setCurrentSpread(currentSpread + 1);
                   }}
                 />
               )}
-              {currentSpread === 2 && bookOpen && (
+              {bookOpen && (
                 <div 
-                  style={{
-                    position: 'absolute', left: 0, top: 0, width: '20%', height: '100%', zIndex: 60, cursor: 'pointer'
-                  }}
-                  onMouseEnter={() => setHoverFlipLeft(true)}
+                  style={{ position: 'absolute', left: 0, top: 0, width: '20%', height: 'calc(100% - 80px)', zIndex: 60, cursor: 'pointer' }}
+                  onMouseEnter={() => { if (currentSpread > 1) setHoverFlipLeft(true); }}
                   onMouseLeave={() => setHoverFlipLeft(false)}
                   onClick={(e) => {
                     e.stopPropagation();
                     setHoverFlipLeft(false);
-                    setCurrentSpread(1);
+                    if (currentSpread > 1) {
+                      setCurrentSpread(currentSpread - 1);
+                    } else {
+                      setBookOpen(false);
+                    }
                   }}
                 />
               )}
