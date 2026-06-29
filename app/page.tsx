@@ -84,6 +84,14 @@ export default function Page() {
     }, 1200);
   };
 
+  const handleBookClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('pixel-transition-start'));
+    setTimeout(() => {
+      router.push('/book');
+    }, 1200);
+  };
+
   const [modalOpen, setModalOpen] = useState(false);
   const [activeProject, setActiveProject] = useState("");
   const [showProjectsLink, setShowProjectsLink] = useState(true);
@@ -232,7 +240,7 @@ export default function Page() {
                 <span className="btn-label">Hyper Scroll</span>
               </Link>
 
-              <Link href="/book" className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Link href="/book" onClick={handleBookClick} className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <span className="btn-label">Book</span>
               </Link>
 

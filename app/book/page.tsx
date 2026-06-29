@@ -107,7 +107,24 @@ export default function BookThemePage() {
 
   // iPod States
   const [ipodMenu, setIpodMenu] = useState<number>(0); // 0: Play Lo-Fi, 1: About Ranjit, 2: Core Stack, 3: Projects, 4: Contact
-  const [ipodScreen, setIpodScreen] = useState<'menu' | 'now-playing' | 'about' | 'stack' | 'projects' | 'contact'>('menu');
+  const [ipodScreen, setIpodScreen] = useState<'menu' | 'now-playing' | 'about' | 'stack' | 'projects' | 'contact' | 'music-list'>('menu');
+  const musicList = [
+    { title: 'lofi', artist: 'VibeDepot', src: '/VibeDepot - lofi for vlog.mp3' },
+    { title: 'Instrumental', artist: 'JBlanked_Bastardboy Production', src: '/JBlanked_Bastardboy Production - Herbal.mp3' },
+    { title: 'pop', artist: 'Simon Mathewson', src: '/Simon Mathewson - Falling For You.mp3' },
+    { title: 'classical', artist: 'Megatone', src: '/Megatone - Black and White 02.mp3' },
+    { title: 'Vibe', artist: 'VibeDepot', src: '/VibeDepot - fashion.mp3' }
+  ];
+  const [currentMusicIndex, setCurrentMusicIndex] = useState(0);
+  const [musicMenuIndex, setMusicMenuIndex] = useState(0);
+  
+  // Handle auto-play on track change
+  useEffect(() => {
+    if (audioRef.current && isPlayingMusic) {
+      audioRef.current.play().catch(e => console.log(e));
+    }
+  }, [currentMusicIndex]);
+
   const [isPlayingMusic, setIsPlayingMusic] = useState<boolean>(false);
   const [musicProgress, setMusicProgress] = useState<number>(0);
 
@@ -145,7 +162,7 @@ export default function BookThemePage() {
   ];
 
   const ipodMenuItems = [
-    "♫ Play Lo-Fi Music"
+    "♫ Play Music"
   ];
 
   const patterns = [
@@ -286,9 +303,10 @@ export default function BookThemePage() {
           await videoRef.current.play();
         }
         
+        // Flash sound slightly early to align with flash animation
+        playSound('freesound_community-camera-shutter-and-flash-combined-6827.mp3');
         // Brief delay for webcam to adjust light
         setTimeout(() => {
-          playSound('freesound_community-camera-shutter-and-flash-combined-6827.mp3');
           setCameraState('flashing');
           
           // Flash effect timing - capture the image while flash is active
@@ -330,10 +348,12 @@ export default function BookThemePage() {
         }
         
         playSound('freesound_community-camera-shutter-and-flash-combined-6827.mp3');
-          setCameraState('flashing');
         setTimeout(() => {
-          setCameraState('finished');
-        }, 650);
+          setCameraState('flashing');
+          setTimeout(() => {
+            setCameraState('finished');
+          }, 650);
+        }, 100);
       }
     }, 1000);
   };
@@ -352,11 +372,13 @@ export default function BookThemePage() {
         }
       }}
     >
-      {/* Hidden Audio Player for iPod Lo-Fi Theme */}
+      {/* Hidden Audio Player for iPod Music */}
       <audio 
         ref={audioRef} 
-        src="/Blue%20Dot%20Sessions%20-%20Winter%20Theme.mp3" 
-        loop 
+        src={musicList[currentMusicIndex].src} 
+        onEnded={() => {
+          setCurrentMusicIndex(m => (m + 1) % musicList.length);
+        }}
         playsInline
       />
 
@@ -637,6 +659,7 @@ export default function BookThemePage() {
         animate={{ scale: 1.4 }}
         whileDrag={{ scale: 1.45, zIndex: 50 }}
         className="keyboard-container"
+        style={{ zIndex: 30 }}
       >
         {/* Keyboard Frame Detail */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px', marginBottom: '4px' }}>
@@ -653,7 +676,7 @@ export default function BookThemePage() {
           {["Esc", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "Bsp"].map((key, i) => (
             <div 
               key={i} 
-              className="keyboard-key"
+              className="keyboard-key" onPointerDown={() => playSound('lightningbulb-spacebar-click-keyboard-199448.mp3')}
               style={{ 
                 gridColumn: key === "Bsp" ? "span 2" : "span 1",
                 backgroundColor: key === "Esc" ? "#f6afcb" : "white",
@@ -667,7 +690,7 @@ export default function BookThemePage() {
           {["Tab", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"].map((key, i) => (
             <div 
               key={i} 
-              className="keyboard-key"
+              className="keyboard-key" onPointerDown={() => playSound('lightningbulb-spacebar-click-keyboard-199448.mp3')}
               style={{ gridColumn: key === "Tab" ? "span 2" : "span 1" }}
             >
               {key}
@@ -677,9 +700,9 @@ export default function BookThemePage() {
           {["Caps", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "Enter"].map((key, i) => (
             <div 
               key={i} 
-              className="keyboard-key"
+              className="keyboard-key" onPointerDown={() => playSound('lightningbulb-spacebar-click-keyboard-199448.mp3')}
               style={{ 
-                gridColumn: key === "Enter" ? "span 3" : (key === "Caps" ? "span 2" : "span 1"),
+                gridColumn: key === "Enter" ? "span 2" : (key === "Caps" ? "span 2" : "span 1"),
                 backgroundColor: key === "Enter" ? "#a3e0cb" : "white",
                 fontWeight: key === "Enter" ? 'bold' : 'normal'
               }}
@@ -691,8 +714,8 @@ export default function BookThemePage() {
           {["Shift", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "Shift", "▲", "/"].map((key, i) => (
             <div 
               key={i} 
-              className="keyboard-key"
-              style={{ gridColumn: key === "Shift" ? "span 3" : "span 1" }}
+              className="keyboard-key" onPointerDown={() => playSound('lightningbulb-spacebar-click-keyboard-199448.mp3')}
+              style={{ gridColumn: key === "Shift" ? "span 2" : "span 1" }}
             >
               {key}
             </div>
@@ -701,7 +724,7 @@ export default function BookThemePage() {
           {["Ctrl", "Win", "Alt", "Space", "Alt", "Ctrl", "◄", "▼", "►"].map((key, i) => (
             <div 
               key={i} 
-              className="keyboard-key"
+              className="keyboard-key" onPointerDown={() => playSound('lightningbulb-spacebar-click-keyboard-199448.mp3')}
               style={{ gridColumn: key === "Space" ? "span 7" : "span 1" }}
             >
               {key === "Space" ? "" : key}
@@ -1452,10 +1475,23 @@ export default function BookThemePage() {
               </div>
             )}
 
+            {ipodScreen === 'music-list' && (
+              <div className="ipod-menu-list">
+                {musicList.map((track, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`ipod-menu-item ${musicMenuIndex === idx ? 'selected' : ''}`}
+                  >
+                    {track.title}
+                  </div>
+                ))}
+              </div>
+            )}
+
             {ipodScreen === 'now-playing' && (
               <div className="ipod-nowplaying">
-                <div className="ipod-np-title">Lo-Fi: Winter Theme</div>
-                <div className="ipod-np-artist">Blue Dot Sessions</div>
+                <div className="ipod-np-title">{musicList[currentMusicIndex].title}</div>
+                <div className="ipod-np-artist">{musicList[currentMusicIndex].artist}</div>
                 <div className="ipod-np-progress-bar">
                   <div className="ipod-np-progress-fill" style={{ width: `${musicProgress}%` }} />
                 </div>
@@ -1509,7 +1545,11 @@ export default function BookThemePage() {
           <button 
             onClick={(e) => {
               e.stopPropagation();
-              setIpodScreen('menu');
+              if (ipodScreen === 'now-playing') {
+                setIpodScreen('music-list');
+              } else {
+                setIpodScreen('menu');
+              }
             }}
             className="ipod-wheel-btn ipod-wheel-menu"
           >
@@ -1521,6 +1561,10 @@ export default function BookThemePage() {
               e.stopPropagation();
               if (ipodScreen === 'menu') {
                 setIpodMenu(m => (m + 1) % ipodMenuItems.length);
+              } else if (ipodScreen === 'music-list') {
+                setMusicMenuIndex(m => (m + 1) % musicList.length);
+              } else if (ipodScreen === 'now-playing') {
+                setCurrentMusicIndex(m => (m + 1) % musicList.length);
               }
             }}
             className="ipod-wheel-btn ipod-wheel-next"
@@ -1533,6 +1577,10 @@ export default function BookThemePage() {
               e.stopPropagation();
               if (ipodScreen === 'menu') {
                 setIpodMenu(m => (m - 1 + ipodMenuItems.length) % ipodMenuItems.length);
+              } else if (ipodScreen === 'music-list') {
+                setMusicMenuIndex(m => (m - 1 + musicList.length) % musicList.length);
+              } else if (ipodScreen === 'now-playing') {
+                setCurrentMusicIndex(m => (m - 1 + musicList.length) % musicList.length);
               }
             }}
             className="ipod-wheel-btn ipod-wheel-prev"
@@ -1545,6 +1593,9 @@ export default function BookThemePage() {
               e.stopPropagation();
               handleMusicToggle();
               if (ipodScreen === 'menu' && ipodMenu === 0) {
+                setIpodScreen('music-list');
+              } else if (ipodScreen === 'music-list') {
+                setCurrentMusicIndex(musicMenuIndex);
                 setIpodScreen('now-playing');
               }
             }}
@@ -1559,8 +1610,7 @@ export default function BookThemePage() {
               e.stopPropagation();
               if (ipodScreen === 'menu') {
                 if (ipodMenu === 0) {
-                  setIpodScreen('now-playing');
-                  if (!isPlayingMusic) handleMusicToggle();
+                  setIpodScreen('music-list');
                 } else if (ipodMenu === 1) {
                   setIpodScreen('about');
                 } else if (ipodMenu === 2) {
@@ -1592,9 +1642,7 @@ export default function BookThemePage() {
         initial={{ scale: 1.3 }}
         animate={{ scale: 1.3 }}
         whileDrag={{ scale: 1.4, zIndex: 50 }}
-        onTap={(e) => {
-          setLampOn(!lampOn);
-        }}
+        onTap={(e) => { playSound('milanwulf-foot-switch-166326.mp3'); setLampOn(!lampOn); }}
         className="lamp-container"
         style={{ top: '60px', right: '40px', cursor: 'pointer' }}
       >

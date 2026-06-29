@@ -38,6 +38,14 @@ export default function CustomCursor() {
   const isFadingOutRef = useRef(false);
   const fadeStartTime = useRef<number | null>(null);
   const circleOpacity = useRef(1);
+  const iframeLeft = useRef(0);
+  const iframeTop = useRef(0);
+  const bgPositionRef = useRef('center');
+  const bgSizeRef = useRef('cover');
+  const cursorTransformRef = useRef('translate3d(-100px, -100px, 0)');
+  const cursorTransformOriginRef = useRef('21px 6px');
+  const bookClipRef = useRef<HTMLDivElement>(null);
+  const bookClipPathRef = useRef('circle(0px at 0px 0px)');
   const [fullScreenOverlay, setFullScreenOverlay] = useState(false);
   const fullScreenOverlayRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -54,7 +62,7 @@ export default function CustomCursor() {
     pathnameRef.current = pathname;
     
     // When arriving at /pixel after a transition, start fade-out phase
-    if (pathname.startsWith('/pixel') && isTransitioningRef.current) {
+    if ((pathname.startsWith('/pixel') || pathname.startsWith('/book')) && isTransitioningRef.current) {
       // Wait for the pixel page to fully paint, then start fading out the circle
       setTimeout(() => {
         setIsTransitioning(false);
@@ -73,7 +81,7 @@ export default function CustomCursor() {
     updateHoveredTheme(null);
     setIsDissolvingOut(false);
     
-    if (pathname.startsWith('/pixel') && !oldPath.startsWith('/pixel')) {
+    if ((pathname.startsWith('/pixel') || pathname.startsWith('/book')) && !(oldPath.startsWith('/pixel') || oldPath.startsWith('/book'))) {
       pendingSnapRef.current = true;
     }
   }, [pathname]);
@@ -96,7 +104,7 @@ export default function CustomCursor() {
 
   useEffect(() => {
     setMounted(true);
-    if (pathname.startsWith('/pixel')) {
+    if (pathname.startsWith('/pixel') || pathname.startsWith('/book')) {
       pendingSnapRef.current = true;
     }
 
@@ -131,7 +139,7 @@ export default function CustomCursor() {
         }
       }
 
-      if (cursorRef.current && !pathnameRef.current.startsWith('/pixel')) {
+      if (cursorRef.current && !pathnameRef.current.startsWith('/pixel') && !pathnameRef.current.startsWith('/book')) {
         if (cursorRef.current.style.opacity !== '1') {
           cursorRef.current.style.opacity = '1';
         }
@@ -174,7 +182,9 @@ export default function CustomCursor() {
       const vx = mousePos.current.x - cursorPos.current.x;
       const vy = mousePos.current.y - cursorPos.current.y;
       const speed = Math.sqrt(vx*vx + vy*vy);
-      setIsWalking(speed > 1);
+      if (!isTransitioningRef.current && !isFadingOutRef.current) {
+        setIsWalking(speed > 1);
+      }
 
       if (cursorRef.current) {
         if (pathnameRef.current.startsWith('/pixel')) {
@@ -184,23 +194,34 @@ export default function CustomCursor() {
             const refVx = directionRef.current === 1 ? vx : -vx;
             rotation = Math.atan2(vy, refVx) * (180 / Math.PI);
           }
-          cursorRef.current.style.transformOrigin = '0px 0px';
-          // The container is 0x0, so we just translate it to the center point
-          cursorRef.current.style.transform = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${scaleX}, 1.2) rotate(${rotation}deg)`;
+          cursorTransformOriginRef.current = '0px 0px';
+          cursorTransformRef.current = `translate3d(${cursorPos.current.x}px, ${cursorPos.current.y}px, 0) scale(${scaleX}, 1.2) rotate(${rotation}deg)`;
         } else {
-          cursorRef.current.style.transformOrigin = '21px 6px';
-          cursorRef.current.style.transform = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
+          cursorTransformOriginRef.current = '21px 6px';
+          cursorTransformRef.current = `translate3d(${mousePos.current.x}px, ${mousePos.current.y}px, 0)`;
         }
+        cursorRef.current.style.transformOrigin = cursorTransformOriginRef.current;
+        cursorRef.current.style.transform = cursorTransformRef.current;
+      }
+
+      // Update book clip-path to follow cursor
+      if (bookClipRef.current) {
+        const clipCenterX = mousePos.current.x;
+        const clipCenterY = mousePos.current.y;
+        const clipRadius = circleSize.current / 2;
+        bookClipPathRef.current = `circle(${clipRadius}px at ${clipCenterX}px ${clipCenterY}px)`;
+        bookClipRef.current.style.clipPath = bookClipPathRef.current;
       }
 
       // Handle fade-out phase: smoothly fade the overlay after page has painted
-      if (overlayRef.current && isFadingOutRef.current) {
+      const fadeTarget = bookClipRef.current || overlayRef.current || circleRef.current;
+      if (fadeTarget && isFadingOutRef.current) {
         if (fadeStartTime.current !== null) {
           const fadeElapsed = performance.now() - fadeStartTime.current;
           const fadeDuration = 400;
           const fadeT = Math.min(1, fadeElapsed / fadeDuration);
           circleOpacity.current = 1 - fadeT;
-          overlayRef.current.style.opacity = `${circleOpacity.current}`;
+          fadeTarget.style.opacity = `${circleOpacity.current}`;
           if (fadeT >= 1) {
             // Fade-out complete, fully unmount
             isFadingOutRef.current = false;
@@ -214,90 +235,108 @@ export default function CustomCursor() {
           }
         }
       }
+      if (circleRef.current) {
+        if (isTransitioningRef.current || isFadingOutRef.current) {
+          circleRef.current.style.transition = 'none';
+        } else {
+          circleRef.current.style.transition = '';
+        }
+      }
 
+      // Animate circle size independently of circleRef DOM element
       const showCircle = (!pathnameRef.current.startsWith('/pixel') && !pathnameRef.current.startsWith('/book')) || isTransitioningRef.current || isFadingOutRef.current;
-      if (circleRef.current && showCircle && !isFadingOutRef.current) {
-        if (hoveredThemeRef.current === 'pixel' || isTransitioningRef.current) {
-          if (isTransitioningRef.current) {
-            if (transitionStartTime.current === null) {
-              transitionStartTime.current = performance.now();
-            }
-            const elapsed = performance.now() - transitionStartTime.current;
-            const duration = 1200; // duration in ms
-            const t = Math.min(1, elapsed / duration);
-            
-            // Standard animation library Exponential Ease-In
-            // This provides a very organic but extremely pronounced slow-to-fast curve
-            const easeInCurve = (x: number) => {
-              return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
-            };
-            
-            // Calculate max size needed to cover viewport from any cursor position
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            const maxDist = Math.sqrt(vw * vw + vh * vh) * 2 + 200;
-            
-            circleSize.current = 150 + (maxDist - 150) * easeInCurve(t);
-            circleRef.current.style.width = `${circleSize.current}px`;
-            circleRef.current.style.height = `${circleSize.current}px`;
-            
-            // Fade out border when circle is past 70% of animation
-            const borderOpacity = t > 0.7 ? Math.max(0, 1 - (t - 0.7) / 0.3) : 1;
-            circleRef.current.style.borderColor = `rgba(255, 179, 198, ${borderOpacity})`;
-            
-            // Switch to full-screen overlay for pixel-perfect 1:1 match
-            if (t >= 1 && !fullScreenOverlayRef.current) {
-              fullScreenOverlayRef.current = true;
-              setFullScreenOverlay(true);
-            }
-          } else {
-            transitionStartTime.current = null;
-            circleSize.current = 150;
-            circleRef.current.style.width = '150px';
-            circleRef.current.style.height = '150px';
+      const isActiveHover = hoveredThemeRef.current === 'pixel' || hoveredThemeRef.current === 'book' || isTransitioningRef.current;
+      
+      if (showCircle && !isFadingOutRef.current && isActiveHover) {
+        if (isTransitioningRef.current) {
+          if (transitionStartTime.current === null) {
+            transitionStartTime.current = performance.now();
           }
+          const elapsed = performance.now() - transitionStartTime.current;
+          const duration = 1200;
+          const t = Math.min(1, elapsed / duration);
+          
+          const easeInCurve = (x: number) => {
+            return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
+          };
           
           const vw = window.innerWidth;
           const vh = window.innerHeight;
-          const ir = 2758 / 1504; // aspect ratio of px1.png
-          const vr = vw / vh;
+          const maxDist = Math.sqrt(vw * vw + vh * vh) * 2 + 200;
           
-          let scaled_width = 0;
-          let scaled_height = 0;
-          let x_offset = 0;
-          let y_offset = 0;
+          circleSize.current = 150 + (maxDist - 150) * easeInCurve(t);
           
-          if (vr > ir) {
-            scaled_width = vw;
-            scaled_height = vw / ir;
-            x_offset = 0;
-            y_offset = vh - scaled_height;
-          } else {
-            scaled_width = vh * ir;
-            scaled_height = vh;
-            x_offset = (vw - scaled_width) / 2;
-            y_offset = 0;
+          if (t >= 1 && !fullScreenOverlayRef.current) {
+            fullScreenOverlayRef.current = true;
+            setFullScreenOverlay(true);
           }
-          
-          const radiusX = circleSize.current / 2;
-          const radiusY = circleSize.current / 2;
-          const posRef = mousePos.current;
-          const x_topleft = posRef.x + 4 - radiusX;
-          const y_topleft = posRef.y + 18 - radiusY;
-          
-          const bg_x = x_offset - x_topleft;
-          const bg_y = y_offset - y_topleft;
-          
-          circleRef.current.style.backgroundPosition = `${bg_x}px ${bg_y}px`;
-          circleRef.current.style.backgroundSize = `${scaled_width}px ${scaled_height}px`;
         } else {
           transitionStartTime.current = null;
           circleSize.current = 150;
+        }
+      } else if (showCircle && !isFadingOutRef.current && !isActiveHover) {
+        transitionStartTime.current = null;
+        circleSize.current = 150;
+      }
+
+      // Apply pixel-specific DOM updates only when circleRef exists
+      if (circleRef.current && showCircle && !isFadingOutRef.current && isActiveHover) {
+        if (isTransitioningRef.current) {
+          circleRef.current.style.width = `${circleSize.current}px`;
+          circleRef.current.style.height = `${circleSize.current}px`;
+
+          const elapsed = performance.now() - (transitionStartTime.current || performance.now());
+          const t = Math.min(1, elapsed / 1200);
+          const borderOpacity = t > 0.7 ? Math.max(0, 1 - (t - 0.7) / 0.3) : 1;
+          circleRef.current.style.borderColor = `rgba(255, 179, 198, ${borderOpacity})`;
+        } else {
           circleRef.current.style.width = '150px';
           circleRef.current.style.height = '150px';
-          circleRef.current.style.backgroundPosition = 'center';
-          circleRef.current.style.backgroundSize = 'cover';
         }
+
+        // Background position for pixel transitions
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const ir = 2758 / 1504;
+        const vr = vw / vh;
+        
+        let scaled_width = 0;
+        let scaled_height = 0;
+        let x_offset = 0;
+        let y_offset = 0;
+        
+        if (vr > ir) {
+          scaled_width = vw;
+          scaled_height = vw / ir;
+          x_offset = 0;
+          y_offset = vh - scaled_height;
+        } else {
+          scaled_width = vh * ir;
+          scaled_height = vh;
+          x_offset = (vw - scaled_width) / 2;
+          y_offset = 0;
+        }
+        
+        const radiusX = circleSize.current / 2;
+        const radiusY = circleSize.current / 2;
+        const posRef = mousePos.current;
+        const x_topleft = posRef.x + 4 - radiusX;
+        const y_topleft = posRef.y + 18 - radiusY;
+        
+        const bg_x = x_offset - x_topleft;
+        const bg_y = y_offset - y_topleft;
+        
+        bgPositionRef.current = `${bg_x}px ${bg_y}px`;
+        bgSizeRef.current = `${scaled_width}px ${scaled_height}px`;
+        circleRef.current.style.backgroundPosition = bgPositionRef.current;
+        circleRef.current.style.backgroundSize = bgSizeRef.current;
+      } else if (circleRef.current && showCircle && !isFadingOutRef.current && !isActiveHover) {
+        circleRef.current.style.width = '150px';
+        circleRef.current.style.height = '150px';
+        bgPositionRef.current = 'center';
+        bgSizeRef.current = 'cover';
+        circleRef.current.style.backgroundPosition = bgPositionRef.current;
+        circleRef.current.style.backgroundSize = bgSizeRef.current;
       }
       animationFrameId = requestAnimationFrame(tick);
     };
@@ -306,7 +345,9 @@ export default function CustomCursor() {
 
     // Walking animation frame loop
     const walkInterval = setInterval(() => {
-      setWalkFrame(prev => (prev + 1) % 4);
+      if (!isTransitioningRef.current && !isFadingOutRef.current) {
+        setWalkFrame(prev => (prev + 1) % 4);
+      }
     }, 100);
 
     const onMouseDown = () => setIsGrabbing(true);
@@ -383,7 +424,35 @@ export default function CustomCursor() {
   const isBookPage = pathname.startsWith('/book');
   return (
     <>
-      {fullScreenOverlay && (
+      {/* Book iframe revealed via clip-path - always at viewport (0,0) */}
+      {(hoveredTheme === 'book' || ((isTransitioning || isFadingOut) && isBookPage)) && (
+        <div
+          ref={bookClipRef}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            zIndex: (isTransitioning || isFadingOut) ? 999999 : 999998,
+            pointerEvents: 'none',
+            clipPath: bookClipPathRef.current,
+            opacity: isFadingOut ? circleOpacity.current : 1,
+            transition: 'none',
+          }}
+        >
+          <iframe
+            src="/book"
+            style={{
+              width: '100vw',
+              height: '100vh',
+              border: 'none',
+              pointerEvents: 'none',
+            }}
+          />
+        </div>
+      )}
+      {fullScreenOverlay && !(hoveredTheme === 'book' || isBookPage) && (
         <div 
           ref={overlayRef}
           style={{
@@ -425,35 +494,41 @@ export default function CustomCursor() {
           top: 0,
           width: 0,
           height: 0,
-          display: mounted ? 'block' : 'none'
+          display: mounted ? 'block' : 'none',
+          transform: cursorTransformRef.current,
+          transformOrigin: cursorTransformOriginRef.current
         }}
       >
-      {(!isPixelPage && !isBookPage || isTransitioning || isFadingOut) && !fullScreenOverlay && (
+      {(!isPixelPage && !isBookPage || isTransitioning || isFadingOut) && (!fullScreenOverlay || hoveredTheme === 'book' || isBookPage) && hoveredTheme !== 'book' && !(isBookPage && (isTransitioning || isFadingOut)) && (
         <div 
           ref={circleRef}
           style={{
             position: 'absolute',
             left: '4px',
             top: '18px',
-            width: (isTransitioning || isFadingOut) ? undefined : '150px',
-            height: (isTransitioning || isFadingOut) ? undefined : '150px',
+            width: (isTransitioning || isFadingOut) ? `${circleSize.current}px` : '150px',
+            height: (isTransitioning || isFadingOut) ? `${circleSize.current}px` : '150px',
             borderRadius: '50%',
             border: `1.5px solid ${themeColor.petal}`,
-            backgroundColor: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'transparent' : 'rgba(255, 255, 255, 0.03)',
-            backgroundImage: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)), url(/px1.png)' : 'none',
-            backgroundSize: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? undefined : 'cover',
+            backgroundColor: (hoveredTheme === 'pixel' || hoveredTheme === 'book' || isTransitioning || isFadingOut) ? 'transparent' : 'rgba(255, 255, 255, 0.03)',
+                        backgroundImage: (hoveredTheme === 'pixel' || (isPixelPage && (isTransitioning || isFadingOut))) ? `linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)), url(/px1.png)` : 'none',
+            backgroundSize: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? bgSizeRef.current : 'cover',
+            backgroundPosition: bgPositionRef.current,
             backgroundRepeat: 'no-repeat',
-            backdropFilter: (hoveredTheme === 'pixel' || isTransitioning || isFadingOut) ? 'none' : 'blur(2px)',
+            backdropFilter: (hoveredTheme === 'pixel' || hoveredTheme === 'book' || isTransitioning || isFadingOut) ? 'none' : 'blur(2px)',
             pointerEvents: 'none',
+            overflow: 'hidden',
             transform: `translate(-50%, -50%) scale(${(isTransitioning || isFadingOut) ? 1.0 : (isHovering ? 1.0 : 0)})`,
-            opacity: (isHovering || isTransitioning || isFadingOut) ? 1 : 0,
+            opacity: isFadingOut ? circleOpacity.current : ((isHovering || isTransitioning) ? 1 : 0),
             transition: (isTransitioning || isFadingOut)
               ? 'none'
               : 'width 0.3s ease, height 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, border-color 0.4s ease, background-color 0.4s ease',
             zIndex: (isTransitioning || isFadingOut) ? 10001 : -1,
             imageRendering: 'pixelated'
           }}
-        />
+        >
+
+        </div>
       )}
 
       {isPixelPage ? (
