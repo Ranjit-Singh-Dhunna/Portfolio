@@ -87,6 +87,7 @@ export default function BookThemePage() {
   const [stamps, setStamps] = useState<{x: number, y: number, rotation: number}[]>([]);
 
   const addStamp = (e: React.MouseEvent<HTMLDivElement>) => {
+    playSound('freesound_community-stamp-102627.mp3');
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -94,6 +95,15 @@ export default function BookThemePage() {
     setStamps([...stamps, { x, y, rotation }]);
   };
   const [hoverFlipLeft, setHoverFlipLeft] = useState(false);
+
+  const playSound = (fileName: string) => {
+    try {
+      const audio = new Audio(`/${fileName}`);
+      audio.play();
+    } catch (e) {
+      console.error('Failed to play sound:', e);
+    }
+  };
 
   // iPod States
   const [ipodMenu, setIpodMenu] = useState<number>(0); // 0: Play Lo-Fi, 1: About Ranjit, 2: Core Stack, 3: Projects, 4: Contact
@@ -278,6 +288,7 @@ export default function BookThemePage() {
         
         // Brief delay for webcam to adjust light
         setTimeout(() => {
+          playSound('freesound_community-camera-shutter-and-flash-combined-6827.mp3');
           setCameraState('flashing');
           
           // Flash effect timing - capture the image while flash is active
@@ -318,7 +329,8 @@ export default function BookThemePage() {
           setPictureData(dummyCanvas.toDataURL('image/png'));
         }
         
-        setCameraState('flashing');
+        playSound('freesound_community-camera-shutter-and-flash-combined-6827.mp3');
+          setCameraState('flashing');
         setTimeout(() => {
           setCameraState('finished');
         }, 650);
@@ -931,7 +943,7 @@ export default function BookThemePage() {
                 <div 
                   className="open-book-left-back" 
                   style={{ backgroundColor: coverColor }}
-                  onClick={() => setBookOpen(true)}
+                  onClick={() => { playSound('freesound_community-one-page-book-flip-101928.mp3'); setBookOpen(true); }}
                 >
                   <div className="book-spine-line" />
                   <div className="book-spine-shine" />
@@ -1367,7 +1379,8 @@ export default function BookThemePage() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setHoverFlipRight(false);
-                    setCurrentSpread(currentSpread + 1);
+                    playSound('freesound_community-one-page-book-flip-101928.mp3');
+                      setCurrentSpread(currentSpread + 1);
                   }}
                 />
               )}
@@ -1380,8 +1393,10 @@ export default function BookThemePage() {
                     e.stopPropagation();
                     setHoverFlipLeft(false);
                     if (currentSpread > 1) {
+                      playSound('freesound_community-one-page-book-flip-101928.mp3');
                       setCurrentSpread(currentSpread - 1);
                     } else {
+                      playSound('freesound_community-one-page-book-flip-101928.mp3');
                       setBookOpen(false);
                     }
                   }}
