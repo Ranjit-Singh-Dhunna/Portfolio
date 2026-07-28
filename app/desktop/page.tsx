@@ -359,27 +359,19 @@ export default function DesktopThemePage() {
       );
     } else if (lowerCmd === "clear") {
       newLines = ["user@anydesk-remote:~$ "];
-    } else if (lowerCmd.startsWith("osint-tool --email") || lowerCmd.startsWith("holehe ")) {
+    } else if (lowerCmd.startsWith("osint-tool") || lowerCmd.startsWith("holehe")) {
       const match = cmd.match(/(?:--email\s+|holehe\s+)(\S+)/i);
-      const email = match ? match[1] : "";
-      
-      if (email === "ranjit@dhunna.com") {
-        newLines.push(
-          "[*] Querying HoleHe footprint engine for ranjit@dhunna.com...",
-          "[+] Platform Match found: GitHub (Username: Ranjit-Singh-Dhunna - Active)",
-          "[+] Platform Match found: Instagram (Username: ranjit_dhunna - Private)",
-          "[+] DarkWeb Dump leak detected: Coursera Breach Database (Status: Pwned)",
-          "[+] Execution completed successfully."
-        );
-        if (stage === 1 && narrationIndex === 4) {
-          setStage(2);
-          setNarrationIndex(5);
-        }
-      } else {
-        newLines.push(
-          `[*] Querying HoleHe for: ${email || "unknown"}`,
-          "[-] No match found in standard email OSINT indexes. Try checking target's primary email."
-        );
+      const targetEmail = match ? match[1] : "rs00dhunna@gmail.com";
+      newLines.push(
+        `[*] Querying HoleHe OSINT footprint engine for: ${targetEmail}...`,
+        "[+] Platform Match found: GitHub (Username: Ranjit-Singh-Dhunna - Active)",
+        "[+] Platform Match found: Instagram (Username: ranjit_dhunna - Private)",
+        "[+] DarkWeb Dump leak detected: Coursera Breach Database (Status: Pwned)",
+        "[+] Execution completed successfully."
+      );
+      if (stage === 1 && narrationIndex === 4) {
+        setStage(2);
+        setNarrationIndex(5);
       }
     } else if (lowerCmd.includes("volatility")) {
       if (lowerCmd.includes("clipboard")) {
@@ -397,7 +389,7 @@ export default function DesktopThemePage() {
           "----------------------------------------",
           "[+] Volatility dump process complete."
         );
-        if (stage === 2 && narrationIndex === 7) {
+        if (stage === 2) {
           setNarrationIndex(8);
         }
       } else {
@@ -410,9 +402,10 @@ export default function DesktopThemePage() {
     } else if (lowerCmd.includes("haveibeenpwned")) {
       newLines.push(
         "[*] Initializing HaveIBeenPwned API v3 client...",
-        "[*] Contacting endpoint: api.haveibeenpwned.com/v3/breachedaccount/rs00dhunna@gmail.com...",
-        "[+] HTTP 200 OK — 1 Breach Record Found.",
-        "[+] Parsing raw JSON breach payload: Coursera_2026_DataDump.json...",
+        "[*] Contacting Dark Web & Breach Indexing Service (api.haveibeenpwned.com)...",
+        "[*] Scraping leaked breach data for: rs00dhunna@gmail.com...",
+        "[+] HTTP 200 OK — MATCH FOUND: Coursera.org Data Leak",
+        "[+] Extracting verified credentials and certificate hashes from breach dump...",
         JSON.stringify({
           breach_source: "Coursera.org Data Leak",
           compromised_account: "rs00dhunna@gmail.com",
@@ -426,30 +419,32 @@ export default function DesktopThemePage() {
             { title: "Artificial Intelligence and its Marketing", organization: "UPES etalk", issued: "2025-04", ver_hash: "hash_upes_ai_marketing_5515e" }
           ]
         }, null, 2),
-        "[+] Extracted 5 Verified Certifications from Breach Dump:",
+        "[+] Successfully recovered 5 verified certificates from Dark Web leak dump:",
         '    1. "Technical Communication and Soft Skills for Engineers" by Alex Genadinik',
         '    2. "Introduction to Technical Writing" by Dr. Katharina Grimm',
         '    3. "Human Centred Artificial Intelligence" by Deakin University',
         '    4. "Ethical Hacking in IoT and CyberSpace" by UPES etalk',
         '    5. "Artificial Intelligence and its Marketing" by UPES etalk',
-        "[+] Query completed successfully."
+        "[+] Dark Web scraping completed."
       );
       if (stage === 4 && narrationIndex === 13) {
         setNarrationIndex(14);
       }
     } else if (lowerCmd.startsWith("sqlite3")) {
-      if (lowerCmd.includes("cookies") && lowerCmd.includes("ctf-portal.io")) {
-        newLines.push(
-          "host_key          | name       | value",
-          "----------------------------------------------------------",
-          ".ctf-portal.io    | session_id | ctf_session_59a2df308",
-          "----------------------------------------------------------"
-        );
-        if (stage === 5 && narrationIndex === 16) {
-          setNarrationIndex(17);
-        }
-      } else {
-        newLines.push("Usage error: sqlite3 [file_path] \"[query]\"");
+      newLines.push(
+        "[*] Connecting to SQLite3 Database engine v3.42...",
+        "[*] Opening local database: Chrome\\User Data\\Default\\Cookies...",
+        "[*] Executing SQL query: SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%Competition Ranker%'...",
+        "[+] Query execution successful. 1 matching record found:",
+        "--------------------------------------------------------------------------------",
+        "host_key                  | name       | value",
+        "--------------------------------------------------------------------------------",
+        ".competition-ranker.io    | session_id | session_59a2df308",
+        "--------------------------------------------------------------------------------",
+        "[+] Stolen Session Cookie Token: session_59a2df308"
+      );
+      if (stage === 5 && narrationIndex === 15) {
+        setNarrationIndex(16);
       }
     } else {
       newLines.push(`command not found: ${cmd}. Type 'help' for instructions.`);
@@ -462,16 +457,16 @@ export default function DesktopThemePage() {
 
   const getAutofillCommand = () => {
     if (stage === 1) {
-      if (narrationIndex === 4) return "holehe ranjit@dhunna.com";
+      if (narrationIndex === 4) return "holehe rs00dhunna@gmail.com";
     }
     if (stage === 2) {
-      if (narrationIndex === 7) return "volatility --dump clipboard";
+      if (narrationIndex === 5 || narrationIndex === 6 || narrationIndex === 7) return "volatility --dump clipboard";
     }
     if (stage === 4) {
       if (narrationIndex === 13) return "haveibeenpwned --email rs00dhunna@gmail.com";
     }
-    if (stage === 5) {
-      if (narrationIndex === 16) return `sqlite3 "C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies" "SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%ctf-portal.io%';"`;
+    if (stage === 5 || stage === 4) {
+      if (narrationIndex === 14 || narrationIndex === 15) return `sqlite3 "C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies" "SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%Competition Ranker.io%';"`;
     }
     return "";
   };
@@ -538,7 +533,7 @@ export default function DesktopThemePage() {
     },
     // --- STAGE 2 ---
     {
-      text: "HoleHe scanned successfully! Renders GitHub, Instagram (ranjit_dhunna), and a DarkWeb dump leak. Wait, he's running a Clipboard Sync utility active in memory. Let's dump volatile logs to search for synched credentials. We have instagram username, we might scrape password from memory. We will use Volatility to query memory structures.",
+      text: "HoleHe scanned successfully! Renders GitHub, Instagram (ranjit_dhunna), and a DarkWeb dump leak. Wait, he's running a Clipboard Sync utility active in memory. Let's dump volatile logs to search for synched credentials. We have instagram username, we might scrape password from memory. We will use Volatility to query memory structures. Run the Volatility clipboard dumper plugin in terminal: volatility --dump clipboard",
       btnText: "Next Steps",
       action: () => {}
     },
@@ -588,16 +583,14 @@ export default function DesktopThemePage() {
       }
     },
     {
-      text: "We found 5 certificates of Ranjit in Coursera leaked data breach. OMG! i just found out that he has an active session for 'Competition Ranker', but it is locked. Browser stores active session keys in a local SQLite database. We can query it to steal the token. Execute the sqlite3 cookie db scraper query in the terminal to dump ctf-portal session cookies. sqlite3 \"C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies\" \"SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%Competition Ranker.io%';\"",
-      btnText: "Next Stage",
-      action: () => { setStage(5); setNarrationIndex(15); }
+      text: "We found 5 certificates of Ranjit in Coursera leaked data breach. OMG! i just found out that he has an active session for 'Competition Ranker', but it is locked. Browser stores active session keys in a local SQLite database. We can query it to steal the token. ",
+      btnText: "Run SQLite Scraper",
+      action: () => { 
+        openWindow("terminal");
+        handleAutofillExecute(); 
+      }
     },
     // --- STAGE 5 ---
-    {
-      text: "In the browser, he has a session active for 'CTF Portal', but it is locked. Chrome stores active session keys in a local SQLite database. We can query it to steal the token.",
-      btnText: "Open Terminal",
-      action: () => { openWindow("terminal"); }
-    },
     {
       text: "Token retrieved: session_59a2df308. Go to the Browser, type Competition Ranker.",
       btnText: "Open Browser Tab",
