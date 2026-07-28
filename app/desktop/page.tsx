@@ -409,14 +409,15 @@ export default function DesktopThemePage() {
       }
     } else if (lowerCmd.includes("haveibeenpwned")) {
       newLines.push(
-        "[*] Contacting HaveIBeenPwned API v3 endpoint (hibp-api.pwned.org)...",
-        "[+] MATCH FOUND: Coursera Leaks Database (2026 Breach Dump)",
-        "[+] Compromised Target Email: rs00dhunna@gmail.com",
-        "[+] Raw JSON Breach Record & Credential Dump Retrieved:",
+        "[*] Initializing HaveIBeenPwned API v3 client...",
+        "[*] Contacting endpoint: api.haveibeenpwned.com/v3/breachedaccount/rs00dhunna@gmail.com...",
+        "[+] HTTP 200 OK — 1 Breach Record Found.",
+        "[+] Parsing raw JSON breach payload: Coursera_2026_DataDump.json...",
         JSON.stringify({
           breach_source: "Coursera.org Data Leak",
+          compromised_account: "rs00dhunna@gmail.com",
           breach_date: "2026-02-14",
-          compromised_data: ["email", "hashed_passwords", "achievements", "verified_certifications"],
+          compromised_data: ["email", "hashed_passwords", "verified_certifications"],
           certifications: [
             { title: "Technical Communication and Soft Skills for Engineers", instructor: "Alex Genadinik", issued: "2025-05", ver_hash: "hash_alex_genadinik_9921a" },
             { title: "Introduction to Technical Writing", instructor: "Dr. Katharina Grimm", issued: "2025-05", ver_hash: "hash_katharina_grimm_8812b" },
@@ -431,7 +432,7 @@ export default function DesktopThemePage() {
         '    3. "Human Centred Artificial Intelligence" by Deakin University',
         '    4. "Ethical Hacking in IoT and CyberSpace" by UPES etalk',
         '    5. "Artificial Intelligence and its Marketing" by UPES etalk',
-        "[+] Dump finished successfully."
+        "[+] Query completed successfully."
       );
       if (stage === 4 && narrationIndex === 13) {
         setNarrationIndex(14);
@@ -511,33 +512,33 @@ export default function DesktopThemePage() {
   const narrationDialogueList = [
     // --- STAGE 1 ---
     {
-      text: "ACCESS GRANTED! Remote connection successful. We have hijacked Ranjit's PC via AnyDesk (ID: 482-901-772). Let's gather OSINT reconnaissance on him.",
+      text: "Hi, We have finally hijacked PC via AnyDesk. I am sure after assigning hacking task to me you forgot about Ranjit. Let me help you with intro before stalking Ranjit.",
       btnText: "Start Recon",
       action: () => {}
     },
     {
-      text: "First step: Open the Brave Browser from the Sidebar Dock and search site:linkedin.com \"Ranjit Singh Dhunna\" on Google to locate his professional profile.",
+      text: "Open the Browser and search \"Ranjit Singh Dhunna\" LinkedIn to locate his professional profile.",
       btnText: "Open Browser",
       action: () => { openWindow("browser"); setActiveBrowserTab("google"); }
     },
     {
-      text: "Nice search query. Click on his LinkedIn profile link in the search results to inspect his details.",
+      text: "Click on Contact Details to know his email for OSINT.",
       btnText: "Open LinkedIn Link",
       action: () => { setActiveBrowserTab("linkedin"); }
     },
     {
-      text: "Great! We extracted his email: ranjit@dhunna.com. Now open the Terminal from the Sidebar Dock to run a platform footprint scanner.",
+      text: "Great! We extracted his email: rs00dhunna@gmail.com. Now open the Terminal.",
       btnText: "Open Terminal",
       action: () => { openWindow("terminal"); }
     },
     {
-      text: "Run HoleHe in the terminal to scraper associated platforms: holehe ranjit@dhunna.com",
+      text: "Run HoleHe in the terminal to scraper associated platforms: holehe rs00dhunna@gmail.com",
       btnText: "Execute Scanner",
       action: () => { handleAutofillExecute(); }
     },
     // --- STAGE 2 ---
     {
-      text: "HoleHe scanned successfully! Renders GitHub (Active), private Instagram (ranjit_dhunna), and a DarkWeb dump leak. Wait, he's running a Clipboard Sync utility active in memory. Let's dump volatile logs to search for synched credentials.",
+      text: "HoleHe scanned successfully! Renders GitHub, Instagram (ranjit_dhunna), and a DarkWeb dump leak. Wait, he's running a Clipboard Sync utility active in memory. Let's dump volatile logs to search for synched credentials. We have instagram username, we might scrape password from memory. We will use Volatility to query memory structures.",
       btnText: "Next Steps",
       action: () => {}
     },
@@ -557,12 +558,12 @@ export default function DesktopThemePage() {
       action: () => { openWindow("instagram"); }
     },
     {
-      text: "Log in to Instagram using account: ranjit_dhunna and password: Insta_Pass_2026!",
+      text: "Crazy that this guy actually once copied \"Insta_Pass_2026!\". It might just be Instagram password. Log in to Instagram using account: ranjit_dhunna and password: Insta_Pass_2026!",
       btnText: "Verify Credentials",
       action: () => {}
     },
     {
-      text: "Authenticated successfully! His Instagram posts give us a personal introduction: he represents Concordia University, lives in Montreal, and codes fullstack systems. Perfect. Let's inspect code next.",
+      text: "Authenticated successfully!? I guess lets see his Instagram profile.",
       btnText: "Next Stage",
       action: () => { setStage(3); setNarrationIndex(11); }
     },
@@ -573,18 +574,13 @@ export default function DesktopThemePage() {
       action: () => { openWindow("browser"); setActiveBrowserTab("github"); }
     },
     {
-      text: "Amazing projects listed! Machine learning skin classifiers, churn predictors, full-stack ticketing engines. Let's query the leaked breach logs next.",
+      text: "We still have GitHub and Darkweb dump leak leads given by HoleHe. Head back to Browser and look for Ranjit Singh Dhunna GitHub.",
       btnText: "Next Stage",
       action: () => { setStage(4); setNarrationIndex(13); }
     },
     // --- STAGE 4 ---
     {
-      text: "Assistant: Based on the Coursera data breach, target's data was floating on the deep web. Let's install and run HaveIBeenPwned API in the terminal to inspect all extracted certificates.",
-      btnText: "Open Terminal",
-      action: () => { openWindow("terminal"); }
-    },
-    {
-      text: "Run the HaveIBeenPwned leak search tool in the terminal: haveibeenpwned --email rs00dhunna@gmail.com",
+      text: "Amazing projects listed! Let's query the leaked breach logs next. Run the HaveIBeenPwned leak search tool in the terminal: haveibeenpwned --email rs00dhunna@gmail.com",
       btnText: "Run HaveIBeenPwned",
       action: () => { 
         openWindow("terminal");
@@ -592,7 +588,7 @@ export default function DesktopThemePage() {
       }
     },
     {
-      text: "We dumped a raw JSON block! It contains all his Coursera breach credentials and verified certificates: 'Technical Communication and Soft Skills for Engineers', 'Introduction to Technical Writing', 'Human Centred Artificial Intelligence', 'Ethical Hacking in IoT and CyberSpace', and 'Artificial Intelligence and its Marketing'.",
+      text: "We found 5 certificates of Ranjit in Coursera leaked data breach. OMG! i just found out that he has an active session for 'Competition Ranker', but it is locked. Browser stores active session keys in a local SQLite database. We can query it to steal the token. Execute the sqlite3 cookie db scraper query in the terminal to dump ctf-portal session cookies. sqlite3 \"C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies\" \"SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%Competition Ranker.io%';\"",
       btnText: "Next Stage",
       action: () => { setStage(5); setNarrationIndex(15); }
     },
@@ -603,22 +599,17 @@ export default function DesktopThemePage() {
       action: () => { openWindow("terminal"); }
     },
     {
-      text: "Execute the sqlite3 cookie db scraper query in the terminal to dump ctf-portal session cookies.",
-      btnText: "Steal Session Cookie",
-      action: () => { handleAutofillExecute(); }
-    },
-    {
-      text: "Token retrieved: ctf_session_59a2df308. Go to the Brave browser, select the CTF Portal tab, and click 'Inject Session Cookie' to authenticate on his behalf.",
+      text: "Token retrieved: session_59a2df308. Go to the Browser, type Competition Ranker.",
       btnText: "Open Browser Tab",
       action: () => { openWindow("browser"); setActiveBrowserTab("ctf"); }
     },
     {
-      text: "Authenticated! The session is bypassed. Now click the Achievements API endpoint link to extract his CTF records in raw JSON format.",
+      text: "Click on Inspect and click on cookies to add new one.",
       btnText: "Query API Tab",
       action: () => {}
     },
     {
-      text: "Awesome! The endpoint output confirms his CTF wins (1st Place @hack 2025 CTF). All data collected! Click 'Compile Dossier Resume' in my window to view the full profile.",
+      text: "Authenticated! The session is bypassed. Now click we can see his competition history.",
       btnText: "Compile Intelligence Resume",
       action: () => { 
         openWindow("resume"); 
@@ -626,10 +617,15 @@ export default function DesktopThemePage() {
         setNarrationIndex(20);
       }
     },
+    {
+      text: "The full dossier has been compiled.",
+      btnText: "Proceed",
+      action: () => {}
+    },
     // --- STAGE 6 (COMPILE RESUME & ALERT WARNING) ---
     {
-      text: "The full dossier has been compiled. Wait... red flashing alarms! Remote interrupt detected! The user is logging back in!",
-      btnText: "Alert!",
+      text: "We have gathered alot of intel, should I summarize?",
+      btnText: "Summarize",
       action: () => {
         playAlert();
         setTimeout(() => {
@@ -638,7 +634,7 @@ export default function DesktopThemePage() {
       }
     },
     {
-      text: "AnyDesk session terminated by target. Connection lost. However, he left a file Note.txt open on the desktop! Let's check what it is.",
+      text: "There you go.  Wait......OMG he's back on his PC.",
       btnText: "Open Note.txt",
       action: () => { openWindow("editor"); setNarrationIndex(22); }
     },
