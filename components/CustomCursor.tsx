@@ -415,7 +415,7 @@ export default function CustomCursor() {
     };
   }, []);
 
-  if (!mounted || ('ontouchstart' in window)) {
+  if (!mounted || ('ontouchstart' in window) || pathname.startsWith('/desktop')) {
     return null;
   }
 

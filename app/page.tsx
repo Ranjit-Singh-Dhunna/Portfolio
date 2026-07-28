@@ -241,7 +241,7 @@ export default function Page() {
               </Link>
 
               <Link href="/book" onClick={handleBookClick} className="theme-btn style-btn" data-theme="book" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <span className="btn-label">Book</span>
+                <span className="btn-label">Journal</span>
               </Link>
 
               <Link href="/stalker" className="theme-btn style-btn" data-theme="stalker" style={{ backgroundColor: 'transparent', color: 'inherit', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
