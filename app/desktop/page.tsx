@@ -407,33 +407,34 @@ export default function DesktopThemePage() {
           " Available plugins: clipboard, processes, connections, registry"
         );
       }
-    } else if (lowerCmd.startsWith("haveibeenpwned")) {
-      const match = cmd.match(/(?:--email\s+|haveibeenpwned\s+)(\S+)/i);
-      const email = match ? match[1] : "";
-      
-      if (email === "ranjit@dhunna.com") {
-        newLines.push(
-          "[*] Contacting HaveIBeenPwned API...",
-          "[+] MATCH FOUND: Coursera Leaks Database (2026)",
-          "[+] Raw JSON Breach Record Retrieved:",
-          JSON.stringify({
-            breach: "Coursera.org",
-            date: "2026-02-14",
-            compromised_data: ["email", "passwords", "achievements", "certifications"],
-            certifications: [
-              { title: "Machine Learning (Stanford)", date: "2024-08", ver_hash: "sh82ja7d1x90a" },
-              { title: "Deep Learning Specialization", date: "2024-11", ver_hash: "dl98da2h1f01p" },
-              { title: "Neural Networks and Deep Learning", date: "2024-09", ver_hash: "nn72ga8q2b09z" },
-              { title: "Structuring Machine Learning Projects", date: "2024-10", ver_hash: "sm89la2q3c11w" }
-            ]
-          }, null, 2),
-          "[+] Dump finished."
-        );
-        if (stage === 4 && narrationIndex === 13) {
-          setNarrationIndex(14);
-        }
-      } else {
-        newLines.push("[-] Email not found in leak databases.");
+    } else if (lowerCmd.includes("haveibeenpwned")) {
+      newLines.push(
+        "[*] Contacting HaveIBeenPwned API v3 endpoint (hibp-api.pwned.org)...",
+        "[+] MATCH FOUND: Coursera Leaks Database (2026 Breach Dump)",
+        "[+] Compromised Target Email: rs00dhunna@gmail.com",
+        "[+] Raw JSON Breach Record & Credential Dump Retrieved:",
+        JSON.stringify({
+          breach_source: "Coursera.org Data Leak",
+          breach_date: "2026-02-14",
+          compromised_data: ["email", "hashed_passwords", "achievements", "verified_certifications"],
+          certifications: [
+            { title: "Technical Communication and Soft Skills for Engineers", instructor: "Alex Genadinik", issued: "2025-05", ver_hash: "hash_alex_genadinik_9921a" },
+            { title: "Introduction to Technical Writing", instructor: "Dr. Katharina Grimm", issued: "2025-05", ver_hash: "hash_katharina_grimm_8812b" },
+            { title: "Human Centred Artificial Intelligence", organization: "Deakin University", issued: "2025-06", ver_hash: "hash_deakin_ai_7731c" },
+            { title: "Ethical Hacking in IoT and CyberSpace", organization: "UPES etalk", issued: "2025-04", ver_hash: "hash_upes_ethical_hacking_6614d" },
+            { title: "Artificial Intelligence and its Marketing", organization: "UPES etalk", issued: "2025-04", ver_hash: "hash_upes_ai_marketing_5515e" }
+          ]
+        }, null, 2),
+        "[+] Extracted 5 Verified Certifications from Breach Dump:",
+        '    1. "Technical Communication and Soft Skills for Engineers" by Alex Genadinik',
+        '    2. "Introduction to Technical Writing" by Dr. Katharina Grimm',
+        '    3. "Human Centred Artificial Intelligence" by Deakin University',
+        '    4. "Ethical Hacking in IoT and CyberSpace" by UPES etalk',
+        '    5. "Artificial Intelligence and its Marketing" by UPES etalk',
+        "[+] Dump finished successfully."
+      );
+      if (stage === 4 && narrationIndex === 13) {
+        setNarrationIndex(14);
       }
     } else if (lowerCmd.startsWith("sqlite3")) {
       if (lowerCmd.includes("cookies") && lowerCmd.includes("ctf-portal.io")) {
@@ -466,7 +467,7 @@ export default function DesktopThemePage() {
       if (narrationIndex === 7) return "volatility --dump clipboard";
     }
     if (stage === 4) {
-      if (narrationIndex === 13) return "haveibeenpwned --email ranjit@dhunna.com";
+      if (narrationIndex === 13) return "haveibeenpwned --email rs00dhunna@gmail.com";
     }
     if (stage === 5) {
       if (narrationIndex === 16) return `sqlite3 "C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies" "SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%ctf-portal.io%';"`;
@@ -578,17 +579,20 @@ export default function DesktopThemePage() {
     },
     // --- STAGE 4 ---
     {
-      text: "Our initial OSINT scan flagged leaked credentials in a Coursera breach database. Let's check HaveIBeenPwned API in the Terminal to retrieve the raw breach data dump.",
+      text: "Assistant: Based on the Coursera data breach, target's data was floating on the deep web. Let's install and run HaveIBeenPwned API in the terminal to inspect all extracted certificates.",
       btnText: "Open Terminal",
       action: () => { openWindow("terminal"); }
     },
     {
-      text: "Run the leak tool in the terminal: haveibeenpwned --email ranjit@dhunna.com",
+      text: "Run the HaveIBeenPwned leak search tool in the terminal: haveibeenpwned --email rs00dhunna@gmail.com",
       btnText: "Run HaveIBeenPwned",
-      action: () => { handleAutofillExecute(); }
+      action: () => { 
+        openWindow("terminal");
+        handleAutofillExecute(); 
+      }
     },
     {
-      text: "We dumped a raw JSON block! It contains all his Coursera credentials and lists his certifications: Deep Learning Specialization and Machine Learning (Stanford). Now, let's target the crown jewels.",
+      text: "We dumped a raw JSON block! It contains all his Coursera breach credentials and verified certificates: 'Technical Communication and Soft Skills for Engineers', 'Introduction to Technical Writing', 'Human Centred Artificial Intelligence', 'Ethical Hacking in IoT and CyberSpace', and 'Artificial Intelligence and its Marketing'.",
       btnText: "Next Stage",
       action: () => { setStage(5); setNarrationIndex(15); }
     },
