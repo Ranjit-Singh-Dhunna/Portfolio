@@ -2637,12 +2637,6 @@ export default function DesktopThemePage() {
                             <span style={{ background: '#0095f6', color: 'white', borderRadius: '50%', width: '15px', height: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>✓</span>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <button style={{ padding: '6px 14px', background: '#262626', border: 'none', borderRadius: '8px', color: '#f5f5f5', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}>
-                              Edit profile
-                            </button>
-                            <button style={{ padding: '6px 14px', background: '#262626', border: 'none', borderRadius: '8px', color: '#f5f5f5', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}>
-                              View archive
-                            </button>
                             <span style={{ fontSize: '18px', cursor: 'pointer', color: '#f5f5f5' }}>⚙️</span>
                           </div>
                         </div>
@@ -2671,7 +2665,7 @@ export default function DesktopThemePage() {
                           {/* Stats Row */}
                           <div style={{ display: 'flex', flex: 1, justifyContent: 'space-around', textAlign: 'center' }}>
                             <div>
-                              <div style={{ fontSize: '16px', fontWeight: '700', color: '#f5f5f5' }}>2</div>
+                              <div style={{ fontSize: '16px', fontWeight: '700', color: '#f5f5f5' }}>1</div>
                               <div style={{ fontSize: '13px', color: '#a8a8a8' }}>posts</div>
                             </div>
                             <div>
@@ -2728,7 +2722,7 @@ export default function DesktopThemePage() {
                           </div>
                         </div>
 
-                        {/* 5. PHOTO THUMBNAILS GRID (IMAGE 1) - CLICKING OPENS POST MODAL (IMAGE 2) */}
+                        {/* 5. PHOTO THUMBNAILS GRID (SINGLE 1 POST THUMBNAIL) - CLICKING OPENS POST MODAL (IMAGE 2) */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px', marginTop: '6px' }}>
                           <div 
                             onClick={() => setSelectedInstaPost(true)}
@@ -2740,13 +2734,6 @@ export default function DesktopThemePage() {
                                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
                               </svg>
                             </div>
-                          </div>
-
-                          <div 
-                            onClick={() => setSelectedInstaPost(true)}
-                            style={{ position: 'relative', aspectRatio: '1/1', background: '#121212', borderRadius: '4px', overflow: 'hidden', cursor: 'pointer' }}
-                          >
-                            <img src="/certis.jpeg" alt="Post 2" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           </div>
                         </div>
 
@@ -2779,23 +2766,6 @@ export default function DesktopThemePage() {
                                 position: 'relative'
                               }}
                             >
-                              {/* Modal Close Button */}
-                              <button 
-                                onClick={() => setSelectedInstaPost(false)}
-                                style={{
-                                  position: 'absolute',
-                                  top: '12px',
-                                  right: '12px',
-                                  background: 'none',
-                                  border: 'none',
-                                  color: '#ffffff',
-                                  fontSize: '22px',
-                                  cursor: 'pointer',
-                                  zIndex: 10
-                                }}
-                              >
-                                ✕
-                              </button>
 
                               {/* Left Side: Photo Carousel */}
                               <div style={{ flex: '1.3', background: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: '380px' }}>
