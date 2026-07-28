@@ -41,10 +41,11 @@ export default function DesktopThemePage() {
   
   // Window states matching layout coordinates
   const [windows, setWindows] = useState<Record<string, WindowState>>({
+    summary_editor: { isOpen: false, isMinimized: false, isMaximized: false, x: 101, y: 30, w: 733, h: 818, zIndex: 14 },
+    note_editor: { isOpen: false, isMinimized: false, isMaximized: false, x: 833, y: 112, w: 518, h: 561, zIndex: 100 },
     terminal: { isOpen: false, isMinimized: false, isMaximized: false, x: 100, y: 150, w: 580, h: 380, zIndex: 10 },
     browser: { isOpen: false, isMinimized: false, isMaximized: false, x: 533, y: 35, w: 810, h: 627, zIndex: 11 },
     instagram: { isOpen: false, isMinimized: false, isMaximized: false, x: 564, y: 26, w: 847, h: 825, zIndex: 12 },
-    editor: { isOpen: false, isMinimized: false, isMaximized: false, x: 530, y: 520, w: 680, h: 420, zIndex: 9 },
     resume: { isOpen: false, isMinimized: false, isMaximized: false, x: 160, y: 80, w: 640, h: 500, zIndex: 8 },
     anydesk: { isOpen: false, isMinimized: false, isMaximized: false, x: 250, y: 220, w: 420, h: 280, zIndex: 7 },
     intel: { isOpen: false, isMinimized: false, isMaximized: false, x: 280, y: 120, w: 380, h: 440, zIndex: 6 },
@@ -91,6 +92,12 @@ export default function DesktopThemePage() {
   const [selectedInstaPost, setSelectedInstaPost] = useState<boolean>(false);
   const [githubTab, setGithubTab] = useState<string>("repositories");
   const [selectedRepo, setSelectedRepo] = useState<any | null>(null);
+
+  const [showDevTools, setShowDevTools] = useState<boolean>(false);
+  const [devToolsTab, setDevToolsTab] = useState<string>("cookies");
+  const [cookieNameInput, setCookieNameInput] = useState<string>("session_id");
+  const [cookieValueInput, setCookieValueInput] = useState<string>("session_59a2df308");
+  const [selectedEditorFile, setSelectedEditorFile] = useState<string>("Summary_Intel.txt");
   
   // Dragging state
   const [dragWindow, setDragWindow] = useState<string | null>(null);
@@ -187,6 +194,81 @@ export default function DesktopThemePage() {
       terminalBottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [terminalLines]);
+
+  // Trigger "Those are some great projects. Let's view a couple." when user sees GitHub in browser
+  useEffect(() => {
+    if (activeBrowserTab === "github" && (narrationIndex === 8 || (narrationIndex >= 0 && narrationIndex < 9))) {
+      setNarrationIndex(9);
+    }
+  }, [activeBrowserTab, narrationIndex]);
+
+  // 10-second timer after showing "Those are some great projects" to show HaveIBeenPwned prompt
+  useEffect(() => {
+    if (narrationIndex === 9) {
+      const timer = setTimeout(() => {
+        setNarrationIndex(10);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [narrationIndex]);
+
+  // Auto-advance to "Run HoleHe" prompt when terminal window is opened
+  useEffect(() => {
+    if (windows.terminal?.isOpen && narrationIndex === 3) {
+      setNarrationIndex(4);
+    }
+  }, [windows.terminal?.isOpen, narrationIndex]);
+
+  // Auto-advance to "Click on Inspect and click on cookies to add new one." when user opens CompetitionRanker.io tab
+  useEffect(() => {
+    if (activeBrowserTab === "ctf" && narrationIndex === 12) {
+      setNarrationIndex(13);
+    }
+  }, [activeBrowserTab, narrationIndex]);
+
+  // 10-second timer after showing "Authenticated! The session is bypassed..." to show "We have gathered a lot of info..."
+  useEffect(() => {
+    if (narrationIndex === 14) {
+      const timer = setTimeout(() => {
+        setNarrationIndex(15);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [narrationIndex]);
+
+  // Live typing effect for Note.txt
+  const fullNoteText = `Hi, I was watching you.\n\nI noticed you remote into my AnyDesk desktop session, harvested clipboard history buffers, extracted SQLite cookies, and read my breach dossier logs.\n\nYou did an excellent job. I actually designed this entire workspace as an interactive cybersecurity-themed portfolio to showcase my full-stack and deep learning engineering skills.\n\nCheers,\n\nRanjit Singh Dhunna`;
+  const [typedNoteLength, setTypedNoteLength] = useState<number>(0);
+
+  useEffect(() => {
+    if (windows.note_editor?.isOpen || narrationIndex === 17) {
+      setTypedNoteLength(0);
+      const interval = setInterval(() => {
+        setTypedNoteLength(prev => {
+          if (prev < fullNoteText.length) {
+            return prev + 1;
+          } else {
+            clearInterval(interval);
+            return prev;
+          }
+        });
+      }, 48);
+      return () => clearInterval(interval);
+    }
+  }, [windows.note_editor?.isOpen, narrationIndex]);
+
+  // 10-second timer after showing "There you go." (narrationIndex 16) to show "Wait......OMG he's back on his PC." (narrationIndex 17) and open Note.txt
+  useEffect(() => {
+    if (narrationIndex === 16) {
+      const timer = setTimeout(() => {
+        playAlert();
+        openWindow("note_editor");
+        focusWindow("note_editor");
+        setNarrationIndex(17);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [narrationIndex]);
 
   const toggleFullScreen = () => {
     playClick();
@@ -389,8 +471,8 @@ export default function DesktopThemePage() {
           "----------------------------------------",
           "[+] Volatility dump process complete."
         );
-        if (stage === 2) {
-          setNarrationIndex(8);
+        if (narrationIndex === 5) {
+          setNarrationIndex(6);
         }
       } else {
         newLines.push(
@@ -427,8 +509,8 @@ export default function DesktopThemePage() {
         '    5. "Artificial Intelligence and its Marketing" by UPES etalk',
         "[+] Dark Web scraping completed."
       );
-      if (stage === 4 && narrationIndex === 13) {
-        setNarrationIndex(14);
+      if (narrationIndex === 10) {
+        setNarrationIndex(11);
       }
     } else if (lowerCmd.startsWith("sqlite3")) {
       newLines.push(
@@ -443,8 +525,9 @@ export default function DesktopThemePage() {
         "--------------------------------------------------------------------------------",
         "[+] Stolen Session Cookie Token: session_59a2df308"
       );
-      if (stage === 5 && narrationIndex === 15) {
-        setNarrationIndex(16);
+      if (narrationIndex === 11) {
+        setStage(5);
+        setNarrationIndex(12);
       }
     } else {
       newLines.push(`command not found: ${cmd}. Type 'help' for instructions.`);
@@ -456,18 +539,10 @@ export default function DesktopThemePage() {
   };
 
   const getAutofillCommand = () => {
-    if (stage === 1) {
-      if (narrationIndex === 4) return "holehe rs00dhunna@gmail.com";
-    }
-    if (stage === 2) {
-      if (narrationIndex === 5 || narrationIndex === 6 || narrationIndex === 7) return "volatility --dump clipboard";
-    }
-    if (stage === 4) {
-      if (narrationIndex === 13) return "haveibeenpwned --email rs00dhunna@gmail.com";
-    }
-    if (stage === 5 || stage === 4) {
-      if (narrationIndex === 14 || narrationIndex === 15) return `sqlite3 "C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies" "SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%Competition Ranker.io%';"`;
-    }
+    if (stage === 1 && narrationIndex === 4) return "holehe rs00dhunna@gmail.com";
+    if (narrationIndex === 5) return "volatility --dump clipboard";
+    if (narrationIndex === 10) return "haveibeenpwned --email rs00dhunna@gmail.com";
+    if (narrationIndex === 11) return `sqlite3 "C:\\Users\\Ranjit\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies" "SELECT host_key, name, value FROM cookies WHERE host_key LIKE '%Competition Ranker.io%';"`;
     return "";
   };
 
@@ -485,9 +560,7 @@ export default function DesktopThemePage() {
     if (instaUser.toLowerCase() === "ranjit_dhunna" && instaPass === "Insta_Pass_2026!") {
       setInstaLoggedIn(true);
       setInstaError("");
-      if (stage === 2 && narrationIndex === 9) {
-        setNarrationIndex(10);
-      }
+      setNarrationIndex(7);
     } else {
       setInstaError("Invalid credentials. Hint: Password is in Stage 2 clipboard logs.");
     }
@@ -498,9 +571,6 @@ export default function DesktopThemePage() {
     e.preventDefault();
     playClick();
     setDorkSearchSubmitted(true);
-    if (stage === 1 && narrationIndex === 1) {
-      setNarrationIndex(2);
-    }
   };
 
   // Dialogue steps controlling narration state
@@ -533,64 +603,48 @@ export default function DesktopThemePage() {
     },
     // --- STAGE 2 ---
     {
-      text: "HoleHe scanned successfully! Renders GitHub, Instagram (ranjit_dhunna), and a DarkWeb dump leak. Wait, he's running a Clipboard Sync utility active in memory. Let's dump volatile logs to search for synched credentials. We have instagram username, we might scrape password from memory. We will use Volatility to query memory structures. Run the Volatility clipboard dumper plugin in terminal: volatility --dump clipboard",
-      btnText: "Next Steps",
-      action: () => {}
-    },
-    {
-      text: "We will use Volatility to query memory structures. Select the terminal window.",
-      btnText: "Focus Terminal",
-      action: () => { openWindow("terminal"); }
-    },
-    {
-      text: "Run the Volatility clipboard dumper plugin in terminal: volatility --dump clipboard",
+      text: "HoleHe scanned successfully! Renders GitHub, Instagram , and a DarkWeb dump leak. Wait, he's running a Clipboard Sync utility active in memory. Let's dump volatile logs to search for synched credentials. We have instagram username, we might scrape password from memory. ",
       btnText: "Run Dump Command",
       action: () => { handleAutofillExecute(); }
     },
     {
-      text: "Look at index 100 in the dumped history buffer! It contains a string that looks like a password: 'Insta_Pass_2026!'. Let's exploit this. Open the simulated Instagram app from the Sidebar Dock.",
+      text: "Crazy that this guy actually once copied \"Insta_Pass_2026!\". It might just be Instagram password. Log in to Instagram using account: ranjit_dhunna and password: Insta_Pass_2026!",
       btnText: "Open Instagram App",
       action: () => { openWindow("instagram"); }
     },
     {
-      text: "Crazy that this guy actually once copied \"Insta_Pass_2026!\". It might just be Instagram password. Log in to Instagram using account: ranjit_dhunna and password: Insta_Pass_2026!",
-      btnText: "Verify Credentials",
-      action: () => {}
-    },
-    {
       text: "Authenticated successfully!? I guess lets see his Instagram profile.",
       btnText: "Next Stage",
-      action: () => { setStage(3); setNarrationIndex(11); }
+      action: () => { setStage(3); }
     },
     // --- STAGE 3 ---
     {
-      text: "We found his GitHub name from Stage 1 recon ('Ranjit-Singh-Dhunna'). Let's view his public code repositories to examine his projects. Open Brave Browser (or focus it) and navigate to the GitHub tab.",
+      text: "We still have GitHub and Darkweb dump leak leads given by HoleHe. Head back to Browser and look for Ranjit Singh Dhunna GitHub.",
       btnText: "Inspect GitHub",
       action: () => { openWindow("browser"); setActiveBrowserTab("github"); }
     },
     {
-      text: "We still have GitHub and Darkweb dump leak leads given by HoleHe. Head back to Browser and look for Ranjit Singh Dhunna GitHub.",
-      btnText: "Next Stage",
-      action: () => { setStage(4); setNarrationIndex(13); }
+      text: "Those are some great projects. Let's view a couple.",
+      btnText: "View Projects",
+      action: () => { openWindow("browser"); setActiveBrowserTab("github"); }
     },
-    // --- STAGE 4 ---
     {
-      text: "Amazing projects listed! Let's query the leaked breach logs next. Run the HaveIBeenPwned leak search tool in the terminal: haveibeenpwned --email rs00dhunna@gmail.com",
+      text: "Let's query the leaked breach logs next. Run the HaveIBeenPwned leak search tool in the terminal.",
       btnText: "Run HaveIBeenPwned",
       action: () => { 
         openWindow("terminal");
         handleAutofillExecute(); 
       }
     },
+    // --- STAGE 4 ---
     {
-      text: "We found 5 certificates of Ranjit in Coursera leaked data breach. OMG! i just found out that he has an active session for 'Competition Ranker', but it is locked. Browser stores active session keys in a local SQLite database. We can query it to steal the token. ",
+      text: "We found 5 certificates of Ranjit in Coursera leaked data breach. OMG! i just found out that he has an active session for 'Competition Ranker', but it is locked. Browser stores active session keys in a local SQLite database. We can query it to steal the token.",
       btnText: "Run SQLite Scraper",
       action: () => { 
         openWindow("terminal");
         handleAutofillExecute(); 
       }
     },
-    // --- STAGE 5 ---
     {
       text: "Token retrieved: session_59a2df308. Go to the Browser, type Competition Ranker.",
       btnText: "Open Browser Tab",
@@ -598,38 +652,34 @@ export default function DesktopThemePage() {
     },
     {
       text: "Click on Inspect and click on cookies to add new one.",
-      btnText: "Query API Tab",
-      action: () => {}
+      btnText: "Inspect",
+      action: () => { openWindow("browser"); setActiveBrowserTab("ctf"); setShowDevTools(true); }
     },
     {
-      text: "Authenticated! The session is bypassed. Now click we can see his competition history.",
+      text: "Authenticated! The session is bypassed. Now we can see his competition history.",
       btnText: "Compile Intelligence Resume",
       action: () => { 
         openWindow("resume"); 
         setStage(6);
-        setNarrationIndex(20);
       }
     },
+    // --- STAGE 6 ---
     {
-      text: "The full dossier has been compiled.",
-      btnText: "Proceed",
-      action: () => {}
-    },
-    // --- STAGE 6 (COMPILE RESUME & ALERT WARNING) ---
-    {
-      text: "We have gathered alot of intel, should I summarize?",
+      text: "We have gathered a lot of info, should I summarize for you?",
       btnText: "Summarize",
       action: () => {
-        playAlert();
-        setTimeout(() => {
-          setNarrationIndex(21);
-        }, 1500);
+        openWindow("summary_editor");
       }
     },
     {
-      text: "There you go.  Wait......OMG he's back on his PC.",
+      text: "There you go.",
+      btnText: "Next",
+      action: () => {}
+    },
+    {
+      text: "Wait......OMG he's back on his PC.",
       btnText: "Open Note.txt",
-      action: () => { openWindow("editor"); setNarrationIndex(22); }
+      action: () => { openWindow("note_editor"); focusWindow("note_editor"); }
     },
     {
       text: "The hacking simulation is complete! Ranjit was aware of our intrusion. You can connect with him on LinkedIn or email. Click 'Exit Remote Terminal' in the sidebar or menu to return home.",
@@ -1226,9 +1276,9 @@ export default function DesktopThemePage() {
         /* Code Notepad editor styling */
         .desk-editor-tree {
           width: 120px;
-          border-right: 1px solid rgba(255,255,255,0.05);
-          background: rgba(10, 10, 15, 0.4);
-          padding: 12px;
+          border-right: 1px solid rgba(255,255,255,0.08);
+          background: #0a0e1a;
+          padding: 14px 12px;
           display: flex;
           flex-direction: column;
           gap: 8px;
@@ -1246,7 +1296,7 @@ export default function DesktopThemePage() {
           overflow-y: auto;
           box-sizing: border-box;
           height: 100%;
-          background: rgba(15, 20, 34, 0.85);
+          background: #070a12;
         }
 
         .desk-editor-note {
@@ -1776,22 +1826,24 @@ export default function DesktopThemePage() {
 
                   {/* Footer Nav */}
                   <div className="desk-assistant-footer">
-                    <button 
-                      onClick={() => { playClick(); setShowToDoSection(!showToDoSection); }}
-                      style={{
-                        padding: '4px 10px',
-                        borderRadius: '6px',
-                        background: showToDoSection ? 'rgba(6, 182, 212, 0.3)' : 'rgba(255,255,255,0.08)',
-                        border: '1px solid ' + (showToDoSection ? '#22d3ee' : 'rgba(255,255,255,0.15)'),
-                        color: showToDoSection ? '#22d3ee' : 'rgba(255,255,255,0.85)',
-                        fontSize: '10px',
-                        fontWeight: 'bold',
-                        fontFamily: 'monospace',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      To Do
-                    </button>
+                    {narrationIndex < 14 && (
+                      <button 
+                        onClick={() => { playClick(); setShowToDoSection(!showToDoSection); }}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: '6px',
+                          background: showToDoSection ? 'rgba(6, 182, 212, 0.3)' : 'rgba(255,255,255,0.08)',
+                          border: '1px solid ' + (showToDoSection ? '#22d3ee' : 'rgba(255,255,255,0.15)'),
+                          color: showToDoSection ? '#22d3ee' : 'rgba(255,255,255,0.85)',
+                          fontSize: '10px',
+                          fontWeight: 'bold',
+                          fontFamily: 'monospace',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        To Do
+                      </button>
+                    )}
 
                     {narrationIndex === narrationDialogueList.length - 1 ? (
                       <Link 
@@ -1813,12 +1865,14 @@ export default function DesktopThemePage() {
                         Disconnect
                       </Link>
                     ) : (
-                      <button 
-                        onClick={handleNextNarration}
-                        className="desk-assistant-action-btn"
-                      >
-                        {narrationDialogueList[narrationIndex].btnText} &gt;
-                      </button>
+                      (narrationDialogueList[narrationIndex].btnText === "Start Recon" || narrationDialogueList[narrationIndex].btnText === "Summarize") && (
+                        <button 
+                          onClick={handleNextNarration}
+                          className="desk-assistant-action-btn"
+                        >
+                          {narrationDialogueList[narrationIndex].btnText}
+                        </button>
+                      )
                     )}
                   </div>
                 </div>
@@ -1896,7 +1950,7 @@ export default function DesktopThemePage() {
 
                 <div style={{ height: '36px', background: 'rgba(10, 15, 26, 0.9)', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', boxSizing: 'border-box' }}>
                   <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', fontFamily: 'monospace' }}>
-                    {getAutofillCommand() ? "Suggested OSINT Payload:" : "Terminal Status: Active Session"}
+                    Terminal Status: Active Session
                   </span>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     {getAutofillCommand() && (
@@ -1914,7 +1968,7 @@ export default function DesktopThemePage() {
                           cursor: 'pointer'
                         }}
                       >
-                        Auto-type & Run Cmd
+                        Run Cmd
                       </button>
                     )}
                   </div>
@@ -1989,7 +2043,7 @@ export default function DesktopThemePage() {
                   )}
                   {activeBrowserTab === "ctf" && (
                     <button className="desk-browser-tab active">
-                      CTF Portal
+                      CompetitionRanker.io
                     </button>
                   )}
                   {activeBrowserTab === "api" && (
@@ -1999,18 +2053,38 @@ export default function DesktopThemePage() {
                   )}
                 </div>
 
-                <div className="desk-browser-address-bar">
+                <div className="desk-browser-address-bar" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <span style={{ color: 'rgba(255,255,255,0.4)' }}>🔒 Incognito</span>
-                  <div className="desk-browser-url">
+                  <div className="desk-browser-url" style={{ flex: 1 }}>
                     {activeBrowserTab === "google" ? "https://www.google.com" :
                      activeBrowserTab === "linkedin" ? "https://www.linkedin.com/in/ranjit-singh-dhunna" :
                      activeBrowserTab === "github" ? "https://github.com/Ranjit-Singh-Dhunna" :
-                     activeBrowserTab === "ctf" ? "https://ctf-portal.io/dashboard" :
-                     "https://ctf-portal.io/api/v1/user/achievements"}
+                     activeBrowserTab === "ctf" ? "https://competitionranker.io" :
+                     "https://competitionranker.io/api/v1/user/achievements"}
                   </div>
+                  {activeBrowserTab === "ctf" && (
+                    <button 
+                      onClick={() => setShowDevTools(!showDevTools)}
+                      style={{
+                        padding: '4px 12px',
+                        borderRadius: '2px',
+                        background: '#000000',
+                        border: '1px solid #000000',
+                        color: '#ffffff',
+                        fontSize: '10px',
+                        fontWeight: '600',
+                        letterSpacing: '1.5px',
+                        cursor: 'pointer',
+                        textTransform: 'uppercase',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                      }}
+                    >
+                      {showDevTools ? "Close Inspect" : "Inspect"}
+                    </button>
+                  )}
                 </div>
 
-                <div className="desk-browser-viewport" style={{ background: activeBrowserTab === "google" ? '#fbf6f0' : activeBrowserTab === "linkedin" ? '#f4f2ee' : 'inherit', padding: activeBrowserTab === "google" ? 0 : '16px', overflowY: 'auto' }}>
+                <div className="desk-browser-viewport" style={{ background: activeBrowserTab === "google" ? '#fbf6f0' : activeBrowserTab === "linkedin" ? '#f4f2ee' : activeBrowserTab === "ctf" ? '#f9f8f6' : 'inherit', padding: activeBrowserTab === "google" || activeBrowserTab === "ctf" ? 0 : '16px', overflowY: 'auto' }}>
                   {activeBrowserTab === "google" && (
                     <div style={{
                       display: 'flex',
@@ -2167,6 +2241,24 @@ export default function DesktopThemePage() {
                               Ranjit-Singh-Dhunna (Ranjit Singh Dhunna) · GitHub
                             </button>
                           </div>
+
+                          <div style={{ padding: '18px', background: '#ffffff', border: '1px solid #efe4dc', borderRadius: '14px', display: 'flex', flexDirection: 'column', gap: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
+                            <span style={{ fontSize: '11px', color: '#6366f1' }}>https://competitionranker.io</span>
+                            <button 
+                              type="button"
+                              onClick={() => { 
+                                playClick(); 
+                                setActiveBrowserTab("ctf"); 
+                                if (narrationIndex === 12) setNarrationIndex(13); 
+                              }} 
+                              style={{ background: 'transparent', border: 'none', color: '#1d4ed8', fontWeight: 'bold', fontSize: '15px', textAlign: 'left', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                            >
+                              CompetitionRanker.io — Collegiate CTF & Hackathon Leaderboards
+                            </button>
+                            <p style={{ color: '#4b5563', margin: '4px 0 0 0', lineHeight: '1.5', fontSize: '12px' }}>
+                              Official ranking platform tracking university hackathons, CTFs, CS Games, and competitive programming records...
+                            </p>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -2222,7 +2314,12 @@ export default function DesktopThemePage() {
 
                               {/* Location */}
                               <p style={{ fontSize: '14px', color: '#666666', margin: '4px 0 0 0' }}>
-                                Montreal, Quebec, Canada &bull; <span style={{ color: '#0a66c2', fontWeight: '600', cursor: 'pointer' }}>Contact info</span>
+                                Montreal, Quebec, Canada &bull; <span 
+                                  onClick={() => { playClick(); setEmailExtracted(true); if (stage === 1 && narrationIndex === 2) setNarrationIndex(3); }}
+                                  style={{ color: '#0a66c2', fontWeight: '600', cursor: 'pointer', textDecoration: 'underline' }}
+                                >
+                                  Contact info
+                                </span>
                               </p>
 
                               {/* Connections */}
@@ -2827,82 +2924,336 @@ export default function DesktopThemePage() {
                   )}
 
                   {activeBrowserTab === "ctf" && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', fontFamily: 'monospace', fontSize: '12px' }}>
-                      <div style={{ padding: '16px', borderRadius: '12px', border: '1px solid rgba(6, 182, 212, 0.2)', background: 'rgba(6, 182, 212, 0.05)', textAlign: 'center' }}>
-                        <h2 style={{ fontSize: '14px', fontWeight: 'bold', color: '#22d3ee', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Concordia CTF Competition Dashboard</h2>
-                      </div>
+                    <div style={{ display: 'flex', flexDirection: 'row', minHeight: '100%', fontFamily: '-apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif', background: '#f9f8f6', position: 'relative' }}>
+                      
+                      {/* Main Web Page Content */}
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '100%', overflowY: 'auto' }}>
+                        {!cookieInjected ? (
+                          <div style={{
+                            background: '#f9f8f6',
+                            color: '#111111',
+                            minHeight: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            padding: '32px 44px',
+                            boxSizing: 'border-box',
+                            position: 'relative'
+                          }}>
+                            {/* Navigation Bar */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e2e0', paddingBottom: '16px' }}>
+                              <span style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: '#666666', fontWeight: '600' }}>
+                                DIGITAL ARCHIVE
+                              </span>
+                            </div>
 
-                      {!cookieInjected ? (
-                        <div style={{ padding: '32px', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.2)', background: 'rgba(239, 68, 68, 0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', textAlign: 'center' }}>
-                          <p style={{ color: '#f87171', fontWeight: 'bold', fontSize: '14px', margin: 0 }}>🔒 ACCESS DENIED: SESSION COOKIE EXPIRED</p>
-                          <p style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '360px', fontSize: '11px', margin: 0, lineHeight: '1.4' }}>
-                            Your browser does not have the required session cookie for ctf-portal.io. Authentication is required.
-                          </p>
-                          
-                          {stage === 5 && narrationIndex === 18 && (
-                            <button 
-                              onClick={() => { playClick(); setCookieInjected(true); setNarrationIndex(19); }}
-                              style={{
-                                padding: '8px 16px',
-                                borderRadius: '6px',
-                                background: '#06b6d4',
-                                border: '1.5px solid #22d3ee',
-                                color: '#020617',
-                                fontWeight: 'bold',
-                                fontFamily: 'monospace',
-                                cursor: 'pointer',
-                                marginTop: '8px'
-                              }}
-                            >
-                              Inject Stolen Session Cookie (ctf_session_59a2df308)
-                            </button>
-                          )}
-                        </div>
-                      ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                          <div style={{ padding: '12px', borderRadius: '8px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', color: '#4ade80', fontSize: '11px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span>✅ SQLite Cookie Injected: ctf_session_59a2df308 verified</span>
-                            <span style={{ fontWeight: 'bold' }}>[LOGGED IN]</span>
+                            {/* Hero Section */}
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', margin: '48px 0' }}>
+                              <span style={{ fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase', color: '#777777', fontWeight: '600', marginBottom: '16px' }}>
+                                COLLEGIATE COMPETITION ARCHIVES
+                              </span>
+
+                              <h1 style={{
+                                fontFamily: '"Playfair Display", "Georgia", "Times New Roman", serif',
+                                fontStyle: 'italic',
+                                fontWeight: '400',
+                                fontSize: '54px',
+                                lineHeight: '1.15',
+                                color: '#111111',
+                                margin: '0 0 20px 0',
+                                maxWidth: '680px'
+                              }}>
+                                A collection of<br />digital artifacts.
+                              </h1>
+
+                              <p style={{ fontSize: '14px', color: '#555555', maxWidth: '500px', lineHeight: '1.6', margin: '0 0 32px 0' }}>
+                                Verified university CTF teams, hackathon achievements, and competitive programming archives.
+                              </p>
+
+                              <button 
+                                style={{
+                                  background: '#000000',
+                                  color: '#ffffff',
+                                  border: 'none',
+                                  padding: '14px 36px',
+                                  fontSize: '11px',
+                                  letterSpacing: '3px',
+                                  fontWeight: '600',
+                                  textTransform: 'uppercase',
+                                  cursor: 'default'
+                                }}
+                              >
+                                LOG IN
+                              </button>
+                            </div>
+
+                            {/* Footer */}
+                            <div style={{ borderTop: '1px solid #e2e2e0', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '11px', color: '#777777' }}>
+                              <span>© 2026 CompetitionRanker.io</span>
+                            </div>
                           </div>
+                        ) : (
+                          /* Authenticated Member Feed */
+                          <div style={{
+                            background: '#f9f8f6',
+                            color: '#111111',
+                            minHeight: '100%',
+                            padding: '28px 40px',
+                            boxSizing: 'border-box'
+                          }}>
+                            {/* Header */}
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e2e0', paddingBottom: '16px', marginBottom: '32px' }}>
+                              <span style={{ fontSize: '16px', fontWeight: '500', color: '#111111' }}>Ranjit Singh Dhunna</span>
+                            </div>
 
-                          <div style={{ padding: '16px', background: 'rgba(2,6,23,0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <p style={{ fontWeight: 'bold', color: 'white', margin: 0 }}>🏆 Ranjit's CTF & Hackathon Logbook:</p>
-                            
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '11px', marginTop: '6px' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
-                                <span style={{ fontWeight: 'bold', color: '#22d3ee' }}>@hack 2025 CTF</span>
-                                <span style={{ color: '#4ade80', fontWeight: 'bold' }}>1st Place Winner</span>
-                              </div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
-                                <span>SofiaPulse AI Hackathon</span>
-                                <span style={{ color: '#facc15', fontWeight: 'bold' }}>2nd Place</span>
-                              </div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
-                                <span>ConcordiHacks 2025</span>
-                                <span>Participant / Best UI Nominee</span>
+                            {/* Year Section 2026 */}
+                            <div style={{ marginBottom: '40px' }}>
+                              <h2 style={{
+                                fontFamily: '"Playfair Display", "Georgia", serif',
+                                fontStyle: 'italic',
+                                fontSize: '48px',
+                                fontWeight: '400',
+                                margin: '0 0 20px 0',
+                                color: '#111111',
+                                borderBottom: '1px solid #e5e5e5',
+                                paddingBottom: '8px'
+                              }}>
+                                2026
+                              </h2>
+
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                                {/* Card 1 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>MAR 2026</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>CS Games 2026</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Won 1st place in Web Challenge, 2nd in AI, 3rd in CTF and represented Concordia University.
+                                  </p>
+                                </div>
+
+                                {/* Card 2 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>JAN 2026</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>ConUHacks X Hackathon</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.
+                                  </p>
+                                </div>
+
+                                {/* Card 3 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>MAY 2026</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>Hack the Mountain</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Participated in a hackathon hosted by Polytechnique Montréal and Université de Montréal.
+                                  </p>
+                                </div>
+
+                                {/* Card 4 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>MAY 2026</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>MPC Hacks</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Participated in a hackathon hosted by Polytechnique Montréal, Concordia University, and McGill University.
+                                  </p>
+                                </div>
                               </div>
                             </div>
 
-                            <button 
-                              onClick={() => { playClick(); setActiveBrowserTab("api"); if (stage === 5 && narrationIndex === 19) setNarrationIndex(20); }}
-                              style={{
-                                padding: '6px 14px',
-                                borderRadius: '6px',
-                                background: '#06b6d4',
-                                border: 'none',
-                                color: '#020617',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                fontFamily: 'monospace',
-                                alignSelf: 'start',
-                                marginTop: '8px'
-                              }}
-                            >
-                              Query Achievements API &rarr;
-                            </button>
+                            {/* Year Section 2025 */}
+                            <div style={{ marginBottom: '40px' }}>
+                              <h2 style={{
+                                fontFamily: '"Playfair Display", "Georgia", serif',
+                                fontStyle: 'italic',
+                                fontSize: '48px',
+                                fontWeight: '400',
+                                margin: '0 0 20px 0',
+                                color: '#111111',
+                                borderBottom: '1px solid #e5e5e5',
+                                paddingBottom: '8px'
+                              }}>
+                                2025
+                              </h2>
+
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                                {/* Card 1 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>NOV 2025</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>CyberSci Canada CTF</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Earned award from event sponsor Cineplex and represented Concordia University.
+                                  </p>
+                                </div>
+
+                                {/* Card 2 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>MAR 2025</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>@hack 2025 CTF</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.
+                                  </p>
+                                </div>
+
+                                {/* Card 3 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>FEB 2025</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>ConUHacks IX Hackathon</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Year Section 2024 */}
+                            <div>
+                              <h2 style={{
+                                fontFamily: '"Playfair Display", "Georgia", serif',
+                                fontStyle: 'italic',
+                                fontSize: '48px',
+                                fontWeight: '400',
+                                margin: '0 0 20px 0',
+                                color: '#111111',
+                                borderBottom: '1px solid #e5e5e5',
+                                paddingBottom: '8px'
+                              }}>
+                                2024
+                              </h2>
+
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+                                {/* Card 1 */}
+                                <div style={{ background: '#ffffff', border: '1px solid #e5e5e5', padding: '20px', borderRadius: '2px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                  <span style={{ fontSize: '10px', letterSpacing: '1px', color: '#777777', textTransform: 'uppercase', fontWeight: '600' }}>SEP 2024 - PRESENT</span>
+                                  <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#111111' }}>AlgoTime Member</h3>
+                                  <p style={{ fontSize: '12px', color: '#555555', margin: '4px 0 0 0', lineHeight: '1.5' }}>
+                                    Software Engineering and Computer Science Society (SCS), Concordia University &bull; Actively participating in weekly competitive programming session, tackling LeetCode challenges.
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
                           </div>
+                        )}
+                      </div>
+
+                      {/* 1-on-1 Real Side-Docked DevTools Drawer */}
+                      {showDevTools && (
+                        <div style={{
+                          width: '450px',
+                          background: '#1e1e1e',
+                          borderLeft: '1px solid #2d2d2d',
+                          boxShadow: '-6px 0 24px rgba(0,0,0,0.25)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace',
+                          fontSize: '11px',
+                          color: '#cccccc',
+                          zIndex: 100,
+                          flexShrink: 0
+                        }}>
+                          {/* Chrome DevTools Header Bar */}
+                          <div style={{ display: 'flex', alignItems: 'center', background: '#252526', borderBottom: '1px solid #333333', padding: '0 6px', height: '32px' }}>
+                            <span style={{ padding: '4px 6px', color: '#888888', cursor: 'pointer', fontSize: '12px' }} title="Select an element">↖</span>
+                            <span style={{ padding: '4px 6px', color: '#888888', cursor: 'pointer', fontSize: '12px' }} title="Toggle device toolbar">📱</span>
+                            <div style={{ width: '1px', height: '14px', background: '#3c3c3c', margin: '0 6px' }} />
+                            
+                            <button onClick={() => setDevToolsTab("cookies")} style={{ padding: '6px 10px', background: devToolsTab === "cookies" ? '#1e1e1e' : 'transparent', border: 'none', color: devToolsTab === "cookies" ? '#ffffff' : '#999999', cursor: 'pointer', borderBottom: devToolsTab === "cookies" ? '2px solid #007acc' : '2px solid transparent', fontWeight: devToolsTab === "cookies" ? 'bold' : 'normal' }}>Application</button>
+                            <button onClick={() => setDevToolsTab("console")} style={{ padding: '6px 10px', background: devToolsTab === "console" ? '#1e1e1e' : 'transparent', border: 'none', color: devToolsTab === "console" ? '#ffffff' : '#999999', cursor: 'pointer', borderBottom: devToolsTab === "console" ? '2px solid #007acc' : '2px solid transparent', fontWeight: devToolsTab === "console" ? 'bold' : 'normal' }}>Console</button>
+                            <button onClick={() => setDevToolsTab("elements")} style={{ padding: '6px 10px', background: devToolsTab === "elements" ? '#1e1e1e' : 'transparent', border: 'none', color: devToolsTab === "elements" ? '#ffffff' : '#999999', cursor: 'pointer', borderBottom: devToolsTab === "elements" ? '2px solid #007acc' : '2px solid transparent', fontWeight: devToolsTab === "elements" ? 'bold' : 'normal' }}>Elements</button>
+
+                            <button onClick={() => setShowDevTools(false)} style={{ marginLeft: 'auto', padding: '4px 8px', background: 'transparent', border: 'none', color: '#888888', cursor: 'pointer', fontSize: '13px' }}>✕</button>
+                          </div>
+
+                          {/* Application / Cookies View */}
+                          {devToolsTab === "cookies" && (
+                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                              {/* DevTools Sub-Breadcrumb */}
+                              <div style={{ padding: '10px 14px', background: '#252526', borderBottom: '1px solid #333333', color: '#4ec9b0', fontWeight: 'bold', fontSize: '11px' }}>
+                                Storage › Cookies › https://competitionranker.io
+                              </div>
+
+                              {/* Form Container */}
+                              <div style={{ padding: '14px', background: '#1e1e1e', borderBottom: '1px solid #2d2d2d', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <div style={{ fontSize: '11px', color: '#aaaaaa' }}>Add / Modify Session Cookie:</div>
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center', background: '#2d2d2d', padding: '10px', borderRadius: '4px', border: '1px solid #3c3c3c' }}>
+                                  <input 
+                                    type="text" 
+                                    value={cookieNameInput} 
+                                    onChange={(e) => setCookieNameInput(e.target.value)} 
+                                    placeholder="session_id"
+                                    style={{ background: '#1e1e1e', border: '1px solid #444', color: '#4ade80', padding: '5px 8px', borderRadius: '4px', fontSize: '11px', width: '100px' }}
+                                  />
+                                  <span style={{ color: '#888888' }}>=</span>
+                                  <input 
+                                    type="text" 
+                                    value={cookieValueInput} 
+                                    onChange={(e) => setCookieValueInput(e.target.value)} 
+                                    placeholder="session_59a2df308"
+                                    style={{ flex: 1, background: '#1e1e1e', border: '1px solid #444', color: '#4ade80', padding: '5px 8px', borderRadius: '4px', fontSize: '11px' }}
+                                  />
+                                  <button 
+                                    onClick={() => {
+                                      playClick();
+                                      setCookieInjected(true);
+                                      if (narrationIndex === 13) setNarrationIndex(14);
+                                    }}
+                                    style={{ padding: '6px 14px', background: '#007acc', border: 'none', color: 'white', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '11px', whiteSpace: 'nowrap' }}
+                                  >
+                                    + Inject Cookie
+                                  </button>
+                                </div>
+                              </div>
+
+                              {/* Cookie Table */}
+                              <div style={{ flex: 1, padding: '14px', overflowY: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px', textAlign: 'left', color: '#cccccc' }}>
+                                  <thead>
+                                    <tr style={{ background: '#252526', borderBottom: '1px solid #444' }}>
+                                      <th style={{ padding: '8px' }}>Name</th>
+                                      <th style={{ padding: '8px' }}>Value</th>
+                                      <th style={{ padding: '8px' }}>Domain</th>
+                                      <th style={{ padding: '8px' }}>Path</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {cookieInjected ? (
+                                      <tr style={{ borderBottom: '1px solid #333', color: '#4ade80' }}>
+                                        <td style={{ padding: '8px', fontWeight: 'bold' }}>{cookieNameInput || "session_id"}</td>
+                                        <td style={{ padding: '8px', fontFamily: 'monospace' }}>{cookieValueInput || "session_59a2df308"}</td>
+                                        <td style={{ padding: '8px', color: '#888' }}>.competitionranker.io</td>
+                                        <td style={{ padding: '8px', color: '#888' }}>/</td>
+                                      </tr>
+                                    ) : (
+                                      <tr>
+                                        <td colSpan={4} style={{ padding: '16px 8px', textAlign: 'center', color: '#777777', lineHeight: '1.5' }}>
+                                          No cookies stored for this origin.<br />
+                                          Use form above to inject stolen session cookie.
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
+
+                          {devToolsTab === "console" && (
+                            <div style={{ padding: '14px', color: '#ce9178', fontFamily: 'monospace' }}>
+                              &gt; console.log("CompetitionRanker.io client active");<br />
+                              &gt; [Warn] Session token unauthenticated. Use Application/Cookies to enter cookie.
+                            </div>
+                          )}
+                          {devToolsTab === "elements" && (
+                            <div style={{ padding: '14px', color: '#569cd6', fontFamily: 'monospace' }}>
+                              &lt;div id="app" class="competition-ranker-root"&gt;<br />
+                              &nbsp;&nbsp;&lt;header class="platform-header"&gt;...&lt;/header&gt;<br />
+                              &nbsp;&nbsp;&lt;main class="rankings-feed"&gt;...&lt;/main&gt;<br />
+                              &lt;/div&gt;
+                            </div>
+                          )}
                         </div>
                       )}
+
                     </div>
                   )}
 
@@ -3124,7 +3475,12 @@ export default function DesktopThemePage() {
                         {/* 5. PHOTO THUMBNAILS GRID (SINGLE 1 POST THUMBNAIL) - CLICKING OPENS POST MODAL (IMAGE 2) */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '6px', marginTop: '6px' }}>
                           <div 
-                            onClick={() => setSelectedInstaPost(true)}
+                            onClick={() => {
+                              playClick();
+                              setSelectedInstaPost(true);
+                              setNarrationIndex(8);
+                              setStage(3);
+                            }}
                             style={{ position: 'relative', aspectRatio: '1/1', background: '#121212', borderRadius: '4px', overflow: 'hidden', cursor: 'pointer' }}
                           >
                             <img src="/trops.jpeg" alt="Post 1" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -3327,46 +3683,305 @@ export default function DesktopThemePage() {
               </div>
             )}
 
-            {/* 4. CODE EDITOR WINDOW */}
-            {windows.editor.isOpen && (
+            {/* 4A. SUMMARY INTEL TEXT EDITOR WINDOW */}
+            {windows.summary_editor?.isOpen && (
               <div 
-                className={`desk-window ${activeWindow === "editor" ? "focused" : ""}`}
+                className={`desk-window ${activeWindow === "summary_editor" ? "focused" : ""}`}
                 style={{
-                  display: windows.editor.isMinimized ? 'none' : 'flex',
-                  width: windows.editor.isMaximized ? '100%' : `${windows.editor.w}px`,
-                  height: windows.editor.isMaximized ? '100%' : `${windows.editor.h}px`,
-                  left: windows.editor.isMaximized ? '0' : `${windows.editor.x}px`,
-                  top: windows.editor.isMaximized ? '0' : `${windows.editor.y}px`,
-                  zIndex: windows.editor.zIndex,
+                  display: windows.summary_editor.isMinimized ? 'none' : 'flex',
+                  width: windows.summary_editor.isMaximized ? '100%' : `${windows.summary_editor.w}px`,
+                  height: windows.summary_editor.isMaximized ? '100%' : `${windows.summary_editor.h}px`,
+                  left: windows.summary_editor.isMaximized ? '0' : `${windows.summary_editor.x}px`,
+                  top: windows.summary_editor.isMaximized ? '0' : `${windows.summary_editor.y}px`,
+                  zIndex: windows.summary_editor.zIndex,
                 }}
-                onClick={() => focusWindow("editor")}
+                onClick={() => focusWindow("summary_editor")}
               >
-                <div className="desk-window-header" onMouseDown={(e) => startDrag("editor", e)}>
+                <div className="desk-window-header" onMouseDown={(e) => startDrag("summary_editor", e)}>
                   <div className="desk-window-controls">
-                    <div className="desk-window-dot yellow" onClick={(e) => { e.stopPropagation(); minimizeWindow("editor"); }} onMouseDown={(e) => e.stopPropagation()} title="Minimize">
+                    <div className="desk-window-dot yellow" onClick={(e) => { e.stopPropagation(); minimizeWindow("summary_editor"); }} onMouseDown={(e) => e.stopPropagation()} title="Minimize">
+                      <span>−</span>
+                    </div>
+                  </div>
+                  <span className="desk-window-title">Text Editor - Summary_Intel</span>
+                </div>
+
+                <div className="desk-window-content" style={{ display: 'flex', background: '#070a12' }}>
+                  <div className="desk-editor-tree" style={{ background: '#0a0e1a' }}>
+                    <p style={{ color: 'white', margin: '0 0 10px 0', fontSize: '11px', fontWeight: 'bold' }}>workspace</p>
+                    <p style={{ color: '#14b8a6', margin: 0, cursor: 'pointer', fontSize: '11px', fontWeight: 'bold' }}>
+                      Summary_Intel
+                    </p>
+                  </div>
+
+                  <div className="desk-editor-viewport" style={{ padding: '16px', overflowY: 'auto', flex: 1 }}>
+                    <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#e2e8f0', lineHeight: '1.6', background: '#090d16', padding: '18px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ color: '#38bdf8', fontWeight: 'bold', marginBottom: '4px', fontSize: '14px' }}>Ranjit Singh Dhunna</div>
+                      <div style={{ color: '#94a3b8', marginBottom: '12px' }}>
+                        rs00dhunna@gmail.com &bull; <a href="#" style={{ color: '#38bdf8', textDecoration: 'none' }}>Portfolio</a> &bull; <a href="https://www.linkedin.com/in/ranjit-singh-dhunna-772790307" target="_blank" rel="noreferrer" style={{ color: '#38bdf8', textDecoration: 'none' }}>LinkedIn</a> &bull; <a href="https://github.com/Ranjit-Singh-Dhunna" target="_blank" rel="noreferrer" style={{ color: '#38bdf8', textDecoration: 'none' }}>GitHub</a>
+                      </div>
+
+                      {/* SUMMARY OF SKILLS AND QUALIFICATIONS */}
+                      <div style={{ color: '#4ade80', fontWeight: 'bold', marginTop: '14px', marginBottom: '4px' }}>================================================================================</div>
+                      <div style={{ color: '#4ade80', fontWeight: 'bold', marginBottom: '4px' }}>SUMMARY OF SKILLS AND QUALIFICATIONS</div>
+                      <div style={{ color: '#4ade80', fontWeight: 'bold', marginBottom: '8px' }}>================================================================================</div>
+                      <div style={{ marginBottom: '4px' }}><strong style={{ color: '#38bdf8' }}>Tech Stack & Applications |</strong> Java, JavaScript, Python, HTML, CSS, Git, MongoDB, React.js, Node.js, Express.js, Octave, PostgreSQL, Windows 365, Linux, Mobile, MacOS, Word, Excel, PowerPoint</div>
+                      <div style={{ marginBottom: '4px' }}><strong style={{ color: '#38bdf8' }}>Methodologies |</strong> Lean Engineering/Manufacturing, Six Sigma, DMAIC, Agile and Scrum, Project Management, Kaizen Improvement, Change Management</div>
+                      <div style={{ marginBottom: '12px' }}><strong style={{ color: '#38bdf8' }}>Certificates |</strong> “Technical Communication and Soft Skills for Engineers” by Alex Genadinik &bull; “Introduction to Technical Writing” by Dr. Katharina Grimm &bull; “Human Centred Artificial Intelligence” by Deakin University &bull; “Ethical Hacking in IoT and CyberSpace” and "Artificial Intelligence and its Marketing” by UPES etalk</div>
+
+                      {/* EDUCATION */}
+                      <div style={{ color: '#fbbf24', fontWeight: 'bold', marginTop: '14px', marginBottom: '4px' }}>================================================================================</div>
+                      <div style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '4px' }}>EDUCATION</div>
+                      <div style={{ color: '#fbbf24', fontWeight: 'bold', marginBottom: '8px' }}>================================================================================</div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Bachelor of Engineering - Software Engineering Co-op</span>
+                        <span>Jan 2024 - Present</span>
+                      </div>
+                      <div style={{ color: '#94a3b8', fontStyle: 'italic', marginBottom: '4px' }}>Concordia University, Montreal, QC</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Member of the Institute for Co-operative Education</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '12px' }}>&bull; Relevant Courses: Data Structures and Algorithms, Web Programming, Object-Oriented Programming, Formal Methods for Software Engineering, Databases, Big Data Analysis, Networks and Protocols.</div>
+
+                      {/* WORK EXPERIENCE */}
+                      <div style={{ color: '#c084fc', fontWeight: 'bold', marginTop: '14px', marginBottom: '4px' }}>================================================================================</div>
+                      <div style={{ color: '#c084fc', fontWeight: 'bold', marginBottom: '4px' }}>WORK EXPERIENCE</div>
+                      <div style={{ color: '#c084fc', fontWeight: 'bold', marginBottom: '8px' }}>================================================================================</div>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Software Intern | Immense Star Solutions</span>
+                        <span>May 2026 - Aug 2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Contributed to developing and maintaining web APIs using Django and Django REST Framework, supporting seamless communication between backend and frontend teams.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '10px' }}>&bull; Collaborated with engineering team to manage databases, write reliable test cases, and follow version control best practices using Git in a remote work environment.</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Fullstack & Applied AI Developer | SofiaPulse</span>
+                        <span>Dec 2025 - Jan 2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Developed a full-stack AI-powered advertising platform, building an interactive editor that enables users to generate and integrate GenAI images directly into custom ad templates.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '12px' }}>&bull; Designed and made responsive frontend ad templates focusing on UI/UX design for advertisers.</div>
+
+                      {/* PROJECTS */}
+                      <div style={{ color: '#f43f5e', fontWeight: 'bold', marginTop: '14px', marginBottom: '4px' }}>================================================================================</div>
+                      <div style={{ color: '#f43f5e', fontWeight: 'bold', marginBottom: '4px' }}>PROJECTS</div>
+                      <div style={{ color: '#f43f5e', fontWeight: 'bold', marginBottom: '8px' }}>================================================================================</div>
+
+                      {/* Project 1 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Predicting Customer Churn (Academic and Team) - Python, scikit-learn, pandas, seaborn [Repo link]</span>
+                        <span>2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Built an end-to-end churn prediction pipeline on 1,001 StreamFlex subscriber records, training a Decision Tree Classifier tuned via GridSearchCV across 224 hyperparameter combinations, achieving 81.5% accuracy and 92.75% recall on a held-out test set.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Conducted full EDA with 14 custom visualisations and surfaced the top 3 churn drivers: complaint volume, payment issues and membership tier, translating model findings into 3 concrete business recommendations targeting retention.</div>
+
+                      {/* Project 2 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Skin Lesion CNN Classifier (Academic and Team) - PyTorch, ResNet-18, VGG-16, MobileNetV2 [Repo link]</span>
+                        <span>2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Engineered a full deep learning pipeline to classify skin lesions across 3 dermoscopic datasets (ISIC 2017, HAM10000, DERM12345), benchmarking 3 CNN architectures: ResNet-18, VGG-16 and MobileNetV2, in both from-scratch and transfer learning modes for early melanoma detection.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Implemented Grad-CAM visual explainability, inverse-frequency weighted loss to handle class imbalance across up to 40 lesion categories, and a YAML-driven experiment system enabling reproducible, config-controlled training runs.</div>
+
+                      {/* Project 3 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Health Companion App (Academic) - Figma, Mixed-Methods Research [Repo link]</span>
+                        <span>2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Spearheaded mixed-methods research with 60 participants to engineer an Adaptive UI system with three distinct interface modes, successfully bridging the tech-literacy gap for senior users.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Developed OCR-based onboarding flow in Figma, optimizing patient logistics to save an average of 2 hours in travel time while ensuring 100% WCAG AA accessibility compliance with high-fidelity prototype.</div>
+
+                      {/* Project 4 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>FLUX: Collaborative Scheduling App (Academic and Team) - React, TypeScript, Supabase [Demo link]</span>
+                        <span>2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Developed scheduling platform as a team of 5, leveraging Gemini AI to automate the extraction of structured availability from timetable screenshots, reducing manual data entry and coordination effort.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Utilized dimensional graph analysis to model cognitive load and peak focus hours, enabling 83% of users to finalize meeting times in under 5 minutes during a 42-participant validation study.</div>
+
+                      {/* Project 5 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>MediVault (Hackathon) - OpenRouter, Dialogue, MongoDB, ElevenLabs, Snowflake, Vultr, Solana [Demo link]</span>
+                        <span>2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Built a decentralized marketplace enabling patients to securely digitize, own, and monetize their medical records, as a team of 4.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Integrated OpenRouter and ElevenLabs for AI engagement, supported by Solana for crypto and Snowflake and MongoDB for secure data infrastructure, Vultr for privacy layer.</div>
+
+                      {/* Project 6 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Events & Ticketing App (Academic and Team) - React, TypeScript, Supabase (PostgreSQL) [Demo link]</span>
+                        <span>2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Lead 7 person team as Scrum Master and Lead Developer to build campus events and ticketing platform.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Developed app enabling event discovery, QR code ticketing, social connections, organizer analytics dashboards, and admin moderation tools.</div>
+
+                      {/* Project 7 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>INTERBU: AI Interview Coach (Personal) - React, Flask, Whisper [Demo link]</span>
+                        <span>2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Built an AI interview coach for personalized, resume and job description-based practice app.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Added local data storage and offline LLM fallback for privacy and reliability.</div>
+
+                      {/* Project 8 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>DRIP GENIUS: Outfit Recommendation System (Personal) - Roboflow, K-means Clustering [Demo link]</span>
+                        <span>2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Fashion recommendation app to analyze clothing images and generate personalized outfit suggestions.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Implemented computer vision-based clothing detection, K-means colour analysis, and responsive UI.</div>
+
+                      {/* Project 9 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Code Buddy: Code Review Tool (Personal) - React, Vite, Node.js, Express [Demo link]</span>
+                        <span>2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Built an AI-powered code review tool, providing instant, syntax-aware feedback for learners.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Integrated a live code editor and markdown-rendered responses for beginner-friendly code guidance.</div>
+
+                      {/* Project 10 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Universal Resume Parser (Personal) - Python, Ollama LLM, PDFPlumber, LangChain [Repo link]</span>
+                        <span>2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Built a resume parser using Ollama LLM to extract employability-specific data from any resume.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Implemented hyperlink detection, multi-domain support, and context-aware parsing for tech, business, healthcare, and creative resumes.</div>
+
+                      {/* Project 11 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Hospital Database Management System (Academic and Team) - PostgreSQL and MongoDB</span>
+                        <span>2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Developed hospital database management system handling patient records, appointments, staff schedules, billing, and medical histories.</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '8px' }}>&bull; Designed 2 flexible architectures for both SQL and NoSQL databases.</div>
+
+                      {/* Project 12 */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>Click2Bill: Automated Invoice System (Personal) - Google Sheets, Apps Script, PDF-Email Integration [Demo link]</span>
+                        <span>2024</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px' }}>&bull; Developed a service request and invoicing system, streamlining form submissions, invoice generation, and email delivery used by Real User (Shop owner).</div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '12px' }}>&bull; Implemented end-to-end workflow automation with searchable records, timestamped logs, and PDF invoice templates, reducing manual data entry by 70%.</div>
+
+                      {/* HACKATHONS */}
+                      <div style={{ color: '#06b6d4', fontWeight: 'bold', marginTop: '14px', marginBottom: '4px' }}>================================================================================</div>
+                      <div style={{ color: '#06b6d4', fontWeight: 'bold', marginBottom: '4px' }}>HACKATHONS & COMPETITIONS</div>
+                      <div style={{ color: '#06b6d4', fontWeight: 'bold', marginBottom: '8px' }}>================================================================================</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>CS Games 2026</span>
+                        <span>Mar 2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '6px' }}>&bull; Won 1st place in Web Challenge, 2nd in AI, 3rd in CTF and represented Concordia University.</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>ConUHacks X Hackathon</span>
+                        <span>Jan 2026</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '6px' }}>&bull; Participated in Quebec’s largest hackathon, exceeding 36 hours while competing against over 850 participants.</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>CyberSci Canada CTF</span>
+                        <span>Nov 2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '6px' }}>&bull; Earned award from event sponsor Cineplex and represented Concordia University.</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>@hack 2025 CTF</span>
+                        <span>Mar 2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '6px' }}>&bull; Ranked 6th in Quebec’s largest CTF, exceeding 36 hours while competing against over 600 participants.</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>ConUHacks IX Hackathon</span>
+                        <span>Feb 2025</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '12px' }}>&bull; Participated in Quebec’s largest hackathon, exceeding 24 hours while competing against over 800 participants.</div>
+
+                      {/* PROFESSIONAL ASSOCIATIONS */}
+                      <div style={{ color: '#a855f7', fontWeight: 'bold', marginTop: '14px', marginBottom: '4px' }}>================================================================================</div>
+                      <div style={{ color: '#a855f7', fontWeight: 'bold', marginBottom: '4px' }}>PROFESSIONAL ASSOCIATIONS</div>
+                      <div style={{ color: '#a855f7', fontWeight: 'bold', marginBottom: '8px' }}>================================================================================</div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f8fafc', fontWeight: 'bold' }}>
+                        <span>AlgoTime Member | Software Engineering and Computer Science Society (SCS)</span>
+                        <span>Sep 2024 - Present</span>
+                      </div>
+                      <div style={{ color: '#cbd5e1', paddingLeft: '10px', marginBottom: '14px' }}>&bull; Concordia University — Actively participating in weekly competitive programming sessions, tackling LeetCode challenges.</div>
+
+                      <div style={{ color: '#38bdf8', fontWeight: 'bold' }}>================================================================================</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Right Resize Handle */}
+                <div 
+                  onMouseDown={(e) => startResize("summary_editor", e)}
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    bottom: 0,
+                    width: '20px',
+                    height: '20px',
+                    cursor: 'nwse-resize',
+                    zIndex: 1000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(255,255,255,0.05)',
+                    borderTopLeftRadius: '4px'
+                  }}
+                  title="Drag to resize window"
+                >
+                  <svg viewBox="0 0 16 16" width="10" height="10" fill="rgba(255,255,255,0.7)">
+                    <path d="M14 14H10V12H14V14ZM14 10H6V8H14V10ZM14 6H2V4H14V6Z" />
+                  </svg>
+                </div>
+              </div>
+            )}
+
+            {/* 4B. NOTE TEXT EDITOR WINDOW */}
+            {windows.note_editor?.isOpen && (
+              <div 
+                className={`desk-window ${activeWindow === "note_editor" ? "focused" : ""}`}
+                style={{
+                  display: windows.note_editor.isMinimized ? 'none' : 'flex',
+                  width: windows.note_editor.isMaximized ? '100%' : `${windows.note_editor.w}px`,
+                  height: windows.note_editor.isMaximized ? '100%' : `${windows.note_editor.h}px`,
+                  left: windows.note_editor.isMaximized ? '0' : `${windows.note_editor.x}px`,
+                  top: windows.note_editor.isMaximized ? '0' : `${windows.note_editor.y}px`,
+                  zIndex: windows.note_editor.zIndex,
+                }}
+                onClick={() => focusWindow("note_editor")}
+              >
+                <div className="desk-window-header" onMouseDown={(e) => startDrag("note_editor", e)}>
+                  <div className="desk-window-controls">
+                    <div className="desk-window-dot yellow" onClick={(e) => { e.stopPropagation(); minimizeWindow("note_editor"); }} onMouseDown={(e) => e.stopPropagation()} title="Minimize">
                       <span>−</span>
                     </div>
                   </div>
                   <span className="desk-window-title">Text Editor - Note.txt</span>
                 </div>
 
-                <div className="desk-window-content" style={{ display: 'flex' }}>
-                  <div className="desk-editor-tree">
-                    <p style={{ color: 'white', margin: '0 0 10px 0' }}>workspace</p>
-                    <p style={{ color: '#14b8a6', margin: 0, cursor: 'pointer' }}>📄 Note.txt</p>
+                <div className="desk-window-content" style={{ display: 'flex', background: '#070a12' }}>
+                  <div className="desk-editor-tree" style={{ background: '#0a0e1a' }}>
+                    <p style={{ color: 'white', margin: '0 0 10px 0', fontSize: '11px', fontWeight: 'bold' }}>workspace</p>
+                    <p style={{ color: '#14b8a6', margin: 0, cursor: 'pointer', fontSize: '11px', fontWeight: 'bold' }}>
+                      Note.txt
+                    </p>
                   </div>
 
-                  <div className="desk-editor-viewport">
-                    {narrationIndex >= 21 ? (
-                      <div className="desk-editor-note">
-                        <p style={{ color: 'rgba(255,255,255,0.4)', margin: '0 0 6px 0', fontWeight: 'bold' }}>&bull; Note.txt</p>
-                        <p style={{ color: '#f97316', fontWeight: 'bold', margin: '0 0 16px 0' }}>// INTERCONNECTION TERMINATED BY REMOTE SYSTEM OWNER</p>
-                        
-                        <p style={{ margin: '0 0 8px 0' }}>Hey there, Hacker!</p>
-                        <p style={{ margin: '0 0 8px 0' }}>I noticed you remote into my AnyDesk desktop session, harvested clipboard history buffers, extracted SQLite cookies, and read my breach dossier logs.</p>
-                        <p style={{ margin: '0 0 16px 0' }}>You did an excellent job. I actually designed this entire workspace as an interactive cybersecurity-themed portfolio to showcase my full-stack and deep learning engineering skills.</p>
-                        
-                        <div className="desk-editor-buttons">
+                  <div className="desk-editor-viewport" style={{ padding: '16px', overflowY: 'auto', flex: 1 }}>
+                    <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#e2e8f0', lineHeight: '1.6', background: '#090d16', padding: '18px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div style={{ color: '#38bdf8', fontWeight: 'bold', marginBottom: '8px', fontSize: '13px' }}>Note.txt</div>
+                      
+                      <div style={{ fontSize: '12px', color: '#e2e8f0', lineHeight: '1.6', whiteSpace: 'pre-wrap', marginBottom: '16px' }}>
+                        {fullNoteText.slice(0, typedNoteLength)}
+                        {typedNoteLength < fullNoteText.length && (
+                          <span style={{ color: '#14b8a6', fontWeight: 'bold', marginLeft: '2px', animation: 'blink 0.8s infinite' }}>|</span>
+                        )}
+                      </div>
+
+                      {typedNoteLength >= fullNoteText.length && (
+                        <div className="desk-editor-buttons" style={{ animation: 'fadeIn 0.5s ease-in', marginTop: '16px' }}>
                           <div className="desk-editor-btn-row">
                             <span style={{ color: 'white', fontSize: '11px' }}>👔 Professional network:</span>
                             <a 
@@ -3382,64 +3997,41 @@ export default function DesktopThemePage() {
                           <div className="desk-editor-btn-row">
                             <span style={{ color: 'white', fontSize: '11px' }}>📧 Direct contact:</span>
                             <a 
-                              href="mailto:ranjit@dhunna.com"
+                              href="mailto:rs00dhunna@gmail.com"
                               className="desk-editor-link-btn"
                               style={{ border: '1px solid #14b8a6', color: '#14b8a6' }}
                             >
-                              ranjit@dhunna.com
-                            </a>
-                          </div>
-                          <div className="desk-editor-btn-row">
-                            <span style={{ color: 'white', fontSize: '11px' }}>🐙 Public code repos:</span>
-                            <a 
-                              href="https://github.com/Ranjit-Singh-Dhunna" 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="desk-editor-link-btn"
-                              style={{ background: '#27272a', color: '#14b8a6', border: '1px solid rgba(255,255,255,0.05)' }}
-                            >
-                              GitHub Profile
+                              rs00dhunna@gmail.com
                             </a>
                           </div>
                         </div>
-                        <p style={{ margin: '16px 0 4px 0', fontWeight: 'bold', color: 'white' }}>Cheers,</p>
-                        <p style={{ margin: 0, fontWeight: 'bold', color: 'white', fontSize: '13px' }}>Ranjit Singh Dhunna</p>
-                      </div>
-                    ) : (
-                      <div style={{ fontFamily: 'monospace', fontSize: '11px', color: '#9cdcfe', lineHeight: '1.5' }}>
-                        <span className="code-comment">// Text Editor - Active Workspace</span><br />
-                        <span className="code-keyword">var</span> taskAreaCounter = <span className="code-number">0</span>;<br />
-                        <span className="code-keyword">var</span> timeDivIdCounter = <span className="code-number">0</span>;<br />
-                        <span className="code-keyword">var</span> focusedTextArea;<br />
-                        <span className="code-keyword">var</span> outputTime;<br /><br />
-                        <span className="code-keyword">function</span> <span className="code-function">textToTime</span>(input) &#125;<br />
-                        &nbsp;&nbsp;<span className="code-keyword">var</span> pm = <span className="code-keyword">false</span>;<br />
-                        &nbsp;&nbsp;<span className="code-keyword">var</span> colonLocation;<br />
-                        &nbsp;&nbsp;<span className="code-keyword">var</span> inputArray = Array.from(input);<br />
-                        &nbsp;&nbsp;<span className="code-keyword">for</span> (<span className="code-keyword">let</span> index = <span className="code-number">0</span>; index &lt; inputArray.length; index++) &#123;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">const</span> element = inputArray[index];<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">if</span> (!isNaN(inputArray[index])) &#123;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">switch</span> (<span className="code-keyword">true</span>) &#123;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">case</span> (inputArray[index] === <span className="code-string">'p'</span> || inputArray[index] === <span className="code-string">'P'</span>):<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pm = <span className="code-keyword">true</span>;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputArray.splice(index, <span className="code-number">1</span>);<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index = index - <span className="code-number">1</span>;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">break</span>;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">case</span> (inputArray[index] === <span className="code-string">'a'</span> || inputArray[index] === <span className="code-string">'A'</span>):<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inputArray.splice(index, <span className="code-number">1</span>);<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index = index - <span className="code-number">1</span>;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">break</span>;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">case</span> (inputArray[index] === <span className="code-string">':'</span>):<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;colonLocation = index;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span className="code-keyword">break</span>;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
-                        &nbsp;&nbsp;&nbsp;&nbsp;&#125;<br />
-                        &nbsp;&nbsp;&#125;<br />
-                        &nbsp;&nbsp;&#125;<br />
-                        &#125;
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
+                </div>
+
+                {/* Bottom Right Resize Handle */}
+                <div 
+                  onMouseDown={(e) => startResize("note_editor", e)}
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    bottom: 0,
+                    width: '20px',
+                    height: '20px',
+                    cursor: 'nwse-resize',
+                    zIndex: 1000,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(255,255,255,0.05)',
+                    borderTopLeftRadius: '4px'
+                  }}
+                  title="Drag to resize window"
+                >
+                  <svg viewBox="0 0 16 16" width="10" height="10" fill="rgba(255,255,255,0.7)">
+                    <path d="M14 14H10V12H14V14ZM14 10H6V8H14V10ZM14 6H2V4H14V6Z" />
+                  </svg>
                 </div>
               </div>
             )}
