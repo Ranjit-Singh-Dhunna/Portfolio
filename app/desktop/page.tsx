@@ -83,12 +83,14 @@ export default function DesktopThemePage() {
   const [instaPostImgIndex, setInstaPostImgIndex] = useState<number>(0);
   const [instaPostLiked, setInstaPostLiked] = useState<boolean>(false);
   const [instaComments, setInstaComments] = useState<Array<{ user: string; text: string }>>([
-    { user: "alex_dev", text: "Huge congrats Ranjit! Amazing work 🔥" },
-    { user: "conu_hacks", text: "Proud of you! Keep killing it 🚀" },
-    { user: "sofia_pulse_team", text: "Awesome milestones! 👏" }
+    { user: "K_preet", text: "15 years with zero leaves? Bro's attendance aura is unmatched 🔥" },
+    { user: "deep_ren101", text: "Bro was coding in QBasic, HTML, and CSS in 4th grade, then hopped on Java, Python, and JS by 6th grade. Peak dev grind." },
+    { user: "mxn_shx", text: "Lowkey miss our LeetCode grind sessions from school, not gonna lie." }
   ]);
   const [newCommentInput, setNewCommentInput] = useState<string>("");
   const [selectedInstaPost, setSelectedInstaPost] = useState<boolean>(false);
+  const [githubTab, setGithubTab] = useState<string>("repositories");
+  const [selectedRepo, setSelectedRepo] = useState<any | null>(null);
   
   // Dragging state
   const [dragWindow, setDragWindow] = useState<string | null>(null);
@@ -2399,31 +2401,435 @@ export default function DesktopThemePage() {
                   )}
 
                   {activeBrowserTab === "github" && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', fontSize: '12px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '12px', fontFamily: 'monospace' }}>
-                        <span style={{ fontSize: '28px' }}>🐙</span>
-                        <div>
-                          <h2 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0 }}>Ranjit-Singh-Dhunna</h2>
-                          <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', margin: 0 }}>Developer profile on GitHub (11 public repositories)</p>
+                    /* 1-TO-1 EXACT GITHUB PROFILE & REPOSITORIES PAGE REPLICA */
+                    <div style={{ background: '#0d1117', color: '#c9d1d9', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif', minHeight: '100%', margin: '-16px', padding: 0 }}>
+                      
+                      {/* Top Header Bar */}
+                      <div style={{ background: '#010409', borderBottom: '1px solid #30363d', padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                          <span style={{ fontSize: '18px', color: '#8b949e', cursor: 'pointer' }}>☰</span>
+                          <svg viewBox="0 0 16 16" width="24" height="24" fill="#f0f6fc">
+                            <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/>
+                          </svg>
+                          <span style={{ fontSize: '14px', fontWeight: '600', color: '#f0f6fc' }}>Ranjit-Singh-Dhunna</span>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <div style={{ background: '#0d1117', border: '1px solid #30363d', borderRadius: '6px', padding: '5px 12px', display: 'flex', alignItems: 'center', gap: '10px', width: '220px' }}>
+                            <span style={{ fontSize: '13px', color: '#8b949e' }}>🔍 Type <kbd style={{ background: '#21262d', padding: '1px 4px', borderRadius: '3px', border: '1px solid #30363d', fontSize: '10px' }}>/</kbd> to search</span>
+                          </div>
+                          <span style={{ color: '#8b949e', fontSize: '13px', cursor: 'pointer' }}>+ ▾</span>
+                          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#21262d', color: '#58a6ff', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px' }}>RD</div>
                         </div>
                       </div>
 
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', fontFamily: 'monospace', fontSize: '11px' }}>
-                        {[
-                          { name: "Predicting-Churn-DTC-RFC", tag: "Machine Learning · Python", desc: "Predicting customer churn using Decision Tree & Random Forest models." },
-                          { name: "skin-lesion-cnn", tag: "Deep Learning · PyTorch", desc: "Convolutional Neural Network classification model for skin lesion diagnosis." },
-                          { name: "HEALTH-COMPANION-APP-", tag: "Mobile App · Wellness", desc: "Visual mobile health dashboard and tracker designed for patients." },
-                          { name: "Events-TicketingApp", tag: "Full Stack · JS & CSS", desc: "E-Commerce web platform for concert tickets, orders, and payment integrations." },
-                          { name: "Flux", tag: "Productivity · Next.js", desc: "Interactive task scheduling board and timeline interface." },
-                          { name: "Outfit-Recommendation-System", tag: "AI · Fashion Tech", desc: "Drip Genius AI outfit advisor using computer vision embeddings." }
-                        ].map((repo, idx) => (
-                          <div key={idx} style={{ padding: '12px', background: 'rgba(2,6,23,0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <h4 style={{ color: '#22d3ee', fontWeight: 'bold', margin: 0, textDecoration: 'underline', cursor: 'pointer' }}>{repo.name}</h4>
-                            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px', margin: 0 }}>{repo.tag}</p>
-                            <p style={{ color: 'rgba(255,255,255,0.7)', margin: '4px 0 0 0' }}>{repo.desc}</p>
-                          </div>
-                        ))}
+                      {/* Sub-Header Navigation Tabs */}
+                      <div style={{ background: '#010409', borderBottom: '1px solid #30363d', padding: '0 24px', display: 'flex', gap: '24px', fontSize: '14px' }}>
+                        <div style={{ padding: '12px 0', color: '#8b949e', cursor: 'default', display: 'flex', alignItems: 'center' }}>
+                          <span>Overview</span>
+                        </div>
+
+                        <div 
+                          onClick={() => setSelectedRepo(null)}
+                          style={{ padding: '12px 0', borderBottom: '2px solid #f78166', color: '#f0f6fc', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                        >
+                          <span>Repositories</span>
+                        </div>
+
+                        <div style={{ padding: '12px 0', color: '#8b949e', cursor: 'default', display: 'flex', alignItems: 'center' }}>
+                          <span>Projects</span>
+                        </div>
+
+                        <div style={{ padding: '12px 0', color: '#8b949e', cursor: 'default', display: 'flex', alignItems: 'center' }}>
+                          <span>Packages</span>
+                        </div>
+
+                        <div style={{ padding: '12px 0', color: '#8b949e', cursor: 'default', display: 'flex', alignItems: 'center' }}>
+                          <span>Stars</span>
+                        </div>
                       </div>
+
+                      {/* Main Profile Grid View */}
+                      <div style={{ padding: '24px', display: 'flex', gap: '24px' }}>
+                        
+                        {/* Left Sidebar */}
+                        <div style={{ width: '260px', display: 'flex', flexDirection: 'column', gap: '16px', flexShrink: 0 }}>
+                          {/* Circular Avatar */}
+                          <div style={{ position: 'relative', width: '230px', height: '230px' }}>
+                            <div style={{ width: '230px', height: '230px', borderRadius: '50%', background: 'linear-gradient(135deg, #1e293b, #0f172a)', border: '1px solid #30363d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '72px', fontWeight: 'bold', color: '#58a6ff' }}>
+                              RD
+                            </div>
+                            <div style={{ position: 'absolute', bottom: '10px', right: '10px', width: '32px', height: '32px', borderRadius: '50%', background: '#21262d', border: '1px solid #30363d', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>
+                              🟡
+                            </div>
+                          </div>
+
+                          {/* Profile Titles */}
+                          <div>
+                            <h1 style={{ fontSize: '20px', fontWeight: '600', color: '#f0f6fc', margin: 0 }}>Ranjit Singh Dhunna</h1>
+                            <p style={{ fontSize: '14px', color: '#8b949e', margin: '2px 0 0 0' }}>Ranjit-Singh-Dhunna</p>
+                          </div>
+
+                          {/* Followers */}
+                          <div style={{ fontSize: '13px', color: '#8b949e', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <span>👥</span>
+                            <span style={{ color: '#f0f6fc', fontWeight: '600' }}>2</span> followers &bull; <span style={{ color: '#f0f6fc', fontWeight: '600' }}>0</span> following
+                          </div>
+
+                          {/* Details Links */}
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', color: '#c9d1d9' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span>✉️</span>
+                              <span>rs00dhunna@gmail.com</span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span>🔗</span>
+                              <a href="https://ranjitsinghdhunna.dev/" target="_blank" rel="noreferrer" style={{ color: '#58a6ff', textDecoration: 'none' }}>https://ranjitsinghdhunna.dev/</a>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span>💼</span>
+                              <span style={{ color: '#58a6ff' }}>in/ranjit-singh-dhunna-772790307</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Content Column */}
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                          
+                          {selectedRepo ? (
+                            /* REPOSITORY DETAIL VIEW WITH UNCLICKABLE FILES & README */
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                              {/* Breadcrumb Header */}
+                              <div style={{ borderBottom: '1px solid #30363d', paddingBottom: '12px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
+                                  <span style={{ color: '#58a6ff', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setSelectedRepo(null)}>Ranjit-Singh-Dhunna</span>
+                                  <span style={{ color: '#8b949e' }}>/</span>
+                                  <span style={{ color: '#f0f6fc', fontWeight: 'bold' }}>{selectedRepo.name}</span>
+                                  <span style={{ border: '1px solid #30363d', color: '#8b949e', borderRadius: '12px', padding: '1px 8px', fontSize: '12px' }}>Public</span>
+                                </div>
+                              </div>
+
+                              {/* Unclickable Files and Folder Table */}
+                              <div style={{ background: '#0d1117', border: '1px solid #30363d', borderRadius: '6px', overflow: 'hidden' }}>
+                                <div style={{ background: '#161b22', padding: '10px 16px', borderBottom: '1px solid #30363d', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', color: '#8b949e' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#30363d', color: '#58a6ff', fontSize: '9px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>RD</div>
+                                    <span style={{ color: '#c9d1d9', fontWeight: '600' }}>Ranjit-Singh-Dhunna</span>
+                                    <span>Initial repository release and documentation</span>
+                                  </div>
+                                  <span>{selectedRepo.year}</span>
+                                </div>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', fontSize: '13px' }}>
+                                  {[
+                                    { icon: "📁", name: "src", msg: "Core source code implementation", time: "2 weeks ago" },
+                                    { icon: "📁", name: "docs", msg: "Add technical specifications & research metrics", time: "1 month ago" },
+                                    { icon: "📁", name: "config", msg: "Add environment configuration schemas", time: "3 weeks ago" },
+                                    { icon: "📄", name: ".gitignore", msg: "Initial gitignore rules", time: "2 months ago" },
+                                    { icon: "📄", name: "README.md", msg: "Update detailed project overview", time: "3 days ago" },
+                                    { icon: "📄", name: selectedRepo.tech.includes("Python") ? "requirements.txt" : "package.json", msg: "Configure build dependencies", time: "1 month ago" }
+                                  ].map((f, idx) => (
+                                    <div key={idx} style={{ padding: '8px 16px', borderBottom: idx < 5 ? '1px solid #21262d' : 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#c9d1d9' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '220px' }}>
+                                        <span>{f.icon}</span>
+                                        <span style={{ color: f.icon === "📁" ? "#58a6ff" : "#c9d1d9" }}>{f.name}</span>
+                                      </div>
+                                      <div style={{ flex: 1, color: '#8b949e', fontSize: '12px' }}>{f.msg}</div>
+                                      <div style={{ color: '#8b949e', fontSize: '12px' }}>{f.time}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* README.md Container */}
+                              <div style={{ background: '#0d1117', border: '1px solid #30363d', borderRadius: '6px', padding: '20px' }}>
+                                <div style={{ borderBottom: '1px solid #30363d', paddingBottom: '8px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span>📖</span>
+                                  <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#f0f6fc' }}>README.md</span>
+                                </div>
+
+                                <h1 style={{ fontSize: '22px', fontWeight: 'bold', color: '#f0f6fc', margin: '0 0 8px 0' }}>{selectedRepo.name}</h1>
+                                
+                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px' }}>
+                                  <span style={{ background: '#1f6beb', color: 'white', borderRadius: '12px', padding: '2px 10px', fontSize: '11px', fontWeight: 'bold' }}>{selectedRepo.badge}</span>
+                                  <span style={{ background: '#238636', color: 'white', borderRadius: '12px', padding: '2px 10px', fontSize: '11px', fontWeight: 'bold' }}>{selectedRepo.year}</span>
+                                  <span style={{ background: '#30363d', color: '#c9d1d9', borderRadius: '12px', padding: '2px 10px', fontSize: '11px' }}>{selectedRepo.tech}</span>
+                                </div>
+
+                                <div style={{ fontSize: '13px', lineHeight: '1.6', color: '#c9d1d9', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                  {selectedRepo.bullets.map((b: string, idx: number) => (
+                                    <div key={idx} style={{ display: 'flex', gap: '8px' }}>
+                                      <span style={{ color: '#58a6ff' }}>•</span>
+                                      <span>{b}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            /* 14 REPOSITORIES LIST VIEW */
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                              
+                              {/* Repository Search & Filter Controls */}
+                              <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid #30363d', paddingBottom: '16px' }}>
+                                <input 
+                                  type="text"
+                                  placeholder="Find a repository..."
+                                  style={{ flex: 1, background: '#0d1117', border: '1px solid #30363d', borderRadius: '6px', padding: '6px 12px', color: '#c9d1d9', fontSize: '13px', outline: 'none' }}
+                                />
+                                <button style={{ background: '#21262d', border: '1px solid #30363d', borderRadius: '6px', padding: '6px 12px', color: '#c9d1d9', fontSize: '13px', cursor: 'pointer' }}>Type ▾</button>
+                                <button style={{ background: '#21262d', border: '1px solid #30363d', borderRadius: '6px', padding: '6px 12px', color: '#c9d1d9', fontSize: '13px', cursor: 'pointer' }}>Language ▾</button>
+                                <button style={{ background: '#21262d', border: '1px solid #30363d', borderRadius: '6px', padding: '6px 12px', color: '#c9d1d9', fontSize: '13px', cursor: 'pointer' }}>Sort ▾</button>
+                                <button style={{ background: '#238636', border: 'none', borderRadius: '6px', padding: '6px 16px', color: 'white', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}>New</button>
+                              </div>
+
+                              {/* Repositories List (14 Full Repos) */}
+                              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                {[
+                                  {
+                                    name: "Predicting Customer Churn",
+                                    badge: "Academic and Team",
+                                    tech: "Python, scikit-learn, pandas, seaborn",
+                                    year: "2026",
+                                    type: "Repo link",
+                                    lang: "Python",
+                                    langColor: "#3572A5",
+                                    bullets: [
+                                      "Built an end-to-end churn prediction pipeline on 1,001 StreamFlex subscriber records, training a DecisionTreeClassifier tuned via GridSearchCV across 224 hyperparameter combinations, achieving 81.5% accuracy and 92.75% recall on a held-out test set.",
+                                      "Conducted full EDA with 14 custom visualisations and surfaced the top 3 churn drivers: complaint volume, payment issues and membership tier, translating model findings into 3 concrete business recommendations targeting retention."
+                                    ]
+                                  },
+                                  {
+                                    name: "Skin Lesion CNN Classifier",
+                                    badge: "Academic and Team",
+                                    tech: "PyTorch, ResNet-18, VGG-16, MobileNetV2",
+                                    year: "2026",
+                                    type: "Repo link",
+                                    lang: "Python",
+                                    langColor: "#3572A5",
+                                    bullets: [
+                                      "Engineered a full deep learning pipeline to classify skin lesions across 3 dermoscopic datasets (ISIC 2017, HAM10000, DERM12345), benchmarking 3 CNN architectures: ResNet-18, VGG-16 and MobileNetV2, in both from-scratch and transfer learning modes for early melanoma detection.",
+                                      "Implemented Grad-CAM visual explainability, inverse-frequency weighted loss to handle class imbalance across up to 40 lesion categories, and a YAML-driven experiment system enabling reproducible, config-controlled training runs."
+                                    ]
+                                  },
+                                  {
+                                    name: "Health Companion App",
+                                    badge: "Academic",
+                                    tech: "Figma, Mixed-Methods Research",
+                                    year: "2026",
+                                    type: "Repo link",
+                                    lang: "Figma",
+                                    langColor: "#ea4c89",
+                                    bullets: [
+                                      "Spearheaded mixed-methods research with 60 participants to engineer an Adaptive UI system with three distinct interface modes, successfully bridging the tech-literacy gap for senior users.",
+                                      "Developed OCR-based onboarding flow in Figma, optimizing patient logistics to save an average of 2 hours in travel time while ensuring 100% WCAG AA accessibility compliance with high-fidelity prototype."
+                                    ]
+                                  },
+                                  {
+                                    name: "FLUX: Collaborative Scheduling App",
+                                    badge: "Academic and Team",
+                                    tech: "React, TypeScript, Supabase",
+                                    year: "2026",
+                                    type: "Demo link",
+                                    lang: "TypeScript",
+                                    langColor: "#3178c6",
+                                    bullets: [
+                                      "Developed scheduling platform as a team of 5, leveraging Gemini AI to automate the extraction of structured availability from timetable screenshots, reducing manual data entry and coordination effort.",
+                                      "Utilized dimensional graph analysis to model cognitive load and peak focus hours, enabling 83% of users to finalize meeting times in under 5 minutes during a 42-participant validation study."
+                                    ]
+                                  },
+                                  {
+                                    name: "MediVault",
+                                    badge: "Hackathon",
+                                    tech: "OpenRouter, Dialogue, MongoDB, ElevenLabs, Snowflake, Vultr, Solana",
+                                    year: "2026",
+                                    type: "Demo link",
+                                    lang: "TypeScript",
+                                    langColor: "#3178c6",
+                                    bullets: [
+                                      "Built a decentralized marketplace enabling patients to securely digitize, own, and monetize their medical records, as a team of 4.",
+                                      "Integrated OpenRouter and ElevenLabs for AI engagement, supported by Solana for crypto and Snowflake and MongoDB for secure data infrastructure, Vultr for privacy layer."
+                                    ]
+                                  },
+                                  {
+                                    name: "Events & Ticketing App",
+                                    badge: "Academic and Team",
+                                    tech: "React, TypeScript, Supabase (PostgreSQL)",
+                                    year: "2025",
+                                    type: "Demo link",
+                                    lang: "TypeScript",
+                                    langColor: "#3178c6",
+                                    bullets: [
+                                      "Lead 7 person team as Scrum Master and Lead Developer to build campus events and ticketing platform.",
+                                      "Developed app enabling event discovery, QR code ticketing, social connections, organizer analytics dashboards, and admin moderation tools."
+                                    ]
+                                  },
+                                  {
+                                    name: "INTERBU: AI Interview Coach",
+                                    badge: "Personal",
+                                    tech: "React, Flask, Whisper",
+                                    year: "2025",
+                                    type: "Demo link",
+                                    lang: "Python",
+                                    langColor: "#3572A5",
+                                    bullets: [
+                                      "Built an AI interview coach for personalized, resume and job description-based practice app.",
+                                      "Added local data storage and offline LLM fallback for privacy and reliability."
+                                    ]
+                                  },
+                                  {
+                                    name: "DRIP GENIUS: Outfit Recommendation System",
+                                    badge: "Personal",
+                                    tech: "Roboflow, K-means Clustering",
+                                    year: "2025",
+                                    type: "Demo link",
+                                    lang: "Python",
+                                    langColor: "#3572A5",
+                                    bullets: [
+                                      "Fashion recommendation app to analyze clothing images and generate personalized outfit suggestions.",
+                                      "Implemented computer vision-based clothing detection, K-means colour analysis, and responsive UI."
+                                    ]
+                                  },
+                                  {
+                                    name: "Code Buddy: Code Review Tool",
+                                    badge: "Personal",
+                                    tech: "React, Vite, Node.js, Express",
+                                    year: "2025",
+                                    type: "Demo link",
+                                    lang: "JavaScript",
+                                    langColor: "#f1e05a",
+                                    bullets: [
+                                      "Built an AI-powered code review tool, providing instant, syntax-aware feedback for learners.",
+                                      "Integrated a live code editor and markdown-rendered responses for beginner-friendly code guidance."
+                                    ]
+                                  },
+                                  {
+                                    name: "Universal Resume Parser",
+                                    badge: "Personal",
+                                    tech: "Python, Ollama LLM, PDFPlumber, LangChain",
+                                    year: "2025",
+                                    type: "Repo link",
+                                    lang: "Python",
+                                    langColor: "#3572A5",
+                                    bullets: [
+                                      "Built a resume parser using Ollama LLM to extract employability-specific data from any resume.",
+                                      "Implemented hyperlink detection, multi-domain support, and context-aware parsing for tech, business, healthcare, and creative resumes."
+                                    ]
+                                  },
+                                  {
+                                    name: "Hospital Database Management System",
+                                    badge: "Academic and Team",
+                                    tech: "PostgreSQL and MongoDB",
+                                    year: "2025",
+                                    type: "Repo link",
+                                    lang: "PL/pgSQL",
+                                    langColor: "#336791",
+                                    bullets: [
+                                      "Developed hospital database management system handling patient records, appointments, staff schedules, billing, and medical histories.",
+                                      "Designed 2 flexible architectures for both SQL and NoSQL databases."
+                                    ]
+                                  },
+                                  {
+                                    name: "Click2Bill: Automated Invoice System",
+                                    badge: "Personal",
+                                    tech: "Google Sheets, Apps Script, PDF-Email Integration",
+                                    year: "2024",
+                                    type: "Demo link",
+                                    lang: "JavaScript",
+                                    langColor: "#f1e05a",
+                                    bullets: [
+                                      "Developed a service request and invoicing system, streamlining form submissions, invoice generation, and email delivery used by Real User (Shop owner).",
+                                      "Implemented end-to-end workflow automation with searchable records, timestamped logs, and PDF invoice templates, reducing manual data entry by 70%."
+                                    ]
+                                  },
+                                  {
+                                    name: "Scénix: AI-Powered Biomechanics Coach",
+                                    badge: "Personal",
+                                    tech: "React, Vite, Google GenAI, Supabase, MediaPipe BlazePose, Tailwind CSS",
+                                    year: "2026",
+                                    type: "Repo link",
+                                    lang: "TypeScript",
+                                    langColor: "#3178c6",
+                                    bullets: [
+                                      "Built an end-to-end athletic performance analysis platform leveraging Google's BlazePose CNN for real-time joint tracking and Gemini 2.5 Flash AI for biomechanical assessment, enabling users to capture movement data via webcam or video upload and receive detailed coaching feedback on form, symmetry, and technique.",
+                                      "Implemented full-stack architecture with Supabase for authentication, data persistence, and media storage, designed a structured feedback system generating performance scores (0-100) with symmetry analysis and form corrections, and developed social features including community feed and user dashboards for progress tracking."
+                                    ]
+                                  },
+                                  {
+                                    name: "CANHEALTH: Healthcare FinTech Platform",
+                                    badge: "Hackathon and Team",
+                                    tech: "Python, FastAPI, React, TypeScript, Google Gemini, ElevenLabs, BRIM Financial",
+                                    year: "2026",
+                                    type: "Repo link",
+                                    lang: "Python",
+                                    langColor: "#3572A5",
+                                    bullets: [
+                                      "Architected a full-stack healthcare fintech platform combining AI-powered fraud detection and a patient credit line system, integrating Google Gemini for real-time anomaly tracking and ElevenLabs voice agents for conversational financial support.",
+                                      "Built a comprehensive fraud monitoring dashboard with preventative risk forecasting, spending analytics, and automated compliance reporting, enabling healthcare providers to identify fraudulent activity before financial loss occurs.",
+                                      "Implemented a natural language query interface allowing operators to extract instant financial insights through conversational prompts, reducing administrative overhead for financial data analysis.",
+                                      "Leveraged BRIM Financial infrastructure to provide enterprise-grade financial controls including programmable corporate cards, real-time spending limits, and policy automation for small-to-medium healthcare businesses.",
+                                      "Developed dual-sided value proposition simultaneously improving patient accessibility through flexible credit repayment options while protecting provider margins through advanced fraud prevention and chargeback mitigation."
+                                    ]
+                                  }
+                                ].map((repo, index) => (
+                                  <div key={index} style={{ padding: '16px 0', borderBottom: '1px solid #30363d', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                    <div style={{ flex: 1, paddingRight: '16px' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                        <h3 
+                                          onClick={() => setSelectedRepo(repo)}
+                                          style={{ fontSize: '17px', fontWeight: '600', color: '#58a6ff', margin: 0, cursor: 'pointer', textDecoration: 'underline' }}
+                                        >
+                                          {repo.name}
+                                        </h3>
+                                        <span style={{ border: '1px solid #30363d', color: '#8b949e', borderRadius: '12px', padding: '1px 7px', fontSize: '11px' }}>{repo.badge}</span>
+                                      </div>
+
+                                      <p style={{ color: '#8b949e', fontSize: '12px', margin: '4px 0 0 0' }}>
+                                        {repo.tech} &bull; <span style={{ color: '#58a6ff' }}>{repo.type}</span> &bull; {repo.year}
+                                      </p>
+                                    </div>
+
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
+                                      <button style={{ background: '#21262d', border: '1px solid #30363d', borderRadius: '6px', padding: '5px 10px', color: '#c9d1d9', fontSize: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>⭐️ Star</span>
+                                        <span style={{ borderLeft: '1px solid #30363d', paddingLeft: '6px' }}>▾</span>
+                                      </button>
+                                      {/* Mini activity graph line */}
+                                      <svg viewBox="0 0 100 25" width="80" height="20">
+                                        <path 
+                                          d={[
+                                            "M0 22 L15 22 L30 14 L45 20 L60 8 L75 16 L90 4 L100 22",
+                                            "M0 20 L12 18 L25 5 L40 15 L55 10 L70 20 L85 2 L100 18",
+                                            "M0 24 L18 20 L35 12 L50 22 L65 14 L80 6 L100 20",
+                                            "M0 20 L15 10 L30 18 L45 6 L60 14 L75 4 L90 16 L100 10",
+                                            "M0 22 L20 22 L35 15 L50 5 L65 18 L80 10 L100 22",
+                                            "M0 18 L15 22 L30 10 L45 16 L60 6 L75 14 L90 8 L100 20",
+                                            "M0 20 L10 15 L25 22 L40 8 L55 18 L70 5 L85 12 L100 22",
+                                            "M0 22 L16 16 L32 8 L48 20 L64 12 L80 4 L100 18",
+                                            "M0 18 L20 18 L35 8 L50 20 L65 4 L80 16 L100 10",
+                                            "M0 20 L14 12 L28 22 L42 10 L56 18 L70 6 L84 14 L100 4",
+                                            "M0 22 L15 18 L30 8 L45 14 L60 4 L75 20 L90 10 L100 18",
+                                            "M0 20 L18 12 L36 20 L54 6 L72 16 L90 8 L100 22",
+                                            "M0 24 L15 16 L30 6 L45 18 L60 10 L75 4 L90 14 L100 20",
+                                            "M0 20 L12 10 L24 20 L36 4 L48 16 L60 8 L72 22 L84 12 L100 6"
+                                          ][index % 14]} 
+                                          fill="none" 
+                                          stroke="#2ea043" 
+                                          strokeWidth="2" 
+                                        />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                            </div>
+                          )}
+
+                        </div>
+
+                      </div>
+
                     </div>
                   )}
 
@@ -2633,7 +3039,7 @@ export default function DesktopThemePage() {
                         {/* 1. INSTAGRAM PROFILE HEADER NAV */}
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '12px', borderBottom: '1px solid #262626' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '18px', fontWeight: '700', color: '#f5f5f5' }}>rs00dhunna</span>
+                            <span style={{ fontSize: '18px', fontWeight: '700', color: '#f5f5f5' }}>ranjitdhunna2213</span>
                             <span style={{ background: '#0095f6', color: 'white', borderRadius: '50%', width: '15px', height: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>✓</span>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -2808,7 +3214,7 @@ export default function DesktopThemePage() {
                                     </div>
                                     <div>
                                       <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <span style={{ fontSize: '14px', fontWeight: '700', color: '#f5f5f5' }}>rs00dhunna</span>
+                                        <span style={{ fontSize: '14px', fontWeight: '700', color: '#f5f5f5' }}>ranjitdhunna2213</span>
                                         <span style={{ background: '#0095f6', color: 'white', borderRadius: '50%', width: '13px', height: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 'bold' }}>✓</span>
                                       </div>
                                       <span style={{ fontSize: '11px', color: '#a8a8a8' }}>Montreal, Quebec</span>
@@ -2819,8 +3225,8 @@ export default function DesktopThemePage() {
 
                                 <div style={{ flex: 1, padding: '16px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                   <div style={{ fontSize: '13px', lineHeight: '1.4', color: '#f5f5f5' }}>
-                                    <span style={{ fontWeight: '700', marginRight: '6px' }}>rs00dhunna</span>
-                                    Honored to showcase recent engineering achievements, hackathon awards, and technical certifications! 🏆📜 #softwareengineering #concordia
+                                    <span style={{ fontWeight: '700', marginRight: '6px' }}>ranjitdhunna2213</span>
+                                    Stacking Ws Since DAY 1  🏆📜 #achivments
                                   </div>
 
                                   {instaComments.map((c, i) => (
