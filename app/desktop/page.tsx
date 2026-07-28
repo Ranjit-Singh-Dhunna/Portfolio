@@ -42,8 +42,8 @@ export default function DesktopThemePage() {
   // Window states matching layout coordinates
   const [windows, setWindows] = useState<Record<string, WindowState>>({
     terminal: { isOpen: false, isMinimized: false, isMaximized: false, x: 100, y: 150, w: 580, h: 380, zIndex: 10 },
-    browser: { isOpen: false, isMinimized: false, isMaximized: false, x: 530, y: 40, w: 680, h: 460, zIndex: 11 },
-    instagram: { isOpen: false, isMinimized: false, isMaximized: false, x: 140, y: 90, w: 360, h: 540, zIndex: 12 },
+    browser: { isOpen: false, isMinimized: false, isMaximized: false, x: 533, y: 35, w: 810, h: 627, zIndex: 11 },
+    instagram: { isOpen: false, isMinimized: false, isMaximized: false, x: 564, y: 26, w: 847, h: 825, zIndex: 12 },
     editor: { isOpen: false, isMinimized: false, isMaximized: false, x: 530, y: 520, w: 680, h: 420, zIndex: 9 },
     resume: { isOpen: false, isMinimized: false, isMaximized: false, x: 160, y: 80, w: 640, h: 500, zIndex: 8 },
     anydesk: { isOpen: false, isMinimized: false, isMaximized: false, x: 250, y: 220, w: 420, h: 280, zIndex: 7 },
